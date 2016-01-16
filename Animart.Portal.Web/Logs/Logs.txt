@@ -419,3 +419,30 @@ DEBUG 2015-10-14 23:04:44,467 [1    ] Abp.Localization.LocalizationManager     -
 DEBUG 2015-10-14 23:04:44,480 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Portal
 DEBUG 2015-10-14 23:04:44,480 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpWeb
 DEBUG 2015-10-14 23:04:44,931 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - Found 0 classes defines auto mapping attributes
+DEBUG 2016-01-16 21:48:33,910 [1    ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2016-01-16 21:48:37,658 [1    ] Abp.Modules.AbpModuleManager             - Found 13 ABP modules in total.
+DEBUG 2016-01-16 21:48:37,661 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AutoMapper.AbpAutoMapperModule, Abp.AutoMapper, Version=0.7.2.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,663 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=0.7.3.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,663 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkModule, Abp.EntityFramework, Version=0.7.2.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,663 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.WebApi.AbpWebApiModule, Abp.Web.Api, Version=0.7.2.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,663 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Web.AbpWebModule, Abp.Web, Version=0.7.3.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,664 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Web.Mvc.AbpWebMvcModule, Abp.Web.Mvc, Version=0.7.2.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,664 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.Zero, Version=0.7.3.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,664 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFramework.AbpZeroEntityFrameworkModule, Abp.Zero.EntityFramework, Version=0.7.3.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,664 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Animart.Portal.PortalApplicationModule, Animart.Portal.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,664 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Animart.Portal.PortalCoreModule, Animart.Portal.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,664 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Animart.Portal.PortalDataModule, Animart.Portal.EntityFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,664 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Animart.Portal.Web.PortalWebModule, Animart.Portal.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,664 [1    ] Abp.Modules.AbpModuleManager             - Loaded module: Animart.Portal.PortalWebApiModule, Animart.Portal.WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2016-01-16 21:48:37,669 [1    ] Abp.Modules.AbpModuleManager             - 13 modules loaded.
+DEBUG 2016-01-16 21:48:41,521 [1    ] Abp.Localization.LocalizationManager     - Initializing 4 localization sources.
+DEBUG 2016-01-16 21:48:41,563 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2016-01-16 21:48:41,563 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2016-01-16 21:48:41,598 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: Portal
+DEBUG 2016-01-16 21:48:41,598 [1    ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpWeb
+DEBUG 2016-01-16 21:48:44,431 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - Found 3 classes defines auto mapping attributes
+DEBUG 2016-01-16 21:48:44,431 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - Animart.Portal.User.Dto.RegisterUserInput
+DEBUG 2016-01-16 21:48:44,602 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - Animart.Portal.User.Dto.UserDto
+DEBUG 2016-01-16 21:48:44,604 [1    ] Abp.AutoMapper.AbpAutoMapperModule       - Animart.Portal.Supply.Dto.SupplyItemDto
+DEBUG 2016-01-16 21:48:44,698 [1    ] Default                                  - Dynamic web api controller is created for type 'Animart.Portal.User.IUserAppService' with service name 'app/user'.
+DEBUG 2016-01-16 21:48:44,700 [1    ] Default                                  - Dynamic web api controller is created for type 'Animart.Portal.Supply.ISupplyService' with service name 'app/supply'.

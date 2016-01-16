@@ -32,5 +32,9 @@ namespace Animart.Test
             base.AddModules(modules);
             
         }
+
+        protected void UsingDbContext()a
+
+        
     }
 }
