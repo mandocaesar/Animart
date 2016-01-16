@@ -1,13 +1,25 @@
-﻿using Abp.EntityFramework;
+﻿using System.Data.Entity;
+using Abp.Zero.EntityFramework;
+using Animart.Portal.Authorization;
+using Animart.Portal.Order;
+using Animart.Portal.Supply;
+using Animart.Portal.Users;
+using Animart.Portal.Invoice;
+using Animart.Portal.MultiTenancy;
 
 namespace Animart.Portal.EntityFramework
 {
-    public class PortalDbContext : AbpDbContext
+    public class PortalDbContext : AbpZeroDbContext<Tenant, Role, User>
     {
         //TODO: Define an IDbSet for each Entity...
 
         //Example:
-        //public virtual IDbSet<User> Users { get; set; }
+        public virtual IDbSet<SupplyItem> SupplyItems { get; set; }
+        public virtual IDbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        public virtual IDbSet<OrderItem> OrderItems { get; set; }
+
+        public virtual IDbSet<Invoice.Invoice> Invoices { get; set; }
+
 
         /* NOTE: 
          *   Setting "Default" to base class helps us when working migration commands on Package Manager Console.
