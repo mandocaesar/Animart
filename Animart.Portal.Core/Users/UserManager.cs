@@ -5,6 +5,7 @@ using Abp.Configuration.Startup;
 using Abp.Dependency;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
+using Abp.Organizations;
 using Abp.Zero.Configuration;
 using Animart.Portal.Authorization;
 using Animart.Portal.MultiTenancy;
@@ -23,7 +24,12 @@ namespace Animart.Portal.Users
             ISettingManager settingManager,
             IUserManagementConfig userManagementConfig,
             IIocResolver iocResolver,
-            Abp.Runtime.Caching.ICacheManager cacheManager)
+            Abp.Runtime.Caching.ICacheManager cacheManager,
+            IRepository<OrganizationUnit, long> organizationUnitRepository, 
+            IRepository<UserOrganizationUnit, long> userOrganizationUnitRepository, 
+            IOrganizationUnitSettings organizationUnitSettings
+
+            )
             : base(
                 userStore,
                 roleManager,
@@ -34,7 +40,10 @@ namespace Animart.Portal.Users
                 settingManager,
                 userManagementConfig,
                 iocResolver,
-            cacheManager)
+                cacheManager,
+                organizationUnitRepository,
+                userOrganizationUnitRepository,
+                organizationUnitSettings)
         {
         }
     }

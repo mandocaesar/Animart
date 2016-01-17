@@ -12,13 +12,11 @@ namespace Animart.Portal.Authorization
         public RoleStore(
             IRepository<Role> roleRepository, 
             IRepository<UserRole, long> userRoleRepository, 
-            IRepository<RolePermissionSetting, long> rolePermissionSettingRepository,
-            ICacheManager cacheManager)
+            IRepository<RolePermissionSetting, long> rolePermissionSettingRepository)
             : base(
                 roleRepository, 
                 userRoleRepository, 
-                rolePermissionSettingRepository,
-                cacheManager)
+                rolePermissionSettingRepository)
         {
         }
     }
