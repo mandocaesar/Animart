@@ -1,14 +1,19 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using Shouldly;
 
 namespace Animart.Test.UserManagement
 {
-    [TestClass]
+    [TestFixture]
     public class UserRegistrationSpec
     {
-        [TestMethod]
+        [Test]
         public void WhenUserRegsiter()
         {
+            var a = true;
+            a.ShouldBe(true);
+
         }
     }
 }

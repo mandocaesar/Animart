@@ -5,8 +5,9 @@ using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using Animart.Portal.User.Dto;
 using Animart.Portal.Users;
+using Animart.Portal.Users.Dto;
 
-namespace Animart.Portal.User
+namespace Animart.Portal.Users
 {
     public class UserAppService:ApplicationService, IUserAppService
     {
@@ -19,9 +20,11 @@ namespace Animart.Portal.User
 
         public ListResultOutput<UserDto> GetUsers()
         {
+            var b = _userManager.Users;
+            var a = b.ToList().MapTo<List<UserDto>>();
             return new ListResultOutput<UserDto>
             {
-                Items = _userManager.Users.ToList().MapTo<List<UserDto>>()
+                Items = a
             };
         }
     }

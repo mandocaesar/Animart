@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
-using Animart.Portal.User.Dto;
+using Animart.Portal.Users.Dto;
 
-namespace Animart.Portal.User
+namespace Animart.Portal.Users
 {
     public interface IUserAppService:IApplicationService
     {

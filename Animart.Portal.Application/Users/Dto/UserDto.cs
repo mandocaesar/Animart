@@ -3,12 +3,11 @@ using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using Animart.Portal.Authorization;
 
-namespace Animart.Portal.User.Dto
+namespace Animart.Portal.Users.Dto
 {
-    [AutoMapFrom(typeof(Users.User))]
+    [AutoMapFrom(typeof(User))]
     public class UserDto: EntityDto<long>
     {
-
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

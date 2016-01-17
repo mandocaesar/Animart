@@ -1,6 +1,9 @@
 ﻿using System;
+using Animart.Portal.User;
+using Animart.Portal.Users;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
+using Shouldly;
 using TestContext = NUnit.Framework.TestContext;
 
 namespace Animart.Test
@@ -9,21 +12,22 @@ namespace Animart.Test
     /// Summary description for LoginSpec
     /// </summary>
     [TestFixture]
-    public class LoginSpec
+    public class LoginSpec:AnimartPortalTestBaseClass
     {
+        
+        private readonly IUserAppService _userAppService;
         public LoginSpec()
         {
-                       
+            _userAppService = LocalIocManager.Resolve<IUserAppService>();
+
         }
 
-
-
-        [TestMethod]
+        [Test]
         public void WhenUserLoginMustProvideUserNameAndPassword()
         {
-            //
-            // TODO: Add test logic here
-            //
+            var test = _userAppService.GetUsers();
+            test.Items.Count.ShouldBe(1);
+            
         }
     }
 }
