@@ -20,12 +20,11 @@ namespace Animart.Portal.Supply
     [AbpAuthorize]
     public class SupplyService : ApplicationService ,ISupplyService
     {
-        private readonly IRepository<SupplyItem> _supplyItemRepository;
+        private readonly IRepository<SupplyItem, Guid> _supplyItemRepository;
         private readonly IRepository<Users.User, long> _userRepository;
         private readonly SupplyDomainService _supplyDomainService;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
-        public SupplyService(IRepository<SupplyItem> supplyItemRepository, IRepository<Users.User, long> userRepository, SupplyDomainService supplyDomainService, IUnitOfWorkManager unitOfWorkManager)
+        public SupplyService(IRepository<SupplyItem, Guid> supplyItemRepository, IRepository<Users.User, long> userRepository, SupplyDomainService supplyDomainService, IUnitOfWorkManager unitOfWorkManager)
         {
            
             _supplyItemRepository = supplyItemRepository;
@@ -94,8 +93,6 @@ namespace Animart.Portal.Supply
             {
                 return false;
             }
-     
-
         }
 
         public bool Delete(Guid id)
@@ -139,6 +136,18 @@ namespace Animart.Portal.Supply
             catch (Exception ex)
             {
                 return false;
+            }
+        }
+
+        public SupplyItem GetSupplyItemByID(Guid id)
+        {
+            try
+            {
+                return _supplyItemRepository.FirstOrDefault(e => e.Id == id);
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
     }

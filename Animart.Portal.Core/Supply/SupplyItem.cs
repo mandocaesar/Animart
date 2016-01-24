@@ -1,13 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Animart.Portal.Users;
 
 namespace Animart.Portal.Supply
 {
     [Table("SupplyItem")]
-    public class SupplyItem : CreationAuditedEntity<int, User>
+    public class SupplyItem : CreationAuditedEntity<int, User>, IEntity<Guid>
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

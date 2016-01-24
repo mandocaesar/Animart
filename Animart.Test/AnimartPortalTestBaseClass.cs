@@ -23,7 +23,7 @@ namespace Animart.Test
                 );
 
             //Creating initial data
-        //   UsingDbContext(context => new InitialDataBuilder().Build(context));
+           UsingDbContext(context => new InitialDataBuilder().Build(context));
 
             AbpSession.TenantId = 1;
         }

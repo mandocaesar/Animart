@@ -112,6 +112,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Order\Dto\CreatePurchaseOrderDto.cs" />
+    <Compile Include="Order\Dto\OrderItemInputDto.cs" />
+    <Compile Include="Order\Dto\PurchaseOrderDto.cs" />
+    <Compile Include="Order\IOrderService.cs" />
+    <Compile Include="Order\OrderService.cs" />
     <Compile Include="PortalApplicationModule.cs" />
     <Compile Include="PortalAppServiceBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -134,9 +139,7 @@
       <Name>Animart.Portal.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Order\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
