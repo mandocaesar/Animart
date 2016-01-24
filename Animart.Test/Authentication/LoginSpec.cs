@@ -1,4 +1,6 @@
 ﻿using System;
+using Abp.Authorization.Users;
+using Abp.UI;
 using Animart.Portal.User;
 using Animart.Portal.Users;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,18 +18,28 @@ namespace Animart.Test
     {
         
         private readonly IUserAppService _userAppService;
+        private readonly UserManager _userManager;
+
         public LoginSpec()
         {
             _userAppService = LocalIocManager.Resolve<IUserAppService>();
+            _userManager = LocalIocManager.Resolve<UserManager>();
 
         }
 
         [Test]
-        public void WhenUserLoginMustProvideUserNameAndPassword()
+        public async void WhenUserLoginProvideCorrectUserNameAndPassword()
         {
-            var test = _userAppService.GetUsers();
-            test.Items.Count.ShouldBe(1);
-            
+            var a = await _userManager.LoginAsync("admin@animart.com", "qwe123", "1");
+            a.ShouldNotBeNull();
+        }
+
+        [Test]
+        public async void WhenUserLoginProvideInvalidUserNameOrPassword()
+        {
+            var loginResult = await _userManager.LoginAsync("admin@animart1.com", "qwe1232", "1");
+            loginResult.Result.ShouldBeOneOf(AbpLoginResultType.InvalidUserNameOrEmailAddress,
+                AbpLoginResultType.InvalidPassword);
         }
     }
 }
