@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Abp.Authorization.Roles;
 using Abp.Authorization.Users;
 using Animart.Portal.Authorization;
@@ -19,6 +20,21 @@ namespace Animart.Portal.Migrations.Data
            CreateUserAndRoles(context);
         }
 
+        public void CreateDummySupplyItem(PortalDbContext context)
+        {
+            context.SupplyItems.Add(new Supply.SupplyItem()
+            {
+                Available = true,
+                Code = "Test-123",
+                InStock = 20,
+                Name = "Gundamdam",
+                Price = 20000,
+                CreatorUser = context.Users.First(e=>e.Id == 1),
+                CreatorUserId = 1,
+                Weigth = 10,
+                CreationTime = DateTime.Now 
+            });
+        }
         public void CreateUserAndRoles(PortalDbContext context)
         {
             

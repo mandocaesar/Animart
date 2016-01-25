@@ -20,7 +20,9 @@ namespace Animart.Portal.Supply
 
         bool UpdateInStock(Guid id, int stock);
 
-        SupplyItem GetSupplyItemByID(Guid id);
+        SupplyItem GetSupplyItemById(Guid id);
+
+        SupplyItem GetSingleByName(string name);
 
     }
 }

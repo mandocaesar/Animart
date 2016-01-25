@@ -40,15 +40,21 @@ namespace Animart.Portal.Order
         {
             try
             {
-                _orderItemRepository.InsertOrUpdate(new OrderItem()
+                var _id =_orderItemRepository.InsertOrUpdateAndGetId(new OrderItem()
                 {
                     Item = _supplyItemRepository.Get(orderItem.supplyItem),
                     PurchaseOrder = _purchaseOrderRepository.Get(orderItem.PurchaseOrder),
                     Quantity = orderItem.Quantity,
                     CreationTime = DateTime.Now,
                     CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
-                    CreatorUserId = AbpSession.GetUserId()
+                    CreatorUserId = AbpSession.GetUserId(),
                 });
+
+                var po =_purchaseOrderRepository.Get(_id);
+                po.GrandTotal = po.OrderItems.Sum(e => e.Item.Price*e.Quantity);
+                po.TotalWeight = po.OrderItems.Sum(e => e.Item.Weigth * e.Quantity);
+                _purchaseOrderRepository.InsertOrUpdate(po);
+
                 return true;
 
             }

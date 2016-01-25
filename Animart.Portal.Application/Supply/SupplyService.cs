@@ -14,10 +14,11 @@ using Abp.Runtime.Session;
 using Abp.UI;
 using Animart.Portal.Supply.Dto;
 using Animart.Portal.Users;
+using AutoMapper;
 
 namespace Animart.Portal.Supply
 {
-    [AbpAuthorize]
+  //  [AbpAuthorize]
     public class SupplyService : ApplicationService ,ISupplyService
     {
         private readonly IRepository<SupplyItem, Guid> _supplyItemRepository;
@@ -60,7 +61,7 @@ namespace Animart.Portal.Supply
 
         public async Task Create(SupplyItemDto supplyItem)
         {
-            await _supplyItemRepository.InsertAsync(new SupplyItem()
+             await _supplyItemRepository.InsertAsync(new SupplyItem()
             {
                 Available = supplyItem.Available,
                 Code = supplyItem.Code,
@@ -72,6 +73,7 @@ namespace Animart.Portal.Supply
                 CreatorUserId = AbpSession.GetUserId()
 
             });
+            
         }
 
         public bool Update(SupplyItemDto supplyItem)
@@ -139,7 +141,7 @@ namespace Animart.Portal.Supply
             }
         }
 
-        public SupplyItem GetSupplyItemByID(Guid id)
+        public SupplyItem GetSupplyItemById(Guid id)
         {
             try
             {
@@ -149,6 +151,11 @@ namespace Animart.Portal.Supply
             {
                 return null;
             }
+        }
+
+        public SupplyItem GetSingleByName(string name)
+        {
+            return _supplyItemRepository.FirstOrDefault(e => e.Name.ToLower().Contains(name.ToLower()));
         }
     }
 }
