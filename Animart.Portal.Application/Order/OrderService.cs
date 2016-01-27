@@ -26,39 +26,62 @@ namespace Animart.Portal.Order
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public OrderService(IRepository<OrderItem, Guid> orderItemRepository , IRepository<Users.User, long> userRepository, OrderDomainService orderDomainService, 
-            IUnitOfWorkManager unitOfWorkManager, IRepository<PurchaseOrder,Guid> purchaseOrderRepository)
+            IUnitOfWorkManager unitOfWorkManager, IRepository<PurchaseOrder,Guid> purchaseOrderRepository, IRepository<SupplyItem, Guid> suppluRepository)
         {
             _orderItemRepository = orderItemRepository;
             _userRepository = userRepository;
             _orderDomainService = orderDomainService;
             _unitOfWorkManager = unitOfWorkManager;
             _purchaseOrderRepository = purchaseOrderRepository;
+            _supplyItemRepository = suppluRepository;
 
+        }
+
+        public PurchaseOrder GetSinglePurchaseOrder(string id)
+        {
+            try
+            {
+                Guid _id;
+                if (Guid.TryParse(id, out _id))
+                {
+                    return _purchaseOrderRepository.Get(_id);
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
         }
 
         public bool AddOrderItem(string id, OrderItemInputDto orderItem)
         {
             try
             {
-                var _id =_orderItemRepository.InsertOrUpdateAndGetId(new OrderItem()
+                var item = new OrderItem()
                 {
-                    Item = _supplyItemRepository.Get(orderItem.supplyItem),
-                    PurchaseOrder = _purchaseOrderRepository.Get(orderItem.PurchaseOrder),
+                    Item = _supplyItemRepository.GetAllList().First(e => e.Id == orderItem.supplyItem),
+                    PurchaseOrder = _purchaseOrderRepository.GetAllList().First(e=>e.Id == orderItem.PurchaseOrder),
                     Quantity = orderItem.Quantity,
                     CreationTime = DateTime.Now,
                     CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
                     CreatorUserId = AbpSession.GetUserId(),
-                });
+                };
 
-                var po =_purchaseOrderRepository.Get(_id);
+                var _id =_orderItemRepository.InsertOrUpdateAndGetId(item);
+
+                Guid poId = Guid.Parse(id);
+                var po =_purchaseOrderRepository.GetAll().First(e=>e.Id == poId);
+                
                 po.GrandTotal = po.OrderItems.Sum(e => e.Item.Price*e.Quantity);
                 po.TotalWeight = po.OrderItems.Sum(e => e.Item.Weigth * e.Quantity);
-                _purchaseOrderRepository.InsertOrUpdate(po);
+                _purchaseOrderRepository.Update(po);
 
                 return true;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }
@@ -105,7 +128,7 @@ namespace Animart.Portal.Order
         public async Task Create(Dto.CreatePurchaseOrderDto purchaseOrderItem)
         {
 
-            await _purchaseOrderRepository.InsertOrUpdateAndGetIdAsync(new PurchaseOrder()
+              await _purchaseOrderRepository.InsertAsync(new PurchaseOrder()
             {
                 Address = purchaseOrderItem.Address,
                 City = purchaseOrderItem.City,
@@ -114,10 +137,10 @@ namespace Animart.Portal.Order
                 Province = purchaseOrderItem.Province,
                 Status = purchaseOrderItem.Status,
                 TotalWeight = purchaseOrderItem.TotalWeight,
-                CreationTime = DateTime.Now,
-                CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
-                CreatorUserId = AbpSession.GetUserId()
-            });
+                  CreationTime = DateTime.Now,
+                  CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
+                  CreatorUserId = AbpSession.GetUserId()
+              });
 
         }
 
@@ -160,6 +183,18 @@ namespace Animart.Portal.Order
             {
                 return false;
                 throw;
+            }
+        }
+
+        public IEnumerable<PurchaseOrder> GetAllPurchaseOrderByUserId(int id)
+        {
+            try
+            {
+                return  _purchaseOrderRepository.GetAllList().Where(e => e.CreatorUserId == id);
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
     }

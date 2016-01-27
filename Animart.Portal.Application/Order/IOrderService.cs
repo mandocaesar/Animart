@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
@@ -14,11 +15,17 @@ namespace Animart.Portal.Order
 
         bool Delete(string id);
 
+        IEnumerable<PurchaseOrder> GetAllPurchaseOrderByUserId(int id);
+
+        PurchaseOrder GetSinglePurchaseOrder(string id);
+
         bool AddOrderItem(string id, Dto.OrderItemInputDto orderItem);
 
         bool UpdateOrderItem(string id, Dto.OrderItemInputDto orderItem);
 
         bool DeleteOrderItem(string id, string orderItemId);
+
+
 
     }
 }

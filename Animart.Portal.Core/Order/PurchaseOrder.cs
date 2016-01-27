@@ -13,7 +13,7 @@ namespace Animart.Portal.Order
     {
         public PurchaseOrder()
         {
-            OrderItems = new List<OrderItem>();
+            //OrderItems = new List<OrderItem>();
         }
 
         [Key]
