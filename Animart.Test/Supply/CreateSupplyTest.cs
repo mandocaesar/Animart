@@ -45,7 +45,6 @@ namespace Animart.Test.Supply
         public async void When_001SaveSupplyItemShouldSaveToDatabase()
         {
             await _supplyService.Create(_supplyItemDto);
-           // _supplyItem = _supplyService.GetSingleByName("Gundamdam");
             _supplyService.GetSupplyByName(new GetSupplyByNameInput()
             {
                 MaxResultCount = 10,

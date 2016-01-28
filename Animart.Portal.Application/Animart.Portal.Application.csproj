@@ -112,7 +112,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Order\Dto\CreatePurchaseOrderDto.cs" />
+    <Compile Include="Order\CreatePurchaseOrderDto.cs" />
     <Compile Include="Order\Dto\OrderItemInputDto.cs" />
     <Compile Include="Order\Dto\PurchaseOrderDto.cs" />
     <Compile Include="Order\IOrderService.cs" />
