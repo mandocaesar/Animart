@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
+using Animart.Portal.Sessions.Dto;
 using Animart.Portal.User.Dto;
 using Animart.Portal.Users;
 using Animart.Portal.Users.Dto;
 
 namespace Animart.Portal.Users
 {
-    public class UserAppService:ApplicationService, IUserAppService
+    public class UserAppService: PortalAppServiceBase, IUserAppService
     {
         private readonly UserManager _userManager;
 
@@ -26,6 +28,20 @@ namespace Animart.Portal.Users
             {
                 Items = a
             };
+        }
+        public async Task<GetCurrentLoginInformationsOutput> GetCurrentLoginInformations()
+        {
+            var output = new GetCurrentLoginInformationsOutput
+            {
+                User = (await GetCurrentUserAsync()).MapTo<UserLoginInfoDto>()
+            };
+
+            if (AbpSession.TenantId.HasValue)
+            {
+                // output.Tenant = (await GetCurrentTenantAsync()).MapTo<TenantLoginInfoDto>();
+            }
+
+            return output;
         }
     }
 }

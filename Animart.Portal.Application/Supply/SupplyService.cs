@@ -18,8 +18,8 @@ using AutoMapper;
 
 namespace Animart.Portal.Supply
 {
-  //  [AbpAuthorize]
-    public class SupplyService : ApplicationService ,ISupplyService
+    [AbpAuthorize]
+    public class SupplyService : PortalAppServiceBase, ISupplyService
     {
         private readonly IRepository<SupplyItem, Guid> _supplyItemRepository;
         private readonly IRepository<Users.User, long> _userRepository;

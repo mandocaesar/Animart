@@ -30,7 +30,7 @@ namespace Animart.Portal.Web
 
                         "~/Scripts/modernizr-2.8.3.js",
                         
-                        "~/Scripts/jquery-2.1.4.min.js",
+                        "~/Scripts/jquery-2.2.0.min.js",
                         "~/Scripts/jquery-ui-1.11.4.min.js",
 
                         "~/Scripts/bootstrap.min.js",
