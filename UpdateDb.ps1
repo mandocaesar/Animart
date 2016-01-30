@@ -1,0 +1,1 @@
+Update-Database -ProjectName Animart.Portal.EntityFramework -ConfigurationTypeName Animart.Portal.Migrations.Configuration -verbose
