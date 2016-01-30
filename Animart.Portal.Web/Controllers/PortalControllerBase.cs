@@ -1,4 +1,7 @@
-﻿using Abp.Web.Mvc.Controllers;
+﻿using Abp.IdentityFramework;
+using Abp.UI;
+using Abp.Web.Mvc.Controllers;
+using Microsoft.AspNet.Identity;
 
 namespace Animart.Portal.Web.Controllers
 {
@@ -10,6 +13,18 @@ namespace Animart.Portal.Web.Controllers
         protected PortalControllerBase()
         {
             LocalizationSourceName = PortalConsts.LocalizationSourceName;
+        }
+
+        protected virtual void CheckModelState()
+        {
+            if (!ModelState.IsValid)
+            {
+                throw new UserFriendlyException(L("FormIsNotValidMesssage"));
+            }
+        }
+        protected void CheckErrors(IdentityResult identityResult)
+        {
+            identityResult.CheckErrors(LocalizationManager);
         }
     }
 }
