@@ -4,7 +4,10 @@
     var app = angular.module('app', [
         'ngAnimate',
         'ngSanitize',
-        'ui.grid',
+         'ui.grid',
+         'ui.grid.edit',
+         'ui.grid.rowEdit',
+         'ui.grid.cellNav',
         'ui.router',
         'ui.bootstrap',
         'ui.jq',
