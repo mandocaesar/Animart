@@ -1180,6 +1180,8 @@
     <Content Include="Scripts\toastr.min.js" />
     <Content Include="Scripts\appScript\login.js" />
     <Content Include="Scripts\ui-grid.min.js" />
+    <Content Include="Views\Account\Login.css" />
+    <Content Include="Views\Account\Login.min.css" />
     <Content Include="Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
   </ItemGroup>
@@ -1208,6 +1210,11 @@
     <Content Include="Scripts\sweetalert\sweet-alert.scss" />
     <Content Include="Scripts\version.json" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\RegisterResult.cshtml" />
+    <Content Include="Views\Account\TenantSelection.cshtml" />
+    <Content Include="Views\Account\Login.css.map" />
+    <Content Include="Views\Account\Login.less" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
