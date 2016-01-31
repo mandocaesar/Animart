@@ -1,3 +1,50 @@
 ﻿<div ng-controller="app.views.supply as vm">
-    <div ui-grid="gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav class="myGrid"></div>
+    <div class="row">
+        <div class="col-lg-2">
+            <button type="button" class="btn btn-primary" ng-click="open()"> <i class="fa fa-pencil"></i> Add New Supply</button>
+        </div>
+        <div class="col-lg-2">
+            <button type="button" class="btn btn-danger " ng-click="delete()"><i class="fa fa-trash"></i>Delete Supply</button>
+        </div>
+    </div>
+    <div class="row" style="margin-top:15px">
+        <div class="col-lg-12">
+            <div ui-grid="gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
+        </div>
+    </div>
+    <script type="text/ng-template" id="addNewSupply.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Add New Supply Item</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Code:</label>
+                <input type="text" ng-model="supply.code" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" ng-model="supply.name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Price:</label>
+                <input type="text" ng-model="supply.price" value="supply.price|currency" class="form-control">
+            </div>
+           <div class="form-group">
+                <label>Stock:</label>
+                <input type="number" min="0" ng-model="supply.inStock" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Weight:</label>
+                <input type="number" min="0" ng-model="supply.weight" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Available:</label>
+                <input type="checkbox" ng-model="supply.available" class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()">Save</button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
 </div>
