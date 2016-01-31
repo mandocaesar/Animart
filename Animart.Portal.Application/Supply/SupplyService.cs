@@ -35,6 +35,22 @@ namespace Animart.Portal.Supply
 
         }
 
+        public List<SupplyItemDto> GetSupplies()
+        {
+            var supplies = _supplyItemRepository.GetAll().ToList();
+            return supplies.Select(e=> new SupplyItemDto
+            {   Available = e.Available,
+                Code = e.Code,
+                Id = e.Id,
+                CreationTime = e.CreationTime,
+                CreatorUserId = e.CreatorUserId,
+                InStock = e.InStock,
+                Name = e.Name,
+                Price = e.Price 
+                
+            }).ToList();
+        }
+
         public PagedResultOutput<SupplyItem> GetSupplyByName(GetSupplyByNameInput input)
         {
             if (input.MaxResultCount <= 0)

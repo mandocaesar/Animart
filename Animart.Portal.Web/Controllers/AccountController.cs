@@ -71,22 +71,32 @@ namespace Animart.Portal.Web.Controllers
         [DisableAuditing]
         public async Task<JsonResult> Login(LoginViewModel loginModel, string returnUrl = "")
         {
-            CheckModelState();
-
-            var loginResult = await GetLoginResultAsync(
-                loginModel.UsernameOrEmailAddress,
-                loginModel.Password,
-                loginModel.TenancyName
-                );
-
-            await SignInAsync(loginResult.User, loginResult.Identity, loginModel.RememberMe);
-
-            if (string.IsNullOrWhiteSpace(returnUrl))
+            try
             {
-                returnUrl = Request.ApplicationPath;
-            }
+                CheckModelState();
 
-            return Json(new MvcAjaxResponse { TargetUrl = returnUrl });
+                var loginResult = await GetLoginResultAsync(
+                    loginModel.UsernameOrEmailAddress,
+                    loginModel.Password,
+                    loginModel.TenancyName
+                    );
+
+                await SignInAsync(loginResult.User, loginResult.Identity, loginModel.RememberMe);
+
+                if (string.IsNullOrWhiteSpace(returnUrl))
+                {
+                    returnUrl = Request.ApplicationPath;
+                }
+                return Json(new MvcAjaxResponse { TargetUrl = returnUrl});
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new {Error = true,Message=ex.Message});
+            }
+           
+
+           
         }
 
         private async Task<AbpUserManager<Tenant, Role, Users.User>.AbpLoginResult> GetLoginResultAsync(string usernameOrEmailAddress, string password, string tenancyName)

@@ -14,7 +14,11 @@
                         password: $('#PasswordInput').val(),
                         rememberMe: $('#RememberMeInput').is(':checked')
                     })
-                })
+                }).done(function(result) {
+                        if (result !== null && result.error !== null  ) {
+                            abp.notify.error(result.message);
+                        }
+                    })
             );
         });
 
