@@ -75,7 +75,7 @@ namespace Animart.Portal.Order
                 var po =_purchaseOrderRepository.GetAll().First(e=>e.Id == poId);
                 
                 po.GrandTotal = po.OrderItems.Sum(e => e.Item.Price*e.Quantity);
-                po.TotalWeight = po.OrderItems.Sum(e => e.Item.Weigth * e.Quantity);
+                po.TotalWeight = po.OrderItems.Sum(e => e.Item.Weight * e.Quantity);
                 _purchaseOrderRepository.Update(po);
 
                 return true;

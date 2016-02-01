@@ -31,7 +31,7 @@ namespace Animart.Portal.Migrations.Data
                 Price = 20000,
                 CreatorUser = context.Users.First(e=>e.Id == 1),
                 CreatorUserId = 1,
-                Weigth = 10,
+                Weight = 10,
                 CreationTime = DateTime.Now 
             });
         }
