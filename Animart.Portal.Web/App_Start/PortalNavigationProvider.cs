@@ -33,9 +33,16 @@ namespace Animart.Portal.Web
                         "Supply",
                         new LocalizableString("Supply", PortalConsts.LocalizationSourceName),
                         url: "#/supply",
-                        icon: "fa fa-info"
+                        icon: "fa fa-archive"
                         )
-                ); ;
+                ).AddItem(
+                    new MenuItemDefinition(
+                        "Users",
+                        new LocalizableString("Users", PortalConsts.LocalizationSourceName),
+                        url: "#/users",
+                        icon: "fa fa-users"
+                        )
+                ); 
         }
     }
 }

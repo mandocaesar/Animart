@@ -1,0 +1,51 @@
+﻿<div ng-controller="app.views.users as vm">
+    <div class="row">
+        <div class="col-lg-2">
+            <button type="button" class="btn btn-primary" ng-click="open()"> <i class="fa fa-pencil"></i> Add New User</button>
+        </div>
+        <div class="col-lg-2">
+            <button type="button" class="btn btn-danger " ng-click="delete()"><i class="fa fa-trash"></i>Delete User</button>
+        </div>
+    </div>
+    <div class="row" style="margin-top:15px">
+        <div class="col-lg-12">
+            <div ui-grid="gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
+        </div>
+    </div>
+    <script type="text/ng-template" id="addNewUser.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Add New User Item</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" ng-model="user.UserName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" ng-model="user.FirstName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Last Name:</label>
+                <input type="text" ng-model="user.LastName" value="supply.price|currency" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="number" min="0" ng-model="user.Email" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Role:</label>
+                <input type="number" min="0" ng-model="user.Roles" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Active:</label>
+                <input type="checkbox" ng-model="user.IsActive" class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()">Save</button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+</div>
+

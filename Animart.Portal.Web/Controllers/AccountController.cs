@@ -95,8 +95,6 @@ namespace Animart.Portal.Web.Controllers
                 return Json(new {Error = true,Message=ex.Message});
             }
            
-
-           
         }
 
         private async Task<AbpUserManager<Tenant, Role, Users.User>.AbpLoginResult> GetLoginResultAsync(string usernameOrEmailAddress, string password, string tenancyName)
@@ -151,6 +149,158 @@ namespace Animart.Portal.Web.Controllers
             AuthenticationManager.SignOut();
             return RedirectToAction("Login");
         }
+
+        #region Register
+
+        public ActionResult Register()
+        {
+            return RegisterView(new RegisterViewModel());
+        }
+
+        private ActionResult RegisterView(RegisterViewModel model)
+        {
+            ViewBag.IsMultiTenancyEnabled = _multiTenancyConfig.IsEnabled;
+
+            return View("Register", model);
+        }
+
+        [HttpPost]
+        [UnitOfWork]
+        public virtual async Task<ActionResult> Register(RegisterViewModel model)
+        {
+            try
+            {
+                CheckModelState();
+
+                //Get tenancy name and tenant
+                //if (!_multiTenancyConfig.IsEnabled)
+                //{
+                //    model.TenancyName = Tenant.DefaultTenantName;
+                //}
+                //else if (model.TenancyName.IsNullOrEmpty())
+                //{
+                //    throw new UserFriendlyException(L("TenantNameCanNotBeEmpty"));
+                //}
+
+             //   var tenant = await GetActiveTenantAsync(model.TenancyName);
+
+                //Create user
+                var user = new Users.User
+                {
+                    TenantId = 1,
+                    Name = model.Name,
+                    Surname = model.Surname,
+                    EmailAddress = model.EmailAddress,
+                    IsActive = true
+                };
+
+                //Get external login info if possible
+                ExternalLoginInfo externalLoginInfo = null;
+                if (model.IsExternalLogin)
+                {
+                    externalLoginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
+                    if (externalLoginInfo == null)
+                    {
+                        throw new ApplicationException("Can not external login!");
+                    }
+
+                    user.Logins = new List<UserLogin>
+                    {
+                        new UserLogin
+                        {
+                            LoginProvider = externalLoginInfo.Login.LoginProvider,
+                            ProviderKey = externalLoginInfo.Login.ProviderKey
+                        }
+                    };
+
+                    if (string.IsNullOrWhiteSpace(model.UserName))
+                    {
+                        model.UserName = model.EmailAddress;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(model.Password))
+                    {
+                        model.Password = Users.User.CreateRandomPassword();
+                    }
+
+                    if (string.Equals(externalLoginInfo.Email, model.EmailAddress, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        user.IsEmailConfirmed = true;
+                    }
+                }
+                else
+                {
+                    //Username and Password are required if not external login
+                    if (model.UserName.IsNullOrEmpty() || model.Password.IsNullOrEmpty())
+                    {
+                        throw new UserFriendlyException(L("FormIsNotValidMessage"));
+                    }
+                }
+
+                user.UserName = model.UserName;
+                user.Password = new PasswordHasher().HashPassword(model.Password);
+
+                //Switch to the tenant
+                _unitOfWorkManager.Current.EnableFilter(AbpDataFilters.MayHaveTenant);
+                _unitOfWorkManager.Current.SetFilterParameter(AbpDataFilters.MayHaveTenant, AbpDataFilters.Parameters.TenantId, 1);
+
+                //Add default roles
+                user.Roles = new List<UserRole>();
+                var role = await _roleManager.GetRoleByNameAsync("Retailer");
+                role.IsDefault = true;
+                _roleManager.Update(role);
+                foreach (var defaultRole in await _roleManager.Roles.Where(r => r.IsDefault).ToListAsync())
+                {
+                    user.Roles.Add(new UserRole { RoleId = defaultRole.Id });
+                }
+
+                //Save user
+                CheckErrors(await _userManager.CreateAsync(user));
+                await _unitOfWorkManager.Current.SaveChangesAsync();
+
+                //Directly login if possible
+                if (user.IsActive)
+                {
+                    AbpUserManager<Tenant, Role, Users.User>.AbpLoginResult loginResult;
+                    if (externalLoginInfo != null)
+                    {
+                        loginResult = await _userManager.LoginAsync(externalLoginInfo.Login, "");
+                    }
+                    else
+                    {
+                        loginResult = await GetLoginResultAsync(user.UserName, model.Password, "");
+                    }
+
+                    if (loginResult.Result == AbpLoginResultType.Success)
+                    {
+                        await SignInAsync(loginResult.User, loginResult.Identity);
+                        return Redirect(Url.Action("Index", "Home"));
+                    }
+
+                    Logger.Warn("New registered user could not be login. This should not be normally. login result: " + loginResult.Result);
+                }
+
+                //If can not login, show a register result page
+                return View("RegisterResult", new RegisterResultViewModel
+                {
+                    TenancyName = "Animart",
+                    NameAndSurname = user.Name + " " + user.Surname,
+                    UserName = user.UserName,
+                    EmailAddress = user.EmailAddress,
+                    IsActive = user.IsActive,
+                    IsEmailConfirmationRequired = false
+                });
+            }
+            catch (UserFriendlyException ex)
+            {
+                ViewBag.IsMultiTenancyEnabled = _multiTenancyConfig.IsEnabled;
+                ViewBag.ErrorMessage = ex.Message;
+
+                return View("Register", model);
+            }
+        }
+
+        #endregion
 
     }
 }
