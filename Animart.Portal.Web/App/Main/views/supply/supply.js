@@ -9,10 +9,11 @@
             });
 
             $scope.gridOptions.columnDefs = [
-                { name: 'id', enableCellEdit: false },
+                //{ name: 'id', enableCellEdit: false },
                 { name: 'code', displayName: 'Code' },
                 { name: 'name', displayName: 'Name (editable)' },
-                { name: 'price', displayName: 'Price', cellFilter: 'currency' },
+                { name: 'price', displayName: 'Price', cellFilter: 'currency:"Rp."' },
+                { name: 'weight', displayName: 'Weight (gram)', type: 'number' },
                 { name: 'inStock', displayName: 'Stock', type: 'number' },
                 { name: 'available', displayName: 'Active', type: 'boolean' }
             ];

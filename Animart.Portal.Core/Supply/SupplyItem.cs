@@ -29,6 +29,6 @@ namespace Animart.Portal.Supply
 
         public virtual int InStock { get; set; }
 
-        public virtual decimal Weigth { get; set; }
+        public virtual decimal Weight { get; set; }
     }
 }
