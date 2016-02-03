@@ -13,7 +13,7 @@ namespace Animart.Portal.Users.Dto
         public string Email { get; set; }
         public string LastName { get; set; }
         public bool IsActive { get; set; }
-        public DateTime LastLoginTime { get; set; }
+        public DateTime? LastLoginTime { get; set; }
         public string Role { get; set; }
 
     }

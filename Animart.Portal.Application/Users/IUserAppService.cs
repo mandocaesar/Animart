@@ -13,6 +13,8 @@ namespace Animart.Portal.Users
         Task CreateUser(RegisterUserInput user);
         Task UpdateUser(UserDto user);
         Task UpdateUserRole(int userId, string role);
+        Task Delete(UserDto user);
+
         List<UserDto> GetUsers();
         ListResultOutput<UserDto> GetUsersList();
         Task<GetCurrentLoginInformationsOutput> GetCurrentLoginInformations();

@@ -4,6 +4,8 @@
         function ($q, $rootScope, $scope, userService, $uibModal) {
             var vm = this;
 
+            $scope.roleDropdown = ['Admin','Logistic','Accounting','BOD','Retailer'];
+
             $scope.gridOptions = {
                 enableRowSelection: true,
                 enableSelectAll: false,
@@ -26,9 +28,19 @@
                 { name: 'firstName', displayName: 'First Name' },
                 { name: 'lastName', displayName: 'Last Name' },
                 { name: 'lastLoginTime', displayName: 'Last Login', cellFilter: 'date' },
-                { name: 'role', displayName: 'Role' },
+                {
+                    name: 'role', displayName: 'Role', editableCellTemplate: 'ui-grid/dropdownEditor',
+                    cellFilter: 'roleFilter', editDropdownValueLabel: 'role', editDropdownOptionsArray: [
+                        { id: 'Admin', role: 'Admin' },
+                        { id: 'Logistic', role: 'Logistic' },
+                        { id: 'Accounting', role: 'Accounting' },
+                        { id: 'BOD', role: 'BOD' },
+                        { id: 'Retailer', role: 'Retailer' }
+                    ]
+                },
                 { name: 'isActive', displayName: 'Active', type: 'boolean' }
             ];
+
 
             $scope.saveRow = function (rowEntity) {
                 var promise = $q.defer();
@@ -62,7 +74,7 @@
                 console.log(rows);
                 angular.forEach(rows, function (value, key) {
                     console.log(value);
-                    userService.delete(value.id).success(function () {
+                    userService.delete(value).success(function () {
                         $scope.refresh();
                     });
                 });
@@ -70,28 +82,45 @@
 
             $scope.refresh();
         }
-    ]);
+    ]).filter('roleFilter', function () {
+        var roleHash = {
+            'Admin': 'Admin',
+            'Logistic': 'Logistic',
+            'Accounting': 'Accounting',
+            'BOD': 'BOD',
+            'Retailer': 'Retailer'
+        };
+
+        return function (input) {
+            if (!input) {
+                return '';
+            } else {
+                return roleHash[input];
+            }
+        };
+    });
 
     angular.module('app').controller('userModalCtrl', [
-    '$scope', 'abp.services.app.supply', '$uibModalInstance',
-    function ($scope, supplyService, $uibModalInstance, result) {
-        $scope.ok = function () {
-            supplyService.create($scope.supply)
-              .success(function (rs) {
-                  $scope.result = result;
-                  $uibModalInstance.close($scope.result);
-                  $uibModalInstance.dismiss('cancel');
-                  abp.notify.info('Supply Saved Successfully');
-              })
-                .error(function (er) {
-                    abp.notify.error('Error Occured');
-                    $uibModalInstance.dismiss('cancel');
-                });
-        };
+        '$scope', 'abp.services.app.user', '$uibModalInstance',
+        function ($scope, userService, $uibModalInstance, result) {
+            $scope.roles = ['Admin', 'Logistic', 'Accounting', 'BOD', 'Retailer'];
+            $scope.ok = function() {
+                userService.createUser($scope.user)
+                    .success(function(rs) {
+                        $scope.result = result;
+                        $uibModalInstance.close($scope.result);
+                        $uibModalInstance.dismiss('cancel');
+                        abp.notify.info('User has been created');
+                    })
+                    .error(function(er) {
+                        abp.notify.error('Error Occured');
+                        $uibModalInstance.dismiss('cancel');
+                    });
+            };
 
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-    }
+            $scope.cancel = function() {
+                $uibModalInstance.dismiss('cancel');
+            };
+        }
     ]);
 })();

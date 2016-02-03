@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.Authorization.Users;
 using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Session;
@@ -12,6 +14,7 @@ using Animart.Portal.User.Dto;
 using Animart.Portal.Users;
 using Animart.Portal.Users.Dto;
 using Microsoft.AspNet.Identity;
+using AutoMapper;
 
 namespace Animart.Portal.Users
 {
@@ -33,6 +36,7 @@ namespace Animart.Portal.Users
 
         public async Task CreateUser(RegisterUserInput user)
         {
+            var role =_roleManager.FindByName(user.Role);
             var _user = new User
             {
                 TenantId = 1,
@@ -44,22 +48,41 @@ namespace Animart.Portal.Users
                 Password = new PasswordHasher().HashPassword("ZXasqw12"),
                 CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
                 CreatorUserId = AbpSession.GetUserId()
-
             };
+            _user.Roles = new List<UserRole> {new UserRole() {RoleId = role.Id}};
+            _userManager.Create(_user);
+
         }
 
         public async Task UpdateUser(UserDto user)
         {
+            try
+            {
+                var _user = _userRepository.Get(user.Id);
+                var roleId = _userRepository.Get(user.Id).Roles.First().RoleId;
+                var currentRole = _roleManager.FindById(roleId).DisplayName;
+
+                _user.IsActive = user.IsActive;
+                _user.Name = user.FirstName;
+                _user.Surname = user.LastName;
+                _user.EmailAddress = user.Email;
+                UserManager.RemoveFromRole(_user.Id, currentRole);
+                UserManager.AddToRole(_user.Id, user.Role);
+
+                _userRepository.Update(_user);
+            }
+            catch (Exception ex)
+            {
+                    
+                throw ex;
+            }
+          
+        }
+
+        public async Task Delete(UserDto user)
+        {
             var _user = _userRepository.Get(user.Id);
-            var roleId = _userRepository.Get(user.Id).Roles.First().RoleId;
-
-            _user.IsActive = user.IsActive;
-            _user.Name = user.FirstName;
-            _user.Surname = user.LastName;
-            _user.EmailAddress = user.Email;
-            user.Role = _roleManager.FindById(roleId).DisplayName;
-
-            _userRepository.Update(_user);
+            UserManager.Delete(_user);
         }
 
         public async Task UpdateUserRole(int userId, string role)
@@ -76,13 +99,17 @@ namespace Animart.Portal.Users
                 LastName = e.Surname,
                 IsActive = e.IsActive,
                 Email = e.EmailAddress,
-                LastLoginTime = e.LastLoginTime.Value
+                LastLoginTime = e.LastLoginTime
             }).ToList();
 
             foreach (var user in users)
             {
-                var roleId = _userRepository.Get(user.Id).Roles.First().RoleId;
-                user.Role = _roleManager.FindById(roleId).DisplayName;
+                var firstOrDefault = _userRepository.Get(user.Id).Roles.FirstOrDefault();
+                if (firstOrDefault != null)
+                {
+                    var roleId = firstOrDefault.RoleId;
+                    user.Role = _roleManager.FindById(roleId).DisplayName;
+                }
             }
             return users;
         }
