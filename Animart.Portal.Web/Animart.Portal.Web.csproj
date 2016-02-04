@@ -269,11 +269,11 @@
       <DependentUpon>main.css</DependentUpon>
     </Content>
     <Content Include="App\Main\services\appSession.js" />
+    <Content Include="App\Main\views\admin\userManagement.js" />
     <Content Include="App\Main\views\layout\header.js" />
     <Content Include="App\Main\views\layout\layout.js" />
     <Content Include="App\Main\views\home\home.js" />
     <Content Include="App\Main\views\about\about.js" />
-    <Content Include="App\Main\views\supply\newSupply.js" />
     <Content Include="App\Main\views\supply\supply.js" />
     <Content Include="Content\bootstrap-cosmo.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -406,7 +406,8 @@
     <Content Include="App\Main\views\supply\supply.cshtml" />
     <Content Include="Content\ui-grid.woff" />
     <Content Include="Content\ui-grid.ttf" />
-    <Content Include="App\Main\views\supply\newSupply.cshtml" />
+    <Content Include="App\Main\views\retailer\retailer-dashboard.cshtml" />
+    <Content Include="App\Main\views\admin\userManagement.cshtml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-er.js" />
@@ -1201,6 +1202,8 @@
     </Compile>
     <Compile Include="Models\LoginFormViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\RegisterResultViewModel.cs" />
+    <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\PortalWebViewPageBase.cs" />
   </ItemGroup>
@@ -1225,7 +1228,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App\Main\views\admin\" />
+    <Folder Include="App\Main\views\accounting\" />
+    <Folder Include="App\Main\views\bod\" />
+    <Folder Include="App\Main\views\logistic\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Animart.Portal.Application\Animart.Portal.Application.csproj">

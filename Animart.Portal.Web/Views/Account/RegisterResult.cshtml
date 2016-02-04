@@ -1,4 +1,4 @@
-﻿@model Apps4us.TheReady.Web.Models.Account.RegisterResultViewModel
+﻿@model Animart.Portal.Web.Models.RegisterResultViewModel
 @{
     ViewBag.Title = "Successfully registered";
 }
@@ -10,10 +10,17 @@
     <li><span class="text-muted">@L("EmailAddress"):</span> @Model.EmailAddress</li>
 </ul>
 <div>
+    @if (Model.IsEmailConfirmationRequired)
+    {
+        <div class="alert alert-warning" role="alert">
+            A confirmation mail sent to @Model.EmailAddress. Please click link in the email in order to confirm your mail address.
+        </div>
+    }
+
     @if (!Model.IsActive)
     {
         <div class="alert alert-warning" role="alert">
-            @L("WaitingForActivationMessage")
+            Your account is waiting to be activated by system admin.
         </div>
     }
 </div>
