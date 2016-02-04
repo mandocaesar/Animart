@@ -125,6 +125,10 @@
     <Compile Include="Migrations\201601171612498_UpdateModel.Designer.cs">
       <DependentUpon>201601171612498_UpdateModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602010206500_UpdateSupplyModel.cs" />
+    <Compile Include="Migrations\201602010206500_UpdateSupplyModel.Designer.cs">
+      <DependentUpon>201602010206500_UpdateSupplyModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -149,6 +153,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601171612498_UpdateModel.resx">
       <DependentUpon>201601171612498_UpdateModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602010206500_UpdateSupplyModel.resx">
+      <DependentUpon>201602010206500_UpdateSupplyModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

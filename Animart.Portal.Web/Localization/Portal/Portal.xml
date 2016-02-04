@@ -40,6 +40,7 @@
     <text name="UserName" value="User name" />
     <text name="Name" value="Name" />
     <text name="Surname" value="Surname" />
+    <text name="Supply" value="Supply" />
     <text name="EmailAddress" value="Email address" />
 
     <text name="Tenants" value="Tenants" />

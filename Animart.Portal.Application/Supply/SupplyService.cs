@@ -46,7 +46,8 @@ namespace Animart.Portal.Supply
                 CreatorUserId = e.CreatorUserId,
                 InStock = e.InStock,
                 Name = e.Name,
-                Price = e.Price 
+                Price = e.Price,
+                Weight = e.Weight 
                 
             }).ToList();
         }
@@ -86,7 +87,8 @@ namespace Animart.Portal.Supply
                 Price = supplyItem.Price,
                 CreationTime = DateTime.Now,
                 CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
-                CreatorUserId = AbpSession.GetUserId()
+                CreatorUserId = AbpSession.GetUserId(),
+                Weight = supplyItem.Weight
 
             });
             
@@ -103,6 +105,7 @@ namespace Animart.Portal.Supply
                 item.Price = supplyItem.Price;
                 item.Code = supplyItem.Code;
                 item.Available = supplyItem.Available;
+                item.Weight = supplyItem.Weight;
 
                 _supplyItemRepository.Update(item);
                 return true;
