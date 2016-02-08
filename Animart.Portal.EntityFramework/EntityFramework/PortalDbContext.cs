@@ -6,6 +6,7 @@ using Animart.Portal.Supply;
 using Animart.Portal.Users;
 using Animart.Portal.Invoice;
 using Animart.Portal.MultiTenancy;
+using Animart.Portal.Shipment;
 
 namespace Animart.Portal.EntityFramework
 {
@@ -17,7 +18,9 @@ namespace Animart.Portal.EntityFramework
         public virtual IDbSet<SupplyItem> SupplyItems { get; set; }
         public virtual IDbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public virtual IDbSet<OrderItem> OrderItems { get; set; }
-
+        public virtual IDbSet<City> Cities { get; set; }
+        public virtual IDbSet<Expedition> Expeditions { get; set; }
+        public virtual IDbSet<ShipmentCost> ShipmentCosts { get; set; }
         public virtual IDbSet<Invoice.Invoice> Invoices { get; set; }
 
 

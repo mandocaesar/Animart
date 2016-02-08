@@ -125,6 +125,14 @@
     <Compile Include="Migrations\201601171612498_UpdateModel.Designer.cs">
       <DependentUpon>201601171612498_UpdateModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602080716165_Shipment.cs" />
+    <Compile Include="Migrations\201602080716165_Shipment.Designer.cs">
+      <DependentUpon>201602080716165_Shipment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602081510278_alterShipment.cs" />
+    <Compile Include="Migrations\201602081510278_alterShipment.Designer.cs">
+      <DependentUpon>201602081510278_alterShipment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -149,6 +157,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601171612498_UpdateModel.resx">
       <DependentUpon>201601171612498_UpdateModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602080716165_Shipment.resx">
+      <DependentUpon>201602080716165_Shipment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602081510278_alterShipment.resx">
+      <DependentUpon>201602081510278_alterShipment.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

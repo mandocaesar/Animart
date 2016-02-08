@@ -219,7 +219,7 @@ namespace Animart.Portal.Migrations
                         Id = c.Guid(nullable: false, identity: true),
                         Code = c.String(nullable: false, maxLength: 10),
                         Name = c.String(nullable: false, maxLength: 100),
-                        Weight=c.Int(nullable:false),
+                        Weight=c.Decimal(nullable:false),
                         Price = c.Int(nullable: false),
                         Available = c.Boolean(nullable: false),
                         InStock = c.Int(nullable: false),

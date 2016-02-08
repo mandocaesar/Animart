@@ -12,14 +12,13 @@
         'ui.router',
         'ui.bootstrap',
         'ui.jq',
-
         'abp'
     ]);
 
     //Configuration for Angular UI routing.
     app.config([
         '$stateProvider', '$urlRouterProvider',
-        function($stateProvider, $urlRouterProvider) {
+        function ($stateProvider, $urlRouterProvider) {
             $urlRouterProvider.otherwise('/');
             $stateProvider
                 .state('home', {
@@ -39,6 +38,14 @@
                     url: '/users',
                     templateUrl: '/App/Main/views/admin/userManagement.cshtml',
                     menu: 'Users' //Matches to name of 'User' menu in PortalNavigationProvider
+                }).state('expedition', {
+                    url: '/expedition',
+                    templateUrl: '/App/Main/views/admin/expeditionManagement.cshtml',
+                    menu: 'Expedition' //Matches to name of 'Expedition' menu in PortalNavigationProvider
+                }).state('cities', {
+                    url: '/cities',
+                    templateUrl: '/App/Main/views/admin/cityManagement.cshtml',
+                    menu: 'Cities' //Matches to name of 'City' menu in PortalNavigationProvider
                 });
         }
     ]);

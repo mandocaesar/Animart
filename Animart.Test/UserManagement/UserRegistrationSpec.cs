@@ -20,7 +20,7 @@ namespace Animart.Test.UserManagement
         }
 
         [Test]
-        public async void WhenUser_01RegisterItShouldReturnNull()
+        public async void WhenUser_01RegisterItShouldReturnTrue()
         {
             var result = await _userManager.CreateAsync(new User()
             {

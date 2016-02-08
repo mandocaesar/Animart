@@ -7,6 +7,7 @@ using Abp.Localization;
 using Abp.Localization.Dictionaries;
 using Abp.Localization.Dictionaries.Xml;
 using Abp.Modules;
+using Animart.Portal.Web.App_Start;
 
 namespace Animart.Portal.Web
 {
@@ -15,6 +16,9 @@ namespace Animart.Portal.Web
     {
         public override void PreInitialize()
         {
+            //Add Authentication Provider
+            Configuration.Authorization.Providers.Add<PortalAuthorizationProvider>();
+
             //Add/remove languages for your application
             Configuration.Localization.Languages.Add(new LanguageInfo("en", "English", "famfamfam-flag-england", true));
             Configuration.Localization.Languages.Add(new LanguageInfo("tr", "Türkçe", "famfamfam-flag-tr"));

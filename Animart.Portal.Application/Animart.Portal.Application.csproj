@@ -113,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Order\CreatePurchaseOrderDto.cs" />
+    <Compile Include="Order\Dto\OrderDashboardDto.cs" />
     <Compile Include="Order\Dto\OrderItemInputDto.cs" />
     <Compile Include="Order\Dto\PurchaseOrderDto.cs" />
     <Compile Include="Order\IOrderService.cs" />
@@ -125,6 +126,11 @@
     <Compile Include="Session\Dto\UserLoginInfoDto.cs" />
     <Compile Include="Session\ISessionAppService.cs" />
     <Compile Include="Session\SessionAppService.cs" />
+    <Compile Include="Shipment\Dto\CityDto.cs" />
+    <Compile Include="Shipment\Dto\CityOptionsDto.cs" />
+    <Compile Include="Shipment\Dto\ShipmentCostDto.cs" />
+    <Compile Include="Shipment\IShipmentService.cs" />
+    <Compile Include="Shipment\ShipmentService.cs" />
     <Compile Include="Supply\Dto\GetSupplyByNameInput.cs" />
     <Compile Include="Supply\Dto\SupplyItemDto.cs" />
     <Compile Include="Supply\ISupplyService.cs" />

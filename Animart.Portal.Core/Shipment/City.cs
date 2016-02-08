@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Animart.Portal.Users;
 
@@ -9,7 +10,7 @@ namespace Animart.Portal.Shipment
 {
 
     [Table("City")]
-   public class City:CreationAuditedEntity<int,User>
+   public class City:CreationAuditedEntity<int,User>, IEntity<Guid>
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

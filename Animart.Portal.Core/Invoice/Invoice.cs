@@ -1,13 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Animart.Portal.Order;
 using Animart.Portal.Users;
 
 namespace Animart.Portal.Invoice
 {
-    public class Invoice: CreationAuditedEntity<int,User>
+    public class Invoice: CreationAuditedEntity<int,User>, IEntity<Guid>
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -16,10 +17,6 @@ namespace Animart.Portal.Invoice
         public virtual string InvoiceNumber { get; set; }
 
         public virtual PurchaseOrder PurchaseOrder {get;set;}
-
-        public Invoice()
-        {
-        }
 
         public virtual decimal Total()
         {

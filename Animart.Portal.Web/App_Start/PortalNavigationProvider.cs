@@ -19,7 +19,8 @@ namespace Animart.Portal.Web
                         "Home",
                         new LocalizableString("HomePage", PortalConsts.LocalizationSourceName),
                         url: "#/",
-                        icon: "fa fa-home"
+                        icon: "fa fa-home",
+                        requiresAuthentication: true
                         )
                 ).AddItem(
                     new MenuItemDefinition(
@@ -30,19 +31,44 @@ namespace Animart.Portal.Web
                         )
                 ).AddItem(
                     new MenuItemDefinition(
-                        "Supply",
-                        new LocalizableString("Supply", PortalConsts.LocalizationSourceName),
-                        url: "#/supply",
-                        icon: "fa fa-archive"
+                        "Administration",
+                        new LocalizableString("Administration", PortalConsts.LocalizationSourceName),
+                        requiredPermissionName: "CanAccessAdministrator",
+                        icon: "fa fa-cogs"
+                        ).AddItem(
+                            new MenuItemDefinition(
+                                "Supply",
+                                new LocalizableString("Supply", PortalConsts.LocalizationSourceName),
+                                url: "#/supply",
+                                icon: "fa fa-archive",
+                                requiredPermissionName: "CanAccessAdministrator"
+                                )
+                        ).AddItem(
+                            new MenuItemDefinition(
+                                "Users",
+                                new LocalizableString("Users", PortalConsts.LocalizationSourceName),
+                                url: "#/users",
+                                icon: "fa fa-users",
+                                requiredPermissionName: "CanAccessAdministrator"
+                                )
+                        ).AddItem(
+                            new MenuItemDefinition(
+                                "Expedition",
+                                new LocalizableString("Expedition", PortalConsts.LocalizationSourceName),
+                                url: "#/expedition",
+                                icon: "fa fa-users",
+                                requiredPermissionName: "CanAccessAdministrator"
+                                )
+                        ).AddItem(
+                            new MenuItemDefinition(
+                                "Cities",
+                                new LocalizableString("Cities", PortalConsts.LocalizationSourceName),
+                                url: "#/cities",
+                                icon: "fa fa-users",
+                                requiredPermissionName: "CanAccessAdministrator"
+                                )
                         )
-                ).AddItem(
-                    new MenuItemDefinition(
-                        "Users",
-                        new LocalizableString("Users", PortalConsts.LocalizationSourceName),
-                        url: "#/users",
-                        icon: "fa fa-users"
-                        )
-                ); 
+                );
         }
     }
 }

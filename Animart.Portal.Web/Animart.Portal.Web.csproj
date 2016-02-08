@@ -269,11 +269,14 @@
       <DependentUpon>main.css</DependentUpon>
     </Content>
     <Content Include="App\Main\services\appSession.js" />
+    <Content Include="App\Main\views\admin\cityManagement.js" />
+    <Content Include="App\Main\views\admin\expeditionManagement.js" />
     <Content Include="App\Main\views\admin\userManagement.js" />
     <Content Include="App\Main\views\layout\header.js" />
     <Content Include="App\Main\views\layout\layout.js" />
     <Content Include="App\Main\views\home\home.js" />
     <Content Include="App\Main\views\about\about.js" />
+    <Content Include="App\Main\views\retailer\retailer-dashboard.js" />
     <Content Include="App\Main\views\supply\supply.js" />
     <Content Include="Content\bootstrap-cosmo.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -408,6 +411,8 @@
     <Content Include="Content\ui-grid.ttf" />
     <Content Include="App\Main\views\retailer\retailer-dashboard.cshtml" />
     <Content Include="App\Main\views\admin\userManagement.cshtml" />
+    <Content Include="App\Main\views\admin\expeditionManagement.cshtml" />
+    <Content Include="App\Main\views\admin\cityManagement.cshtml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-er.js" />
@@ -1190,6 +1195,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\PortalAuthorizationProvider.cs" />
     <Compile Include="App_Start\PortalNavigationProvider.cs" />
     <Compile Include="App_Start\PortalWebModule.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

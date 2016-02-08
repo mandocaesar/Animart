@@ -37,7 +37,7 @@ namespace Animart.Portal.Migrations.Data
         }
         public void CreateUserAndRoles(PortalDbContext context)
         {
-            
+
             //var adminRoleForTenancyOwner = context.Roles.FirstOrDefault(r => r.TenantId == null && r.Name == "Admin");
             //if (adminRoleForTenancyOwner == null)
             //{
@@ -85,10 +85,11 @@ namespace Animart.Portal.Migrations.Data
             {
                 adminRoleForDefaultTenant = context.Roles.Add(new Role(defaultTenant.Id, "Admin", "Admin"));
                 context.SaveChanges();
-
-                //Permission definitions for Admin of 'Default' tenant
-                //context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanDeleteAnswers", IsGranted = true });
-                //context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanDeleteQuestions", IsGranted = true });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanAccessAdministrator", IsGranted = false });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanAccessLogistic", IsGranted = false});
+                context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanAccessAccounting", IsGranted = false });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanAccessBOD", IsGranted = false });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanAccessRetailer", IsGranted = false });
                 context.SaveChanges();
             }
 
@@ -97,15 +98,27 @@ namespace Animart.Portal.Migrations.Data
             var userRoleForDefaultTenant = context.Roles.FirstOrDefault(r => r.TenantId == defaultTenant.Id && r.Name == "User");
             if (userRoleForDefaultTenant == null)
             {
-                context.Roles.Add(new Role(null, "Logistic", "Logistic"));
-                context.Roles.Add(new Role(null, "Accounting", "Accounting"));
-                context.Roles.Add(new Role(null, "BOD", "BOD"));
-                userRoleForDefaultTenant = context.Roles.Add(new Role(defaultTenant.Id, "Retailer", "Retailer"));
+                var roleLogistic = context.Roles.Add(new Role(defaultTenant.Id, "Logistic", "Logistic"));
                 context.SaveChanges();
 
-                //Permission definitions for User of 'Default' tenant
-               // context.Permissions.Add(new RolePermissionSetting { RoleId = userRoleForDefaultTenant.Id, Name = "CanCreateQuestions", IsGranted = true });
+                var roleAccounting = context.Roles.Add(new Role(defaultTenant.Id, "Accounting", "Accounting"));
                 context.SaveChanges();
+
+                var roleBod = context.Roles.Add(new Role(defaultTenant.Id, "BOD", "BOD"));
+                context.SaveChanges();
+
+                userRoleForDefaultTenant = context.Roles.Add(new Role(defaultTenant.Id, "Retailer", "Retailer")
+                {
+                    IsDefault = true
+                });
+                context.SaveChanges();
+
+                context.Permissions.Add(new RolePermissionSetting { RoleId = roleAccounting.Id, Name = "CanAccessAccounting", IsGranted = false });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = roleBod.Id, Name = "CanAccessBOD", IsGranted = false });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = roleLogistic.Id, Name = "CanAccessLogistic", IsGranted = false });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = userRoleForDefaultTenant.Id, Name = "CanAccessRetailer", IsGranted = false });
+                context.SaveChanges();
+
             }
 
             //Admin for 'Default' tenant
