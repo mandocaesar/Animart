@@ -18,5 +18,7 @@ namespace Animart.Portal.Supply.Dto
         public bool Available { get; set; }
 
         public int InStock { get; set; }
+
+        public decimal Weight { get; set; }
     }
 }
