@@ -9,6 +9,7 @@
          'ui.grid.rowEdit',
          'ui.grid.cellNav',
          'ui.grid.selection',
+         'ngMaterial',
         'ui.router',
         'ui.bootstrap',
         'ui.jq',
@@ -46,6 +47,22 @@
                     url: '/cities',
                     templateUrl: '/App/Main/views/admin/cityManagement.cshtml',
                     menu: 'Cities' //Matches to name of 'City' menu in PortalNavigationProvider
+                }).state('retailerDashboard', {
+                    url: '/retailerDashboard',
+                    templateUrl: '/App/Main/views/retailer/retailer-dashboard.cshtml',
+                    menu: 'RetailerDashboard' //Matches to name of 'City' menu in PortalNavigationProvider
+                }).state('bodDashboard', {
+                    url: '/bodDashboard',
+                    templateUrl: '/App/Main/views/bod/bod-dashboard.cshtml',
+                    menu: 'BodDashboard' //Matches to name of 'City' menu in PortalNavigationProvider
+                }).state('logisticDashboard', {
+                    url: '/logisticDashboard',
+                    templateUrl: '/App/Main/views/logistic/logistic-dashboard.cshtml',
+                    menu: 'LogisticDashboard' //Matches to name of 'City' menu in PortalNavigationProvider
+                }).state('accountingDashboard', {
+                    url: '/accountingDashboard',
+                    templateUrl: '/App/Main/views/accounting/accounting-dashboard.cshtml',
+                    menu: 'AccountingDashboard' //Matches to name of 'City' menu in PortalNavigationProvider
                 });
         }
     ]);

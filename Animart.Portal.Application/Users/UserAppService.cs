@@ -125,16 +125,12 @@ namespace Animart.Portal.Users
         }
         public async Task<GetCurrentLoginInformationsOutput> GetCurrentLoginInformations()
         {
+            var a = await GetCurrentUserAsync();
             var output = new GetCurrentLoginInformationsOutput
             {
                 User = (await GetCurrentUserAsync()).MapTo<UserLoginInfoDto>()
             };
-
-            if (AbpSession.TenantId.HasValue)
-            {
-                // output.Tenant = (await GetCurrentTenantAsync()).MapTo<TenantLoginInfoDto>();
-            }
-
+            
             return output;
         }
     }

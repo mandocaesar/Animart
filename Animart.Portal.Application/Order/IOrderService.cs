@@ -16,6 +16,7 @@ namespace Animart.Portal.Order
         bool Delete(string id);
 
         IEnumerable<PurchaseOrder> GetAllPurchaseOrderByUserId(int id);
+        OrderDashboardDto GetDashboard();
 
         PurchaseOrder GetSinglePurchaseOrder(string id);
 

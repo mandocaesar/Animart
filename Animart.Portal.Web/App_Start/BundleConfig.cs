@@ -20,6 +20,7 @@ namespace Animart.Portal.Web
                     .Include("~/Content/flags/famfamfam-flags.css", new CssRewriteUrlTransform())
                     .Include("~/Content/font-awesome.min.css", new CssRewriteUrlTransform())
                     .Include("~/Content/ui-grid.min.css", new CssRewriteUrlTransform())
+                    .Include("~/Content/angular-material.min.css",new CssRewriteUrlTransform())
                 );
 
             //~/Bundles/App/vendor/js
@@ -30,7 +31,7 @@ namespace Animart.Portal.Web
                         "~/Scripts/json2.min.js",
 
                         "~/Scripts/modernizr-2.8.3.js",
-                        
+
                         "~/Scripts/jquery-2.2.0.min.js",
                         "~/Scripts/jquery-ui-1.11.4.min.js",
 
@@ -44,7 +45,9 @@ namespace Animart.Portal.Web
                         "~/Scripts/others/spinjs/jquery.spin.js",
 
                         "~/Scripts/angular.min.js",
+                        "~/Scripts/angular-aria.js",
                         "~/Scripts/angular-animate.min.js",
+                         "~/Scripts/angular-material.js",
                         "~/Scripts/angular-sanitize.min.js",
                         "~/Scripts/angular-ui-router.min.js",
                         "~/Scripts/angular-ui/ui-bootstrap.min.js",

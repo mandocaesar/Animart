@@ -1,34 +1,110 @@
-﻿<div ng-controller="app.views.retailerDashboard">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-info">
-                <div class="panel-body" style="background-color: #2980b9; color: white">
-                    <blockquote>
-                        <h1 ng-model="dashboard.Bod"> </h1><small>Reviewed By BOD</small>
-                    </blockquote>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-success">
-                <div class="panel-body" style="background-color: #27ae60; color: white">
-                    <blockquote>
-                        <h1 ng-model="dashboard.delivered"></h1> <small>Delivered</small>
-                    </blockquote>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-info">
-                <div class="panel-body" style="background-color: #2c3e50; color: white">
-                    <blockquote>
-                        <h1 ng-model="dashboard.watiting"> </h1> <small>Waiting Payment</small>
-                    </blockquote>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="btn btn-success" ng-click="placeorder()">Place Order</div>
-    </div>
+﻿<div ng-controller="app.views.retailerDashboard" layout="column" style="height:500px;" >
+    <section layout="row" flex>
+        <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('min-width: 150px')" style="width:200px">
+            <md-toolbar class="md-theme-indigo">
+                <h1 class="md-toolbar-tools">News</h1>
+            </md-toolbar>
+            <md-content layout-padding ng-controller="LeftCtrl">
+                <md-button ng-click="addPO()" class="md-primary">
+                   Place Order
+                </md-button> 
+            </md-content>
+        </md-sidenav>
+        <md-content flex layout-padding>
+
+                <div layout="row">
+                    <div flex-xs="" flex-gt-xs="33" layout="column">
+                        <md-card style="background-color:#0288d1">
+                            <md-card-title >
+                                <md-card-title-text style="color:white">
+                                    <span class="md-headline">{{dashboard.bdo}}</span>
+                                    <span class="md-subhead">BOD Review</span>
+                                </md-card-title-text>
+                            </md-card-title>
+                        </md-card>
+                    </div>
+                    <div flex-xs="" flex-gt-xs="33" layout="column">
+                        <md-card class="md-theme-green">
+                            <md-card-title style="background-color:#72d572">
+                                <md-card-title-text style="color:white">
+                                    <span class="md-headline">{{dashboard.delivered}}</span>
+                                    <span class="md-subhead">Has been Delivered</span>
+                                </md-card-title-text>
+                            </md-card-title>
+                        </md-card>
+                    </div>
+                    <div flex-xs="" flex-gt-xs="33" layout="column">
+                        <md-card class="yellow">
+                            <md-card-title style="background-color:#e6ee9c">
+                                <md-card-title-text style="color:white">
+                                    <span class="md-headline">{{dashboard.waiting}}</span>
+                                    <span class="md-subhead">Waiting For Payement</span>
+                                </md-card-title-text>
+                            </md-card-title>
+                        </md-card>
+                    </div>
+                </div> 
+        </md-content>
+    </section>
+    <script type="text/ng-template" id="order.tmpl.html">
+        <md-dialog aria-label="Mango (Fruit)" ng-cloak>
+            <form name="poForm">
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Place Order</h2>
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="cancel()">
+                            <md-icon md-svg-src="" aria-label="Close dialog"></md-icon>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-dialog-content>
+                    <div class="md-dialog-content">
+                        <md-input-container class="md-block">
+                            <label>Address</label>
+                            <input ng-model="po.address">
+                        </md-input-container>
+                        <div layout-gt-sm="row">
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>City</label>
+                                <input ng-model="po.state">
+                            </md-input-container>
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>State</label>
+                                <md-select ng-model="po.city">
+                                    <md-option ng-repeat="city in cities">
+                                        {{city}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>Postal Code</label>
+                                <input name="postalCode" ng-model="po.postalCode" placeholder="12345"
+                                       required ng-pattern="/^[0-9]{5}$/" md-maxlength="5">
+                                <div ng-messages="poForm.postalCode.$error" role="alert" multiple>
+                                    <div ng-message="required" class="my-message">You must supply a postal code.</div>
+                                    <div ng-message="pattern" class="my-message">
+                                        That doesn't look like a valid postal
+                                        code.
+                                    </div>
+                                </div>
+                            </md-input-container>
+                            </div>
+                        </div>
+                </md-dialog-content>
+                <md-dialog-actions layout="row">
+                    <md-button href="http://en.wikipedia.org/wiki/Mango" target="_blank" md-autofocus>
+                        More on Wikipedia
+                    </md-button>
+                    <span flex></span>
+                    <md-button ng-click="answer('not useful')">
+                        Not Useful
+                    </md-button>
+                    <md-button ng-click="answer('useful')" style="margin-right:20px;">
+                        Useful
+                    </md-button>
+                </md-dialog-actions>
+            </form>
+        </md-dialog>
+    </script>
 </div>

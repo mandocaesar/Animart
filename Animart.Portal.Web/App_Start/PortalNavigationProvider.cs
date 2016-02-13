@@ -31,6 +31,38 @@ namespace Animart.Portal.Web
                         )
                 ).AddItem(
                     new MenuItemDefinition(
+                        "RetailerDashboard",
+                        new LocalizableString("Dashboard", PortalConsts.LocalizationSourceName),
+                        url: "#/retailerDashboard",
+                        icon: "fa fa-info",
+                        requiredPermissionName: "CanAccessRetailer"
+                        )
+                ).AddItem(
+                    new MenuItemDefinition(
+                        "BodDashboard",
+                        new LocalizableString("Dashboard", PortalConsts.LocalizationSourceName),
+                        url: "#/bodDashboard",
+                        icon: "fa fa-info",
+                        requiredPermissionName: "CanAccessBOD"
+                        )
+                ).AddItem(
+                    new MenuItemDefinition(
+                        "LogisticDashboard",
+                        new LocalizableString("Dashboard", PortalConsts.LocalizationSourceName),
+                        url: "#/logisticDashboard",
+                        icon: "fa fa-info",
+                        requiredPermissionName: "CanAccessLogistic"
+                        )
+                ).AddItem(
+                    new MenuItemDefinition(
+                        "AcountingDashboard",
+                        new LocalizableString("Dashboard", PortalConsts.LocalizationSourceName),
+                        url: "#/accountingDashboard",
+                        icon: "fa fa-info",
+                        requiredPermissionName: "CanAccessAccounting"
+                        )
+                ).AddItem(
+                    new MenuItemDefinition(
                         "Administration",
                         new LocalizableString("Administration", PortalConsts.LocalizationSourceName),
                         requiredPermissionName: "CanAccessAdministrator",

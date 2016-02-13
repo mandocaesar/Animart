@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
+using Abp.Authorization.Users;
 using Abp.AutoMapper;
+using Animart.Portal.Authorization;
 
 namespace Animart.Portal.Sessions.Dto
 {
@@ -18,5 +20,9 @@ namespace Animart.Portal.Sessions.Dto
         public string UserName { get; set; }
 
         public string EmailAddress { get; set; }
+
+        public ICollection<UserRole> Roles { get; set; }
+
+        public string currentRole { get { return Roles.FirstOrDefault().RoleId.ToString(); } }
     }
 }

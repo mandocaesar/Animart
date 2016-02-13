@@ -41,12 +41,16 @@ namespace Animart.Portal.Order
         public OrderDashboardDto GetDashboard()
         {
             var result = new OrderDashboardDto();
-            result.BDO = _purchaseOrderRepository.Count(e => e.CreatorUserId == AbpSession.GetUserId() && e.Status == "BOD");
-            result.Delivered = _purchaseOrderRepository.Count(e => e.CreatorUserId == AbpSession.GetUserId() && e.Status == "Delivered");
-            result.Waiting = _purchaseOrderRepository.Count(e => e.CreatorUserId == AbpSession.GetUserId() && e.Status == "Waiting");
+            var userId = AbpSession.GetUserId();
+            result.BDO = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId  && e.Status == "BOD");
+            result.Delivered = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "Delivered");
+            result.Waiting = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "Waiting");
 
             return result;
         }
+
+
+
 
         public PurchaseOrder GetSinglePurchaseOrder(string id)
         {
