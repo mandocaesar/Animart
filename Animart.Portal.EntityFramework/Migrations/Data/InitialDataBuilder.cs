@@ -113,10 +113,10 @@ namespace Animart.Portal.Migrations.Data
                 });
                 context.SaveChanges();
 
-                context.Permissions.Add(new RolePermissionSetting { RoleId = roleAccounting.Id, Name = "CanAccessAccounting", IsGranted = false });
-                context.Permissions.Add(new RolePermissionSetting { RoleId = roleBod.Id, Name = "CanAccessBOD", IsGranted = false });
-                context.Permissions.Add(new RolePermissionSetting { RoleId = roleLogistic.Id, Name = "CanAccessLogistic", IsGranted = false });
-                context.Permissions.Add(new RolePermissionSetting { RoleId = userRoleForDefaultTenant.Id, Name = "CanAccessRetailer", IsGranted = false });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = roleAccounting.Id, Name = "CanAccessAccounting", IsGranted = true });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = roleBod.Id, Name = "CanAccessBOD", IsGranted = true });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = roleLogistic.Id, Name = "CanAccessLogistic", IsGranted = true });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = userRoleForDefaultTenant.Id, Name = "CanAccessRetailer", IsGranted = true });
                 context.SaveChanges();
 
             }

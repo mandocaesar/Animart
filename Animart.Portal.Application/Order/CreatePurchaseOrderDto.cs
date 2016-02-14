@@ -15,6 +15,8 @@ namespace Animart.Portal.Order.Dto
 
         public string Address { get; set; }
 
+        public string PostalCode { get; set; }
+
         public string Status { get; set; }
 
         public decimal TotalWeight { get; set; }

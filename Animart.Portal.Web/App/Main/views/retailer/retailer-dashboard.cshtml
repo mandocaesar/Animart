@@ -1,51 +1,61 @@
-﻿<div ng-controller="app.views.retailerDashboard" layout="column" style="height:500px;" >
-    <section layout="row" flex>
-        <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('min-width: 150px')" style="width:200px">
-            <md-toolbar class="md-theme-indigo">
-                <h1 class="md-toolbar-tools">News</h1>
-            </md-toolbar>
-            <md-content layout-padding ng-controller="LeftCtrl">
-                <md-button ng-click="addPO()" class="md-primary">
-                   Place Order
-                </md-button> 
-            </md-content>
-        </md-sidenav>
-        <md-content flex layout-padding>
+﻿<div ng-controller="app.views.retailerDashboard" layout="column">
+   
+        @*<md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('min-width: 150px')" style="width: 200px">
+                <md-toolbar class="md-theme-indigo">
+                    <h1 class="md-toolbar-tools">News</h1>
+                </md-toolbar>
+                <md-content layout-padding ng-controller="LeftCtrl">
+                    <md-button ng-click="addPO()" class="md-primary">
+                        Place Order
+                    </md-button>
+                </md-content>
+            </md-sidenav>*@
+        <md-toolbar style="background-color:transparent" ng-controller="LeftCtrl">
+            <md-button class="md-fab " ng-click="addPO()"><i class="fa fa-pencil"></i></md-button>
+        </md-toolbar>
 
-                <div layout="row">
-                    <div flex-xs="" flex-gt-xs="33" layout="column">
-                        <md-card style="background-color:#0288d1">
-                            <md-card-title >
-                                <md-card-title-text style="color:white">
-                                    <span class="md-headline">{{dashboard.bdo}}</span>
-                                    <span class="md-subhead">BOD Review</span>
-                                </md-card-title-text>
-                            </md-card-title>
-                        </md-card>
-                    </div>
-                    <div flex-xs="" flex-gt-xs="33" layout="column">
-                        <md-card class="md-theme-green">
-                            <md-card-title style="background-color:#72d572">
-                                <md-card-title-text style="color:white">
-                                    <span class="md-headline">{{dashboard.delivered}}</span>
-                                    <span class="md-subhead">Has been Delivered</span>
-                                </md-card-title-text>
-                            </md-card-title>
-                        </md-card>
-                    </div>
-                    <div flex-xs="" flex-gt-xs="33" layout="column">
-                        <md-card class="yellow">
-                            <md-card-title style="background-color:#e6ee9c">
-                                <md-card-title-text style="color:white">
-                                    <span class="md-headline">{{dashboard.waiting}}</span>
-                                    <span class="md-subhead">Waiting For Payement</span>
-                                </md-card-title-text>
-                            </md-card-title>
-                        </md-card>
-                    </div>
-                </div> 
+        <md-content flex layout-padding>
+            <div layout="row">
+                <div flex-xs="" flex-gt-xs="33" layout="column">
+                    <md-card style="background-color: #0288d1">
+                        <md-card-title>
+                            <md-card-title-text style="color: white">
+                                <span class="md-headline">{{dashboard.bdo}} Order(s)</span>
+                                <span class="md-subhead">in BOD Review</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                    </md-card>
+                </div>
+                <div flex-xs="" flex-gt-xs="33" layout="column">
+                    <md-card class="md-theme-green">
+                        <md-card-title style="background-color: #72d572">
+                            <md-card-title-text style="color: white">
+                                <span class="md-headline">{{dashboard.delivered}} Order(s)</span>
+                                <span class="md-subhead">Has been Delivered</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                    </md-card>
+                </div>
+                <div flex-xs="" flex-gt-xs="33" layout="column">
+                    <md-card class="yellow">
+                        <md-card-title style="background-color: #e6ee9c">
+                            <md-card-title-text style="color: white">
+                                <span class="md-headline">{{dashboard.waiting}} Order(s)</span>
+                                <span class="md-subhead">Waiting For Payement</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                    </md-card>
+                </div>
+            </div>
+            <div layout="row">
+                <div flex-xs="" flex-gt-xs="90" layout="column">
+                    <canvas id="line" class="chart chart-line" chart-data="data"
+                            chart-labels="labels" chart-legend="true" chart-series="series"
+                            chart-click="onClick"></canvas>
+                </div>
+            </div>
         </md-content>
-    </section>
+
     <script type="text/ng-template" id="order.tmpl.html">
         <md-dialog aria-label="Mango (Fruit)" ng-cloak>
             <form name="poForm">
@@ -59,6 +69,7 @@
                     </div>
                 </md-toolbar>
                 <md-dialog-content>
+                    <md-subheader class="md-sticky">Grand Total : {{po.grandTotal | currency:"Rp"}}</md-subheader>
                     <div class="md-dialog-content">
                         <md-input-container class="md-block">
                             <label>Address</label>
@@ -66,14 +77,14 @@
                         </md-input-container>
                         <div layout-gt-sm="row">
                             <md-input-container class="md-block" flex-gt-sm>
-                                <label>City</label>
-                                <input ng-model="po.state">
+                                <label>Province</label>
+                                <input ng-model="po.province">
                             </md-input-container>
                             <md-input-container class="md-block" flex-gt-sm>
-                                <label>State</label>
+                                <label>City</label>
                                 <md-select ng-model="po.city">
                                     <md-option ng-repeat="city in cities">
-                                        {{city}}
+                                        {{city.name}}
                                     </md-option>
                                 </md-select>
                             </md-input-container>
@@ -89,22 +100,51 @@
                                     </div>
                                 </div>
                             </md-input-container>
-                            </div>
+
                         </div>
+                        <div layout-gt-sm="row">
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>Expedition</label>
+                                <md-select ng-model="po.expedition">
+                                    <md-option ng-repeat="expedition in expeditions">
+                                        {{expedition.expedition}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+                        <div layout-gt-sm="row">
+                            <md-input-container>
+                                <md-subheader class="md-sticky">Available Item to Order</md-subheader>
+                                <md-list-item ng-repeat="item in supplies">
+                                    <p> {{ item.name }} </p>
+                                    <input type="number" min="0" ng-model="item.quantity" ng-change="calculate($index)" style="margin-left:40px;">
+                                </md-list-item>
+                            </md-input-container>
+                        </div>
+                    </div>
                 </md-dialog-content>
                 <md-dialog-actions layout="row">
-                    <md-button href="http://en.wikipedia.org/wiki/Mango" target="_blank" md-autofocus>
-                        More on Wikipedia
-                    </md-button>
                     <span flex></span>
-                    <md-button ng-click="answer('not useful')">
-                        Not Useful
+                    <md-button ng-click="cancel()">
+                        Cancel
                     </md-button>
-                    <md-button ng-click="answer('useful')" style="margin-right:20px;">
-                        Useful
+                    <md-button ng-click="place()" style="margin-right:20px;" ng-hide="error">
+                        Place
                     </md-button>
                 </md-dialog-actions>
             </form>
         </md-dialog>
     </script>
 </div>
+<style>
+    .md-toolbar {
+    position: relative;
+}
+
+.md-fab {
+    position: absolute;
+    right: 16px;
+    bottom: 0px;
+}
+
+</style>

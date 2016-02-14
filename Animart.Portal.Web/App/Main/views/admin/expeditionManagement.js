@@ -12,6 +12,7 @@ expeditionController]).filter('cityFilter', function($rootScope) {
 
 function expeditionController($q, $rootScope, $scope, expeditionService, $uibModal) {
     var vm = this;
+   
 
     $scope.refresh = function () {
         $scope.gridOptions.data = null;
@@ -41,8 +42,8 @@ function expeditionController($q, $rootScope, $scope, expeditionService, $uibMod
         { name: 'expedition', displayName: 'Expedition Agent' },
         { name: 'type', displayName: 'Type' },
         {
-            name: 'city', displayName: 'City Name', editableCellTemplate: 'ui-grid/dropdownEditor',
-            cellFilter: 'cityFilter', editDropdownIdLabel:'Id', editDropDownValueLable: 'name', editDropdownRowEntityOptionsArrayPath: 'cityOptions'
+            name: 'city', displayName: 'City Name', editableCellTemplate: 'ui-grid/dropdownEditor', editDropdownIdLabel: 'Id', editDropDownValueLable: 'name',
+            editDropdownRowEntityOptionsArrayPath: 'cityOptions'
         },
         { name: 'first5Kilo', displayName: 'First 5 Kilo' },
         { name: 'nextKilo', displayName: 'Next Kilo' }
@@ -96,6 +97,7 @@ function ($scope, expeditonService, $uibModalInstance, result) {
     });
 
     $scope.ok = function () {
+        console.log($scope.shipmentItem);
         expeditonService.create($scope.shipmentItem)
             .success(function (rs) {
                 $scope.result = result;
@@ -106,6 +108,10 @@ function ($scope, expeditonService, $uibModalInstance, result) {
                 abp.notify.error('Error Ocured while create expedition');
             });;
     };
+
+    $scope.cancel = function() {
+        $uibModalInstance.close();
+    }
 }
 ]);
 

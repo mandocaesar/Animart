@@ -9,7 +9,7 @@ namespace Animart.Portal.Order
 {
     public interface IOrderService: IApplicationService
     {
-        Task Create(Dto.CreatePurchaseOrderDto purchaseOrderrderItem);
+        Task<Guid> Create(Dto.CreatePurchaseOrderDto purchaseOrderrderItem);
 
         bool Update(Dto.OrderItemInputDto orderItem);
 
@@ -26,7 +26,9 @@ namespace Animart.Portal.Order
 
         bool DeleteOrderItem(string id, string orderItemId);
 
+        List<int> UpdateChart();
 
+        bool CheckOrderItem(Dto.OrderItemInputDto orderItem);
 
     }
 }

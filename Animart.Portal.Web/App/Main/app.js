@@ -2,18 +2,19 @@
     'use strict';
 
     var app = angular.module('app', [
-        'ngAnimate',
-        'ngSanitize',
+         'ngAnimate',
+         'ngSanitize',
          'ui.grid',
          'ui.grid.edit',
          'ui.grid.rowEdit',
          'ui.grid.cellNav',
          'ui.grid.selection',
          'ngMaterial',
-        'ui.router',
-        'ui.bootstrap',
-        'ui.jq',
-        'abp'
+         'chart.js',
+         'ui.router',
+         'ui.bootstrap',
+         'ui.jq',
+         'abp'
     ]);
 
     //Configuration for Angular UI routing.

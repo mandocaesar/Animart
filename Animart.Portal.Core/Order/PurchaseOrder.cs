@@ -26,6 +26,9 @@ namespace Animart.Portal.Order
 
         public virtual string City { get; set; }
 
+        [MaxLength(5)]
+        public virtual string PostalCode { get; set; }
+
         public virtual string Address { get; set; }
 
         public virtual string Status { get; set; }

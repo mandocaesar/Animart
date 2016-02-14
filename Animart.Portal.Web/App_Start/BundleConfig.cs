@@ -21,6 +21,7 @@ namespace Animart.Portal.Web
                     .Include("~/Content/font-awesome.min.css", new CssRewriteUrlTransform())
                     .Include("~/Content/ui-grid.min.css", new CssRewriteUrlTransform())
                     .Include("~/Content/angular-material.min.css",new CssRewriteUrlTransform())
+                    .Include("~/Content/angular-chart.css", new CssRewriteUrlTransform())
                 );
 
             //~/Bundles/App/vendor/js
@@ -43,6 +44,7 @@ namespace Animart.Portal.Web
                         "~/Scripts/sweetalert/sweet-alert.min.js",
                         "~/Scripts/others/spinjs/spin.js",
                         "~/Scripts/others/spinjs/jquery.spin.js",
+                        "~/Scripts/chart.min.js",
 
                         "~/Scripts/angular.min.js",
                         "~/Scripts/angular-aria.js",
@@ -54,6 +56,8 @@ namespace Animart.Portal.Web
                         "~/Scripts/angular-ui/ui-bootstrap-tpls.min.js",
                         "~/Scripts/angular-ui/ui-utils.min.js",
                         "~/Scripts/ui-grid.min.js",
+                        "~/Scripts/angular-chart.js",
+                        "~/Scripts/ng-underscore.min.js",
 
                         "~/Abp/Framework/scripts/abp.js",
                         "~/Abp/Framework/scripts/libs/abp.jquery.js",
