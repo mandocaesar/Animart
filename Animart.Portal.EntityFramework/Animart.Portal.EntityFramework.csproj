@@ -162,6 +162,12 @@
     <EmbeddedResource Include="Migrations\201601171612498_UpdateModel.resx">
       <DependentUpon>201601171612498_UpdateModel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602080716165_Shipment.resx">
+      <DependentUpon>201602080716165_Shipment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602081510278_alterShipment.resx">
+      <DependentUpon>201602081510278_alterShipment.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602141331231_PostalCode.resx">
       <DependentUpon>201602141331231_PostalCode.cs</DependentUpon>
     </EmbeddedResource>

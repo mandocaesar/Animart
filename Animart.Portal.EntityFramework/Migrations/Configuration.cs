@@ -12,6 +12,7 @@ namespace Animart.Portal.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
+            AutomaticMigrationDataLossAllowed = true;
             ContextKey = "Portal";
         }
 

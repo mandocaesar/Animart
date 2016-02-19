@@ -15,6 +15,7 @@
 
     <text name="BecomeATenant" value="Become A Tenant"/>
     <text name="BecomeATenantHint" value="Contact admin@animart.co.id to become a tenant"/>
+    <text name="Dashboard" value="Dashboard"/>
 
     <text name="AllCategories" value="All Categories"/>
     <text name="AllSubCategories" value="All Sub-Categories"/>

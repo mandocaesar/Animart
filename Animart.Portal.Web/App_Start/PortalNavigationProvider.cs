@@ -22,14 +22,15 @@ namespace Animart.Portal.Web
                         icon: "fa fa-home",
                         requiresAuthentication: true
                         )
-                ).AddItem(
-                    new MenuItemDefinition(
-                        "About",
-                        new LocalizableString("About", PortalConsts.LocalizationSourceName),
-                        url: "#/about",
-                        icon: "fa fa-info"
-                        )
-                ).AddItem(
+                )//.AddItem(
+                //    new MenuItemDefinition(
+                //        "About",
+                //        new LocalizableString("About", PortalConsts.LocalizationSourceName),
+                //        url: "#/about",
+                //        icon: "fa fa-info"
+                //        )
+                //)
+                .AddItem(
                     new MenuItemDefinition(
                         "RetailerDashboard",
                         new LocalizableString("Dashboard", PortalConsts.LocalizationSourceName),
