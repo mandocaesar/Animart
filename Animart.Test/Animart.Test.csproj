@@ -175,6 +175,7 @@
   <ItemGroup>
     <Compile Include="AnimartPortalTestBaseClass.cs" />
     <Compile Include="Authentication\LoginSpec.cs" />
+    <Compile Include="Email\EmailSpec.cs" />
     <Compile Include="Order\CreatePurchaseOrder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Supply\CreateSupplyTest.cs" />

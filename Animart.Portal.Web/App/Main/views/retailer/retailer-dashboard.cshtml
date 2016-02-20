@@ -1,15 +1,4 @@
 ﻿<div ng-controller="app.views.retailerDashboard" layout="column">
-   
-        @*<md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('min-width: 150px')" style="width: 200px">
-                <md-toolbar class="md-theme-indigo">
-                    <h1 class="md-toolbar-tools">News</h1>
-                </md-toolbar>
-                <md-content layout-padding ng-controller="LeftCtrl">
-                    <md-button ng-click="addPO()" class="md-primary">
-                        Place Order
-                    </md-button>
-                </md-content>
-            </md-sidenav>*@
         <md-toolbar style="background-color:transparent" ng-controller="LeftCtrl">
             <md-button class="md-fab " ng-click="addPO()"><i class="fa fa-pencil"></i></md-button>
         </md-toolbar>
@@ -47,11 +36,16 @@
                     </md-card>
                 </div>
             </div>
-            <div layout="row">
-                <div flex-xs="" flex-gt-xs="90" layout="column">
-                    <canvas id="line" class="chart chart-line" chart-data="data"
-                            chart-labels="labels" chart-legend="true" chart-series="series"
-                            chart-click="onClick"></canvas>
+            <div class="row">
+                <div  class="col">
+                    <div flex-xs="" flex-gt-xs="90" layout="column">
+                        <canvas id="line" class="chart chart-line" chart-data="data"
+                                chart-labels="labels" chart-legend="true" chart-series="series"
+                                chart-click="onClick"></canvas>
+                    </div>
+                </div>
+                <div class="col">
+                    <div ui-grid="gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
                 </div>
             </div>
         </md-content>

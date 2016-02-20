@@ -38,5 +38,7 @@ namespace Animart.Portal.Order
         public virtual decimal GrandTotal { get; set; }
 
         public virtual ICollection<OrderItem> OrderItems { get; set; }
+
+        public string ReceiptNumber { get; set; }
     }
 }

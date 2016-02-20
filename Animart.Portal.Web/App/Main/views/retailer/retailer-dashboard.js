@@ -11,6 +11,42 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal, $m
     $scope.series = ['Order Made'];
     $scope.data = [];
 
+    $scope.gridOptions = {
+        enableRowSelection: true,
+        enableSelectAll: false,
+        multiselect: false,
+        selectionRowHeaderWidth: 35,
+        rowHeight: 35,
+        showGridFooter: true
+    };
+    $scope.animationsEnabled = true;
+
+    $scope.refresh = function () {
+        $scope.gridOptions.data = null;
+        orderService.getAllPurchaseOrderByUserId().success(function (result) {
+            console.log(result);
+            $scope.gridOptions.data = result;
+        });
+    };
+
+    $scope.showMe = function(id) {
+        alert(id);
+    };
+
+    $scope.gridOptions.columnDefs = [
+        { name: 'id', enableCellEdit: false },
+        { name: 'expedition', displayName: 'Expedition' },
+        { name: 'province', displayName: 'Province' },
+        { name: 'address', displayName: 'Address' },
+        { name: 'totalWeight', displayName: 'Total Weight' },
+        { name: 'grandTotal', displayName: 'Grand Total' , cellFilter: 'currency'},
+        {
+            name: 'view',displayName:'View',
+            cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)">View</button>'
+        }
+
+    ];
+
     $scope.LoadDashboard = function () {
         orderService.getDashboard().success(function (result) {
             $scope.dashboard = result;
@@ -23,7 +59,7 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal, $m
     };
 
     $scope.$on('updateDashboard', function (event, data) { $scope.LoadDashboard(); });
-
+    $scope.refresh();
     $scope.LoadDashboard();
 };
 

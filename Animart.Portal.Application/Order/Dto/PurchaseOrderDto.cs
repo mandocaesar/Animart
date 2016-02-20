@@ -24,7 +24,6 @@ namespace Animart.Portal.Order.Dto
 
         public decimal GrandTotal { get; set; }
 
-        public  ICollection<OrderItem> OrderItems { get; set; }
-
+        public string ReceiptNumber { get; set; }
     }
 }

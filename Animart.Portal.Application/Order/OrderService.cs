@@ -43,14 +43,23 @@ namespace Animart.Portal.Order
             var result = new OrderDashboardDto();
             var userId = AbpSession.GetUserId();
             result.BDO = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "BOD");
-            result.Delivered = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "Delivered");
-            result.Waiting = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "Waiting");
+            result.Delivered = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "LOGISTIC");
+            result.Waiting = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "ACCOUNTING");
 
             return result;
         }
 
 
+        public OrderDashboardDto GetDashboardAdmin()
+        {
+            var result = new OrderDashboardDto();
+            var userId = AbpSession.GetUserId();
+            result.BDO = _purchaseOrderRepository.Count(e => e.Status == "BOD");
+            result.Delivered = _purchaseOrderRepository.Count(e => e.Status == "LOGISTIC");
+            result.Waiting = _purchaseOrderRepository.Count(e =>  e.Status == "ACCOUNTING");
 
+            return result;
+        }
 
         public PurchaseOrder GetSinglePurchaseOrder(string id)
         {
@@ -221,13 +230,16 @@ namespace Animart.Portal.Order
             }
         }
 
-        public IEnumerable<PurchaseOrder> GetAllPurchaseOrderByUserId(int id)
+        public List<PurchaseOrderDto> GetAllPurchaseOrderByUserId()
         {
             try
             {
-                return _purchaseOrderRepository.GetAllList().Where(e => e.CreatorUserId == id);
+                var uid = AbpSession.GetUserId();
+                var list  = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid).ToList();
+                var a =  list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
+                return a;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return null;
             }
@@ -253,6 +265,65 @@ namespace Animart.Portal.Order
             }
 
             return result;
+        }
+
+        public bool UpdatePurchaseOrderStatus(string id, string status)
+        {
+            try
+            {
+                var POid = Guid.Parse(id);
+                var po = _purchaseOrderRepository.Get(POid);
+                po.Status = status;
+                _purchaseOrderRepository.Update(po);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
+
+        public List<PurchaseOrderDto> GetAllPurchaseOrderForBod()
+        {
+            try
+            {
+                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "BOD").ToList();
+                var result = list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public List<PurchaseOrderDto> GetAllPurchaseOrderForAccounting()
+        {
+            try
+            {
+                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "ACCOUNTING").ToList();
+                var result = list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic()
+        {
+            try
+            {
+                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "LOGISTIC").ToList();
+                var result = list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

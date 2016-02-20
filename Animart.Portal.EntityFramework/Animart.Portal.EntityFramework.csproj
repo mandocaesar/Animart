@@ -137,6 +137,10 @@
     <Compile Include="Migrations\201602141331231_PostalCode.Designer.cs">
       <DependentUpon>201602141331231_PostalCode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602201317507_AddReceiptNumberField.cs" />
+    <Compile Include="Migrations\201602201317507_AddReceiptNumberField.Designer.cs">
+      <DependentUpon>201602201317507_AddReceiptNumberField.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -164,6 +168,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602141331231_PostalCode.resx">
       <DependentUpon>201602141331231_PostalCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602201317507_AddReceiptNumberField.resx">
+      <DependentUpon>201602201317507_AddReceiptNumberField.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

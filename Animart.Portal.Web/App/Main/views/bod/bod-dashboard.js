@@ -4,7 +4,7 @@
 ]);
 
 function dashboardController($q, $rootScope, $scope, orderService, $uibModal) {
-    orderService.GetDashboard().success(function(result) {
+    orderService.getDashboardAdmin().success(function (result) {
         $scope.dashboard = result;
     });
 

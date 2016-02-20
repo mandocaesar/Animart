@@ -15,8 +15,11 @@ namespace Animart.Portal.Order
 
         bool Delete(string id);
 
-        IEnumerable<PurchaseOrder> GetAllPurchaseOrderByUserId(int id);
+        List<PurchaseOrderDto> GetAllPurchaseOrderByUserId();
+
         OrderDashboardDto GetDashboard();
+
+        OrderDashboardDto GetDashboardAdmin();
 
         PurchaseOrder GetSinglePurchaseOrder(string id);
 
@@ -29,6 +32,14 @@ namespace Animart.Portal.Order
         List<int> UpdateChart();
 
         bool CheckOrderItem(Dto.OrderItemInputDto orderItem);
+
+        bool UpdatePurchaseOrderStatus(string id, string status);
+
+        List<PurchaseOrderDto> GetAllPurchaseOrderForBod();
+
+        List<PurchaseOrderDto> GetAllPurchaseOrderForAccounting();
+
+        List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic();
 
     }
 }

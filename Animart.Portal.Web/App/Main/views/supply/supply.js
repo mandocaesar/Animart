@@ -24,7 +24,7 @@
                 $scope.gridOptions.columnDefs = [
                     { name: 'id', enableCellEdit: false },
                     { name: 'code', displayName: 'Code' },
-                    { name: 'name', displayName: 'Name (editable)' },
+                    { name: 'name', displayName: 'Name' },
                     { name: 'price', displayName: 'Price', cellFilter: 'currency' },
                     { name: 'inStock', displayName: 'Stock', type: 'number' },
                     { name: 'available', displayName: 'Active', type: 'boolean' }
