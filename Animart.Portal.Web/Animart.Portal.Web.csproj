@@ -262,6 +262,7 @@
     <Content Include="Abp\Framework\styles\utils\ie10fix.css" />
     <Content Include="App\Main\app.js" />
     <Content Include="App\Main\images\abp-logo.png" />
+    <Content Include="App\Main\images\animartLogo.png" />
     <Content Include="App\Main\main.css">
       <DependentUpon>main.less</DependentUpon>
     </Content>
@@ -978,6 +979,7 @@
     <Content Include="App\Main\views\accounting\accouning-dashboard.cshtml" />
     <Content Include="App\Main\views\bod\bod-dashboard.cshtml" />
     <Content Include="App\Main\views\logistic\logistic-dashboard.cshtml" />
+    <None Include="Properties\PublishProfiles\PublishFileSystem.pubxml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-er.js" />
