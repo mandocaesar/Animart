@@ -280,7 +280,7 @@ namespace Animart.Portal.Order
             try
             {
                 var POid = Guid.Parse(id);
-                var po = _purchaseOrderRepository.Get(POid);
+                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e=>e.Id == POid);
                 po.Status = status;
                 _purchaseOrderRepository.Update(po);
                 return true;

@@ -121,13 +121,56 @@ function leftController($q, $rootScope, $scope, supplyService, expeditonService,
     };
 };
 
-function ViewOrderController($scope, $mdDialog, orderService, purchaseOrderId) {
+function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId) {
 
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function(result) {
-        console.log(result.items);
         $scope.po = result;
+       
+        $scope.isApproved = false;
+        $scope.isNotBOD = false;
+
+        if(result.status == "APPROVED" || result.status == "ACCOUNTING")
+        {
+            $scope.isApproved = true;
+            if (result.status === "APPROVED") {
+                $scope.isNotBOD = true;
+            }
+        }
+        console.log($scope.isApproved);
         $scope.supplies = result.items;
     });
+
+    $scope.file = {};
+    $scope.getFile = function (e) {
+        $scope.$apply(function () {
+            $scope.files = e.files;
+        });
+    }
+    $scope.cancel = function () {
+        $mdDialog.cancel();
+    };
+
+    $scope.upload = function() {
+        var data = new FormData();
+        data.append("id", $scope.po.id);
+        data.append("uploadedFile", $scope.files[0]);
+       
+        $http.post("/api/fileupload/", data, {
+            transformRequest: angular.identity,
+            headers: { 'Content-Type': undefined }
+        })
+        .success(function (data) {
+            if (data) {
+                abp.message.success("Success", "Files uploaded successfully.");
+                orderService.updatePurchaseOrderStatus($scope.po.id, "ACCOUNTING");
+            } else {
+                    abp.message.error("Error", "Files uploaded unsuccess");
+                }
+            })
+        .error(function (data, status) {
+            abp.message.error("Error", "Files uploaded unsuccess");
+        });
+    };
 }
 
 function DialogController($scope, $mdDialog, cities, expeditions, supplies, orderService) {
