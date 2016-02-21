@@ -176,6 +176,7 @@
     <Compile Include="Extension\GmailExtension.cs" />
     <Compile Include="Order\CreatePurchaseOrderDto.cs" />
     <Compile Include="Order\Dto\OrderDashboardDto.cs" />
+    <Compile Include="Order\Dto\OrderItemDto.cs" />
     <Compile Include="Order\Dto\OrderItemInputDto.cs" />
     <Compile Include="Order\Dto\PurchaseOrderDto.cs" />
     <Compile Include="Order\IOrderService.cs" />

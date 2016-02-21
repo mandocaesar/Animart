@@ -29,8 +29,23 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal, $m
         });
     };
 
-    $scope.showMe = function(id) {
-        alert(id);
+    $scope.showMe = function (id) {
+        var ev = this.ev;
+            $mdDialog.show({
+                templateUrl: 'view-order.tmpl.html',
+                controller: ViewOrderController,
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                locals: {
+                    purchaseOrderId:id,
+                    orderService: orderService
+                }
+            }).then(function (rs) {
+                    $scope.$emit('updateDashboard', "ok");
+            }, function () {
+                $scope.status = 'You cancelled the dialog.';
+            });
     };
 
     $scope.gridOptions.columnDefs = [
@@ -39,19 +54,18 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal, $m
         { name: 'province', displayName: 'Province' },
         { name: 'address', displayName: 'Address' },
         { name: 'totalWeight', displayName: 'Total Weight' },
-        { name: 'grandTotal', displayName: 'Grand Total' , cellFilter: 'currency'},
+        { name: 'grandTotal', displayName: 'Grand Total' , cellFilter: 'currency:"Rp"'},
         {
             name: 'view',displayName:'View',
-            cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)">View</button>'
+            cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'
         }
-
     ];
 
     $scope.LoadDashboard = function () {
+
         orderService.getDashboard().success(function (result) {
             $scope.dashboard = result;
         });
-
         orderService.updateChart().success(function (result) {
             $scope.data.push(result);
         });
@@ -106,6 +120,15 @@ function leftController($q, $rootScope, $scope, supplyService, expeditonService,
             });
     };
 };
+
+function ViewOrderController($scope, $mdDialog, orderService, purchaseOrderId) {
+
+    orderService.getSinglePurchaseOrder(purchaseOrderId).success(function(result) {
+        console.log(result.items);
+        $scope.po = result;
+        $scope.supplies = result.items;
+    });
+}
 
 function DialogController($scope, $mdDialog, cities, expeditions, supplies, orderService) {
 

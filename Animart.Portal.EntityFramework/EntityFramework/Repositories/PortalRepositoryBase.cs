@@ -10,9 +10,9 @@ namespace Animart.Portal.EntityFramework.Repositories
         protected PortalRepositoryBase(IDbContextProvider<PortalDbContext> dbContextProvider)
             : base(dbContextProvider)
         {
-
+             
         }
-
+        
         //add common methods for all repositories
     }
 

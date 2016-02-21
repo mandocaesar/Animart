@@ -11,6 +11,7 @@ using Abp.Domain.Uow;
 using Abp.Runtime.Session;
 using Animart.Portal.Order.Dto;
 using Animart.Portal.Supply;
+using Animart.Portal.Supply.Dto;
 using AutoMapper;
 
 namespace Animart.Portal.Order
@@ -56,23 +57,30 @@ namespace Animart.Portal.Order
             var userId = AbpSession.GetUserId();
             result.BDO = _purchaseOrderRepository.Count(e => e.Status == "BOD");
             result.Delivered = _purchaseOrderRepository.Count(e => e.Status == "LOGISTIC");
-            result.Waiting = _purchaseOrderRepository.Count(e =>  e.Status == "ACCOUNTING");
+            result.Waiting = _purchaseOrderRepository.Count(e => e.Status == "ACCOUNTING");
 
             return result;
         }
 
-        public PurchaseOrder GetSinglePurchaseOrder(string id)
+        public PurchaseOrderDto GetSinglePurchaseOrder(string id)
         {
             try
             {
                 Guid _id;
                 if (Guid.TryParse(id, out _id))
                 {
-                    return _purchaseOrderRepository.Get(_id);
+                    _id = Guid.Parse(id);
+
+                    var result = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == _id).MapTo<PurchaseOrderDto>();
+                  //  result.OrderItems = new List<OrderItem>();
+                    var orderItems = _orderItemRepository.GetAll().Where(e => e.PurchaseOrder.Id == result.Id).ToList();
+                    result.Items = orderItems.Select(e=>e.MapTo<OrderItemDto>()).ToList();
+
+                    return result;
                 }
                 return null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return null;
             }
@@ -81,7 +89,7 @@ namespace Animart.Portal.Order
 
         public bool CheckOrderItem(Dto.OrderItemInputDto orderItem)
         {
-            var supplyItem =_supplyItemRepository.GetAllList().First(e => e.Id == orderItem.supplyItem);
+            var supplyItem = _supplyItemRepository.GetAllList().First(e => e.Id == orderItem.supplyItem);
             if (supplyItem.InStock < orderItem.Quantity)
             {
                 return false;
@@ -172,7 +180,7 @@ namespace Animart.Portal.Order
         {
 
             _unitOfWorkManager.Begin();
-           return await _purchaseOrderRepository.InsertAndGetIdAsync(new PurchaseOrder()
+            return await _purchaseOrderRepository.InsertAndGetIdAsync(new PurchaseOrder()
             {
                 Address = purchaseOrderItem.Address,
                 City = purchaseOrderItem.City.Trim(),
@@ -235,8 +243,8 @@ namespace Animart.Portal.Order
             try
             {
                 var uid = AbpSession.GetUserId();
-                var list  = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid).ToList();
-                var a =  list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
+                var list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid).ToList();
+                var a = list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
                 return a;
             }
             catch (Exception ex)
@@ -249,7 +257,7 @@ namespace Animart.Portal.Order
         public List<int> UpdateChart()
         {
             var uid = AbpSession.GetUserId();
-            var a =  _purchaseOrderRepository.GetAll().Where(e=>e.CreatorUserId == uid)
+            var a = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid)
                 .GroupBy(e => e.CreationTime.Month)
                 .Select(e => new { Month = e.Key, Count = e.Count() }).ToArray();
 

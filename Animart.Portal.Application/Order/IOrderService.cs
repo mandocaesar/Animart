@@ -21,7 +21,7 @@ namespace Animart.Portal.Order
 
         OrderDashboardDto GetDashboardAdmin();
 
-        PurchaseOrder GetSinglePurchaseOrder(string id);
+        PurchaseOrderDto GetSinglePurchaseOrder(string id);
 
         bool AddOrderItem(string id, Dto.OrderItemInputDto orderItem);
 

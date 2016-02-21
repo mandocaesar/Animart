@@ -18,26 +18,26 @@ namespace Animart.Portal.Order
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public virtual Guid Id { get; set; }
+        public  Guid Id { get; set; }
 
-        public virtual string Expedition { get; set; }
+        public  string Expedition { get; set; }
 
-        public virtual string Province { get; set; }
+        public  string Province { get; set; }
 
-        public virtual string City { get; set; }
+        public  string City { get; set; }
 
         [MaxLength(5)]
-        public virtual string PostalCode { get; set; }
+        public  string PostalCode { get; set; }
 
-        public virtual string Address { get; set; }
+        public  string Address { get; set; }
 
-        public virtual string Status { get; set; }
+        public  string Status { get; set; }
 
-        public virtual decimal TotalWeight { get; set; }
+        public  decimal TotalWeight { get; set; }
 
-        public virtual decimal GrandTotal { get; set; }
+        public  decimal GrandTotal { get; set; }
 
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
+        public  ICollection<OrderItem> OrderItems { get; set; }
 
         public string ReceiptNumber { get; set; }
     }

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
+using Animart.Portal.Order;
 using Animart.Portal.Users;
 
 namespace Animart.Portal.Supply
@@ -30,5 +32,7 @@ namespace Animart.Portal.Supply
         public virtual int InStock { get; set; }
 
         public virtual decimal Weight { get; set; }
+
+        public ICollection<OrderItem> OrderItems { get; set; }
     }
 }

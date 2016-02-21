@@ -12,9 +12,7 @@ namespace Animart.Portal.EntityFramework
 {
     public class PortalDbContext : AbpZeroDbContext<Tenant, Role, User>
     {
-        //TODO: Define an IDbSet for each Entity...
 
-        //Example:
         public virtual IDbSet<SupplyItem> SupplyItems { get; set; }
         public virtual IDbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public virtual IDbSet<OrderItem> OrderItems { get; set; }
@@ -32,7 +30,7 @@ namespace Animart.Portal.EntityFramework
         public PortalDbContext()
             : base("Default")
         {
-
+            //this.PurchaseOrders.Include("OrderItem");
         }
 
         /* NOTE:
@@ -42,7 +40,7 @@ namespace Animart.Portal.EntityFramework
         public PortalDbContext(string nameOrConnectionString)
             : base(nameOrConnectionString)
         {
-
+            
         }
     }
 }

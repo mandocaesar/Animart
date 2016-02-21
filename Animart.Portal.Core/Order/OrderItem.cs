@@ -12,10 +12,10 @@ namespace Animart.Portal.Order
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public virtual Guid Id { get; set; }
+        public  Guid Id { get; set; }
         public virtual SupplyItem Item { get; set; }
-        public virtual int Quantity { get; set; }
-        public virtual PurchaseOrder PurchaseOrder {get;set;}
+        public  int Quantity { get; set; }
+        public PurchaseOrder PurchaseOrder {get;set;}
 
     }
 }
