@@ -1,4 +1,4 @@
-﻿<div ng-controller="app.views.bodDashboard">
+﻿<div ng-controller="app.views.accountingDashboard">
     <md-content flex layout-padding>
         <div layout="row">
             <div flex-xs="" flex-gt-xs="33" layout="column">
@@ -40,9 +40,8 @@
     </md-content>
 </div>
 
-
-<script type="text/ng-template" id="view-order-bod.tmpl.html">
-    <md-dialog aria-label="Mango (Fruit)" ng-cloak>
+<script type="text/ng-template" id="view-order-accounting.tmpl.html">
+    <md-dialog aria-label="Accounting" ng-cloak>
         <form name="poForm">
             <md-toolbar>
                 <div class="md-toolbar-tools">
@@ -55,7 +54,12 @@
             </md-toolbar>
             <md-dialog-content>
                 <md-subheader class="md-sticky">Grand Total : {{po.grandTotal | currency:"Rp"}}</md-subheader>
+            
                 <div class="md-dialog-content">
+                    <md-card>
+                        <img src="{{image}}" class="md-card-image" alt="image caption">
+                        <md-card-content>Payment Receipt</md-card-content>
+                    </md-card>
                     <md-input-container class="md-block">
                         <label>Address</label>
                         <input ng-model="po.address" disabled>
@@ -102,16 +106,12 @@
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <span flex></span>
-                <md-button ng-click="cancel()" ng-show="isBod">
+                <md-button ng-click="cancel()">
                     Cancel
                 </md-button>
-                <md-button ng-click="approve()">
+                <md-button ng-click="approve()" ng-hide="isPaid">
                     Approve
                 </md-button>
-                <md-button ng-click="reject()" ng-show="isBod">
-                    Reject
-                </md-button>
-
             </md-dialog-actions>
         </form>
     </md-dialog>

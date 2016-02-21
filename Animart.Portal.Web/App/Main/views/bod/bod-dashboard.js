@@ -1,6 +1,6 @@
 ﻿angular.module('app').controller('app.views.bodDashboard', [
     '$q', '$rootScope', '$scope', 'abp.services.app.order', '$uibModal','$mdDialog',
-    dashboardController
+    bodController
 ]);
 
 function ViewBODOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId) {
@@ -35,7 +35,7 @@ function ViewBODOrderController($http, $scope, $mdDialog, orderService, purchase
 }
 
 
-function dashboardController($q, $rootScope, $scope, orderService, $uibModal,$mdDialog) {
+function bodController($q, $rootScope, $scope, orderService, $uibModal, $mdDialog) {
     
     $scope.gridOptions = {
         enableRowSelection: true,
@@ -63,7 +63,7 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal,$md
     $scope.showMe = function (id) {
         var ev = this.ev;
         $mdDialog.show({
-            templateUrl: 'view-order.tmpl.html',
+            templateUrl: 'view-order-bod.tmpl.html',
             controller: ViewBODOrderController,
             parent: angular.element(document.body),
             targetEvent: ev,
@@ -91,6 +91,6 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal,$md
             cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'
         }
     ];
-
+    $scope.$on('updateDashboard', function (event, data) { $scope.refresh(); });
     $scope.refresh();
 }

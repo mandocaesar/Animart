@@ -976,7 +976,7 @@
     <Content Include="bower_components\angular\bower.json" />
     <Content Include="bower_components\angular\package.json" />
     <Content Include="bower_components\angular\README.md" />
-    <Content Include="App\Main\views\accounting\accouning-dashboard.cshtml" />
+    <Content Include="App\Main\views\accounting\accounting-dashboard.cshtml" />
     <Content Include="App\Main\views\bod\bod-dashboard.cshtml" />
     <Content Include="App\Main\views\logistic\logistic-dashboard.cshtml" />
     <None Include="Properties\PublishProfiles\PublishFileSystem.pubxml" />
