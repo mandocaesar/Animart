@@ -32,11 +32,12 @@ namespace Animart.Portal.Web.Controllers
 
                 if (hpf.ContentLength > 0)
                 {
-                    if (!File.Exists(sPath + Path.GetFileName(id + ".jpg")))
+                    if (File.Exists(sPath + Path.GetFileName(id + ".jpg")))
                     {
-                        hpf.SaveAs(sPath + Path.GetFileName(id + ".jpg"));
-                        iUploadedCnt = iUploadedCnt + 1;
+                        File.Delete(sPath + Path.GetFileName(id + ".jpg"));
                     }
+                    hpf.SaveAs(sPath + Path.GetFileName(id + ".jpg"));
+                    iUploadedCnt = iUploadedCnt + 1;
                 }
             }
 

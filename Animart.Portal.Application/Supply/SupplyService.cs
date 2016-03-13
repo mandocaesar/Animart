@@ -47,7 +47,8 @@ namespace Animart.Portal.Supply
                 InStock = e.InStock,
                 Name = e.Name,
                 Price = e.Price,
-                Weight = e.Weight 
+                Weight = e.Weight,
+                HasImage = e.HasImage
                 
             }).ToList();
         }

@@ -22,8 +22,6 @@
                 });
             };
 
-
-
             $scope.storeFile = function (gridRow, gridCol, files) {
                 console.log(gridRow.entity);
 
@@ -39,7 +37,8 @@
                 })
                 .success(function (data) {
                     if (data) {
-                        supplyService.update(rowEntity)
+                        gridRow.entity.hasImage = true;
+                        supplyService.update(gridRow.entity)
                          .success(function (result) {
                              abp.message.success("Success", "Files uploaded successfully.");
                          })
@@ -102,9 +101,7 @@
 
             $scope.delete = function () {
                 var rows = $scope.gridApi.selection.getSelectedRows();
-                console.log(rows);
                 angular.forEach(rows, function (value, key) {
-                    console.log(value);
                     supplyService.delete(value.id).success(function () {
                         $scope.refresh();
                     });
