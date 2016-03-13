@@ -109,6 +109,11 @@ namespace Animart.Portal.Order
                     return false;
                 }
 
+                if (orderItem.Quantity == 0)
+                {
+                    return true;
+                }
+
                 var item = new OrderItem()
                 {
                     Item = supplyItem,

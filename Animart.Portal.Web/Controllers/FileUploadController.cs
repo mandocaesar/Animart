@@ -10,16 +10,20 @@ namespace Animart.Portal.Web.Controllers
 {
     public class FileUploadController : ApiController
     {
+
         [HttpPost()]
         public bool UploadFiles()
         {
             int iUploadedCnt = 0;
 
             string sPath = "";
-            sPath = System.Web.Hosting.HostingEnvironment.MapPath("~/UserImage/");
             var webContext = System.Web.HttpContext.Current.Request;
 
             var id = webContext.Form.Get("id");
+            var type = webContext.Form.Get("type");
+            var path = type == "supply" ? "~/SupplyImage/" : "~/UserImage/";
+            sPath = System.Web.Hosting.HostingEnvironment.MapPath(path);
+
             System.Web.HttpFileCollection hfc = webContext.Files;
 
             for (int iCnt = 0; iCnt <= hfc.Count - 1; iCnt++)

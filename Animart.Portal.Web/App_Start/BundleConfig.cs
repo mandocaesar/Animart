@@ -20,7 +20,7 @@ namespace Animart.Portal.Web
                     .Include("~/Content/flags/famfamfam-flags.css", new CssRewriteUrlTransform())
                     .Include("~/Content/font-awesome.min.css", new CssRewriteUrlTransform())
                     .Include("~/Content/ui-grid.min.css", new CssRewriteUrlTransform())
-                    .Include("~/Content/angular-material.min.css",new CssRewriteUrlTransform())
+                    .Include("~/Content/angular-material.min.css", new CssRewriteUrlTransform())
                     .Include("~/Content/angular-chart.css", new CssRewriteUrlTransform())
                 );
 
@@ -58,6 +58,7 @@ namespace Animart.Portal.Web
                         "~/Scripts/ui-grid.min.js",
                         "~/Scripts/angular-chart.js",
                         "~/Scripts/ng-underscore.min.js",
+                        "~/Scripts/ngChart.min.js",
 
                         "~/Abp/Framework/scripts/abp.js",
                         "~/Abp/Framework/scripts/libs/abp.jquery.js",

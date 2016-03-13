@@ -10,7 +10,7 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
         $scope.isPaid = result.status == "ACCOUNTING";
         $scope.supplies = result.items;
         $scope.image = "";
-        if ($scope.po.status == "ACCOUNTING") {
+        if ($scope.po.status === "ACCOUNTING") {
 
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
             console.log($scope.image);

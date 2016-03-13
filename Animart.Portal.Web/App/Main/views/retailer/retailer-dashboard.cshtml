@@ -130,7 +130,7 @@
         </md-dialog>
     </script>
 
-    <script type="text/ng-template" id="view-order.tmpl.html">
+<script type="text/ng-template" id="view-order.tmpl.html">
         <md-dialog aria-label="Mango (Fruit)" ng-cloak>
             <form name="poForm">
                 <md-toolbar>
@@ -145,6 +145,10 @@
                 <md-dialog-content>
                     <md-subheader class="md-sticky">Grand Total : {{po.grandTotal | currency:"Rp"}}</md-subheader>
                     <div class="md-dialog-content">
+                        <md-card>
+                            <img src="{{image}}" class="md-card-image" alt="image caption">
+                            <md-card-content>Payment Receipt</md-card-content>
+                        </md-card>
                         <md-input-container class="md-block">
                             <label>Address</label>
                             <input ng-model="po.address" disabled>
@@ -170,7 +174,6 @@
                                     </div>
                                 </div>
                             </md-input-container>
-
                         </div>
                         <div layout-gt-sm="row">
                             <md-input-container class="md-block" flex-gt-sm>

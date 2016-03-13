@@ -145,6 +145,10 @@
     <Compile Include="Migrations\201602210559274_addSupplyItemForeignKey.Designer.cs">
       <DependentUpon>201602210559274_addSupplyItemForeignKey.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603131049088_AddImageFlagforSupply.cs" />
+    <Compile Include="Migrations\201603131049088_AddImageFlagforSupply.Designer.cs">
+      <DependentUpon>201603131049088_AddImageFlagforSupply.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -184,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602210559274_addSupplyItemForeignKey.resx">
       <DependentUpon>201602210559274_addSupplyItemForeignKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603131049088_AddImageFlagforSupply.resx">
+      <DependentUpon>201603131049088_AddImageFlagforSupply.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

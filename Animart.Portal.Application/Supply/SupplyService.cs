@@ -99,14 +99,14 @@ namespace Animart.Portal.Supply
             try
             {
                 var item = _supplyItemRepository.Single(e => e.Id == supplyItem.Id);
-                //  item = (SupplyItem)supplyItem;
                 item.Name = supplyItem.Name;
                 item.InStock = supplyItem.InStock;
                 item.Price = supplyItem.Price;
                 item.Code = supplyItem.Code;
                 item.Available = supplyItem.Available;
                 item.Weight = supplyItem.Weight;
-
+                item.HasImage = supplyItem.HasImage;
+                
                 _supplyItemRepository.Update(item);
                 return true;
             }
