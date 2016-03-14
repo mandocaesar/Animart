@@ -21,6 +21,8 @@ namespace Animart.Portal.Supply.Dto
 
         public bool HasImage { get; set; }
 
+        public string Description { get; set; }
+
         public decimal Weight { get; set; }
     }
 }

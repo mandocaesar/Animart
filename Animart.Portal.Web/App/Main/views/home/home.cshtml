@@ -1,19 +1,24 @@
 ﻿<div ng-controller="app.views.home as vm">
     <md-content class="md-padding" layout-xs="column" layout="row">
-        <div ng-repeat="supply in supplies" flex-xs flex-gt-xs="50" layout="column">
+        <div ng-repeat="supply in supplies" flex-xs flex-gt-xs="25" layout="column">
             <md-card>
                 <md-card-title>
                     <md-card-title-text>
                         <span class="md-headline">{{supply.name}}</span>
-                        <span class="md-subhead">{{supply.price | currency:"Rp"}}</span>
+                        <span class="md-subhead">{{supply.price | currency:"Rp."}}</span>
                     </md-card-title-text>
                 </md-card-title>
                 <md-card-content layout="row" layout-align="space-between">
-                    <img src="{{supply.image}}" class="md-media-xl " />
-                    <md-card-actions layout="column">
-                        <md-button>Buy</md-button>
-                    </md-card-actions>
+                    <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px"/>
+                    <p layout="column">
+                        {{supply.description}}
+                    </p>
                 </md-card-content>
+                <md-card-actions layout="row" layout-align="end center">
+                    <md-button class="md-icon-button" aria-label="Favorite">
+                        Buy
+                    </md-button>
+                </md-card-actions>
             </md-card>
         </div>
     </md-content>

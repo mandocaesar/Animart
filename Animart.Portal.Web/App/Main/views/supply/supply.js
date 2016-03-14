@@ -1,7 +1,7 @@
 ﻿(function () {
     var controllerId = 'app.views.supply';
-    angular.module('app').controller(controllerId, ['$q', '$rootScope', '$scope', 'abp.services.app.supply', '$uibModal','$http',
-        function ($q, $rootScope, $scope, supplyService, $uibModal,$http) {
+    angular.module('app').controller(controllerId, ['$q', '$rootScope', '$scope', 'abp.services.app.supply', '$uibModal', '$http',
+        function ($q, $rootScope, $scope, supplyService, $uibModal, $http) {
             var vm = this;
             $scope.newFile = {};
 
@@ -62,6 +62,7 @@
                 { name: 'price', displayName: 'Price', cellFilter: 'currency' },
                 { name: 'inStock', displayName: 'Stock', type: 'number' },
                 { name: 'available', displayName: 'Active', type: 'boolean' },
+                { name: 'description', displayName: 'Description' },
                 { name: 'hasImage', displayName: "Image", type: 'boolean', enableCellEdit: false },
                 { name: 'filename', displayName: 'File', width: '20%', editableCellTemplate: 'ui-grid/fileChooserEditor', editFileChooserCallback: $scope.storeFile }
             ];

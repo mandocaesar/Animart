@@ -35,6 +35,8 @@ namespace Animart.Portal.Supply
 
         public virtual bool HasImage { get; set; }
 
+        public virtual string Description { get; set; }
+
         public ICollection<OrderItem> OrderItems { get; set; }
     }
 }

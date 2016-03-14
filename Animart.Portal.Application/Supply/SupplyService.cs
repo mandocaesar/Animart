@@ -48,8 +48,8 @@ namespace Animart.Portal.Supply
                 Name = e.Name,
                 Price = e.Price,
                 Weight = e.Weight,
+                Description = e.Description,
                 HasImage = e.HasImage
-                
             }).ToList();
         }
 
@@ -74,12 +74,11 @@ namespace Animart.Portal.Supply
                 TotalCount = supplies.Count,
                 Items = supplies
             };
-
         }
 
         public async Task Create(SupplyItemDto supplyItem)
         {
-             await _supplyItemRepository.InsertAsync(new SupplyItem()
+            await _supplyItemRepository.InsertAsync(new SupplyItem()
             {
                 Available = supplyItem.Available,
                 Code = supplyItem.Code,
@@ -89,10 +88,9 @@ namespace Animart.Portal.Supply
                 CreationTime = DateTime.Now,
                 CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
                 CreatorUserId = AbpSession.GetUserId(),
-                Weight = supplyItem.Weight
-
+                Weight = supplyItem.Weight,
+                Description = supplyItem.Description
             });
-            
         }
 
         public bool Update(SupplyItemDto supplyItem)
@@ -106,6 +104,7 @@ namespace Animart.Portal.Supply
                 item.Code = supplyItem.Code;
                 item.Available = supplyItem.Available;
                 item.Weight = supplyItem.Weight;
+                item.Description = supplyItem.Description;
                 item.HasImage = supplyItem.HasImage;
                 
                 _supplyItemRepository.Update(item);
