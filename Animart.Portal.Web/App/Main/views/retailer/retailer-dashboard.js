@@ -136,6 +136,11 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
                 $scope.isNotBOD = true;
             }
         }
+        if ($scope.po.status === "ACCOUNTING") {
+
+            $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
+            console.log($scope.image);
+        }
         console.log($scope.isApproved);
         $scope.supplies = result.items;
     });
@@ -153,13 +158,13 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
     $scope.upload = function() {
         var data = new FormData();
         data.append("id", $scope.po.id);
+        data.append("type", "payment");
         data.append("uploadedFile", $scope.files[0]);
        
         $http.post("/api/fileupload/", data, {
             transformRequest: angular.identity,
             headers: { 'Content-Type': undefined }
-        })
-        .success(function (data) {
+        }).success(function (data) {
             if (data) {
                 abp.message.success("Success", "Files uploaded successfully.");
                 orderService.updatePurchaseOrderStatus($scope.po.id, "ACCOUNTING");

@@ -15,7 +15,7 @@ namespace Animart.Test.Email
         public void GivenValidEmailAddressAndPassword()
         {
             this.result = true;
-            mailService = new GmailExtension("animarttest@gmail.com", "ZXasqw12");
+            mailService = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
         }
 
         [Test]

@@ -9,6 +9,7 @@ using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Runtime.Session;
+using Animart.Portal.Extension;
 using Animart.Portal.Order.Dto;
 using Animart.Portal.Supply;
 using Animart.Portal.Supply.Dto;
@@ -107,6 +108,11 @@ namespace Animart.Portal.Order
                 if (supplyItem.InStock < orderItem.Quantity)
                 {
                     return false;
+                }
+
+                if (orderItem.Quantity == 0)
+                {
+                    return true;
                 }
 
                 var item = new OrderItem()
@@ -281,7 +287,11 @@ namespace Animart.Portal.Order
             {
                 var POid = Guid.Parse(id);
                 var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e=>e.Id == POid);
+                
                 po.Status = status;
+                GmailExtension gmail = new GmailExtension("marketing@animart.co.id","GOSALES2015");
+                gmail.SendMessage("Purchase Order " + POid + " Has been updated"," Hello, your purchase order with id " + POid + "has been updated to " + status +" please login to have look on it ",
+                    po.CreatorUser.EmailAddress);
                 _purchaseOrderRepository.Update(po);
                 return true;
             }

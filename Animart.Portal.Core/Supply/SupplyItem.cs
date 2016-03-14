@@ -33,6 +33,8 @@ namespace Animart.Portal.Supply
 
         public virtual decimal Weight { get; set; }
 
+        public virtual bool HasImage { get; set; }
+
         public ICollection<OrderItem> OrderItems { get; set; }
     }
 }
