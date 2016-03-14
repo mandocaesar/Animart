@@ -9,7 +9,7 @@ namespace Animart.Portal.Web
             bundles.IgnoreList.Clear();
 
             //VENDOR RESOURCES
-
+            BundleTable.EnableOptimizations = false;
             //~/Bundles/App/vendor/css
             bundles.Add(
                 new StyleBundle("~/Bundles/App/vendor/css")
@@ -82,6 +82,8 @@ namespace Animart.Portal.Web
                 new ScriptBundle("~/Bundles/App/Main/js")
                     .IncludeDirectory("~/App/Main", "*.js", true)
                 );
+
+            
         }
     }
 }
