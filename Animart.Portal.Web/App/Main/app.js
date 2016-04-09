@@ -14,7 +14,8 @@
          'ui.router',
          'ui.bootstrap',
          'ui.jq',
-         'abp'
+         'abp',
+         'ngCart'
     ]);
 
     //Configuration for Angular UI routing.

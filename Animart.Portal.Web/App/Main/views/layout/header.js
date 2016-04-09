@@ -1,7 +1,7 @@
 ﻿(function () {
     var controllerId = 'app.views.layout.header';
     angular.module('app').controller(controllerId, [
-        '$rootScope', '$state', 'abp.services.app.user', function ($rootScope, $state, appSession) {
+        '$rootScope', '$state', 'abp.services.app.user','ngCart', function ($rootScope, $state, appSession,ngCart) {
             var vm = this;
 
             vm.languages = abp.localization.languages;
@@ -19,6 +19,7 @@
             appSession.user = null;
 
             appSession.getCurrentLoginInformations({ async: false }).success(function (result) {
+                console.log(result);
                 user = result.user;
             }).error(function(result) {console.log(result)});
 

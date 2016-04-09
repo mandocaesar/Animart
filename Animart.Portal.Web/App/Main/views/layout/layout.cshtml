@@ -18,7 +18,8 @@
 
     <script type="text/javascript">
         //This is used to get the application's root path from javascript. It's useful if you're running application in a virtual directory under IIS.
-        var abp = abp || {}; abp.appPath = '@ApplicationPath';
+        var abp = abp || {};
+        abp.appPath = '@ApplicationPath';
     </script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -41,15 +42,17 @@
 
 </head>
 <body>
-    <div ng-app="app">
-        <div ng-controller="app.views.layout as vm">
-            <div ng-include="'/App/Main/views/layout/header.cshtml'"></div>
-            <div class="container">
-                <div class="angular-animation-container row">
-                    <div ui-view class="shuffle-animation col-xs-12"></div>
-                </div>
+<div ng-app="app">
+    <div ng-controller="app.views.layout as vm">
+        <div ng-include="'/App/Main/views/layout/header.cshtml'"></div>
+        <div class="container">
+            <div class="angular-animation-container row">
+                <div ui-view class="shuffle-animation col-xs-12"></div>
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>
+
+
