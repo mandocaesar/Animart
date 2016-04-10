@@ -130,6 +130,26 @@ namespace Animart.Portal.Supply
             }
         }
 
+        public bool SaveImage(Guid supplyItemId)
+        {
+            try
+            {
+                _supplyDomainService.SupplyImageRepository.Insert(new SupplyImage
+                {
+                    SupplyItemId = supplyItemId,
+                    CreationTime = DateTime.Now,
+                    CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
+                    CreatorUserId = AbpSession.GetUserId()
+                });
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool UpdateStatus(Guid id)
         {
             try

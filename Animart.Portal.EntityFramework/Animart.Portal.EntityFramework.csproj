@@ -153,6 +153,10 @@
     <Compile Include="Migrations\201603141045444_SupplyDescription.Designer.cs">
       <DependentUpon>201603141045444_SupplyDescription.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604100929469_AddImagesHolderForSupplies.cs" />
+    <Compile Include="Migrations\201604100929469_AddImagesHolderForSupplies.Designer.cs">
+      <DependentUpon>201604100929469_AddImagesHolderForSupplies.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -198,6 +202,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201603141045444_SupplyDescription.resx">
       <DependentUpon>201603141045444_SupplyDescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604100929469_AddImagesHolderForSupplies.resx">
+      <DependentUpon>201604100929469_AddImagesHolderForSupplies.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

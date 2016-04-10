@@ -119,6 +119,7 @@
     <Compile Include="Shipment\Expedition.cs" />
     <Compile Include="Shipment\ShipmentCost.cs" />
     <Compile Include="Supply\SupplyDomainService.cs" />
+    <Compile Include="Supply\SupplyImage.cs" />
     <Compile Include="Supply\SupplyItem.cs" />
     <Compile Include="Users\User.cs" />
     <Compile Include="Users\UserManager.cs" />

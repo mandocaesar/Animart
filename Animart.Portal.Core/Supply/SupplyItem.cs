@@ -38,5 +38,7 @@ namespace Animart.Portal.Supply
         public virtual string Description { get; set; }
 
         public ICollection<OrderItem> OrderItems { get; set; }
+
+        public virtual bool IsPo { get; set; }
     }
 }

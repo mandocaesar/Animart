@@ -6,11 +6,16 @@ namespace Animart.Portal.Supply
 {
     public class SupplyDomainService:DomainService
     {
-        private readonly IRepository<SupplyItem> _supplyRepository;
+        public IRepository<SupplyItem> SupplyRepository { get; }
+    
+        public IRepository<SupplyImage> SupplyImageRepository { get; }
 
-        public SupplyDomainService(IRepository<SupplyItem> supplyRepository)
+        public SupplyDomainService(IRepository<SupplyItem> supplyRepository, IRepository<SupplyImage> supplyImageRepository)
         {
-            _supplyRepository = supplyRepository;
+            SupplyRepository = supplyRepository;
+            SupplyImageRepository = supplyImageRepository;
         }
+
+
     }
 }
