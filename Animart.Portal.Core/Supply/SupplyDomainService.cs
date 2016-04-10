@@ -15,7 +15,5 @@ namespace Animart.Portal.Supply
             SupplyRepository = supplyRepository;
             SupplyImageRepository = supplyImageRepository;
         }
-
-
     }
 }

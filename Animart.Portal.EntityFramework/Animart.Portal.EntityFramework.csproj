@@ -157,6 +157,10 @@
     <Compile Include="Migrations\201604100929469_AddImagesHolderForSupplies.Designer.cs">
       <DependentUpon>201604100929469_AddImagesHolderForSupplies.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604101025467_PriceAdjusmentForOrderItem.cs" />
+    <Compile Include="Migrations\201604101025467_PriceAdjusmentForOrderItem.Designer.cs">
+      <DependentUpon>201604101025467_PriceAdjusmentForOrderItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -205,6 +209,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604100929469_AddImagesHolderForSupplies.resx">
       <DependentUpon>201604100929469_AddImagesHolderForSupplies.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604101025467_PriceAdjusmentForOrderItem.resx">
+      <DependentUpon>201604101025467_PriceAdjusmentForOrderItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
