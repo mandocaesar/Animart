@@ -59,6 +59,7 @@ namespace Animart.Portal.Web
                         "~/Scripts/angular-chart.js",
                         "~/Scripts/ng-underscore.min.js",
                         "~/Scripts/ngCart.min.js",
+                        "~/Scripts/angular-route.min.js",
 
                         "~/Abp/Framework/scripts/abp.js",
                         "~/Abp/Framework/scripts/libs/abp.jquery.js",

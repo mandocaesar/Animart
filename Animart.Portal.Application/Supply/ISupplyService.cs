@@ -24,10 +24,14 @@ namespace Animart.Portal.Supply
         bool UpdateStatus(Guid id);
         [DontWrapResult]
         bool UpdateInStock(Guid id, int stock);
+
         [DontWrapResult]
-        SupplyItem GetSupplyItemById(Guid id);
+        SupplyItemDto Supply(Guid id);
         [DontWrapResult]
         SupplyItem GetSingleByName(string name);
+
+        [DontWrapResult]
+        bool SaveImage(Guid supplyItemId);
 
     }
 }

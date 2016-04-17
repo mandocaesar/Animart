@@ -15,7 +15,8 @@
          'ui.bootstrap',
          'ui.jq',
          'abp',
-         'ngCart'
+         'ngCart',
+         'ngRoute'
     ]);
 
     //Configuration for Angular UI routing.
@@ -29,11 +30,10 @@
                     templateUrl: '/App/Main/views/home/home.cshtml',
                     menu: 'Home' //Matches to name of 'Home' menu in PortalNavigationProvider
                 })
-                //.state('about', {
-                //    url: '/about',
-                //    templateUrl: '/App/Main/views/about/about.cshtml',
-                //    menu: 'About' //Matches to name of 'About' menu in PortalNavigationProvider
-                //})
+                .state('item', {
+                    url: '/item/:id',
+                    templateUrl: '/App/Main/views/home/item.cshtml'
+                })
                 .state('supply', {
                     url: '/supply',
                     templateUrl: '/App/Main/views/supply/supply.cshtml',

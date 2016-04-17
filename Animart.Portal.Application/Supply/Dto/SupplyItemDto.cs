@@ -24,5 +24,7 @@ namespace Animart.Portal.Supply.Dto
         public string Description { get; set; }
 
         public decimal Weight { get; set; }
+
+        public bool IsPO { get; set; }
     }
 }

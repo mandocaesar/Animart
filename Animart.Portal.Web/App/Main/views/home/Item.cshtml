@@ -1,6 +1,6 @@
-﻿<div ng-controller="app.views.home as vm">
+﻿<div ng-controller="app.views.item as vm">
     <md-content class="md-padding" layout-xs="column" layout="row">
-        <div ng-repeat="supply in supplies" flex-xs flex-gt-xs="25" layout="column">
+        <div flex-xs flex-gt-xs="100" layout="column">
             <md-card>
                 <md-card-title>
                     <md-card-title-text>
@@ -9,9 +9,12 @@
                     </md-card-title-text>
                 </md-card-title>
                 <md-card-content layout="row" layout-align="space-between">
-                    <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(supply.id)"/>
+                    <img src="{{supply.image}}" class="md-media-lg "/>
+                    <p layout="column">
+                        {{supply.description}}
+                    </p>
                 </md-card-content>
-                <md-card-actions layout="row" layout-align="middle center">
+                <md-card-actions layout="row" layout-align="right center">
                     <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="30" data="item">Add To Cart</ngcart-addtocart>
                 </md-card-actions>
             </md-card>
@@ -30,11 +33,10 @@
             </span>
             <a class="btn btn-sm btn-primary"
                ng-click="ngCart.addItem(id, name, price, q, data)"
-               ng-transclude> Add To Cart</a>
+               ng-transclude>Add To Cart</a>
         </div>
         <mark ng-show="inCart()" style="background-color:transparent;">
             This item is in your cart. <a ng-click="ngCart.removeItemById(id)" style="cursor: pointer;">Remove</a>
         </mark>
     </div>
 </script>
-

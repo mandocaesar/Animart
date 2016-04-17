@@ -20,6 +20,7 @@ namespace Animart.Portal.EntityFramework
         public virtual IDbSet<Expedition> Expeditions { get; set; }
         public virtual IDbSet<ShipmentCost> ShipmentCosts { get; set; }
         public virtual IDbSet<Invoice.Invoice> Invoices { get; set; }
+        public virtual IDbSet<SupplyImage> SupplyImages { get; set; }
 
 
         /* NOTE: 

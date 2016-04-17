@@ -275,6 +275,7 @@
     <Content Include="App\Main\views\admin\expeditionManagement.js" />
     <Content Include="App\Main\views\admin\userManagement.js" />
     <Content Include="App\Main\views\bod\bod-dashboard.js" />
+    <Content Include="App\Main\views\home\item.js" />
     <Content Include="App\Main\views\layout\header.js" />
     <Content Include="App\Main\views\layout\layout.js" />
     <Content Include="App\Main\views\home\home.js" />
@@ -982,6 +983,7 @@
     <Content Include="App\Main\views\accounting\accounting-dashboard.cshtml" />
     <Content Include="App\Main\views\bod\bod-dashboard.cshtml" />
     <Content Include="App\Main\views\logistic\logistic-dashboard.cshtml" />
+    <Content Include="App\Main\views\home\item.cshtml" />
     <None Include="Properties\PublishProfiles\PublishFileSystem.pubxml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />

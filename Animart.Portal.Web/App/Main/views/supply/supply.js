@@ -34,8 +34,7 @@
                 $http.post("/api/fileupload/", data, {
                     transformRequest: angular.identity,
                     headers: { 'Content-Type': undefined }
-                })
-                .success(function (data) {
+                }).success(function (data) {
                     if (data) {
                         gridRow.entity.hasImage = true;
                         supplyService.update(gridRow.entity)
@@ -64,6 +63,7 @@
                 { name: 'available', displayName: 'Active', type: 'boolean' },
                 { name: 'description', displayName: 'Description' },
                 { name: 'hasImage', displayName: "Image", type: 'boolean', enableCellEdit: false },
+                { name: 'IsPO', displayName: "Is PO ?", type: 'boolean' },
                 { name: 'filename', displayName: 'File', width: '20%', editableCellTemplate: 'ui-grid/fileChooserEditor', editFileChooserCallback: $scope.storeFile }
             ];
 
