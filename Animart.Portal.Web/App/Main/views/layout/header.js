@@ -1,7 +1,7 @@
 ﻿(function () {
     var controllerId = 'app.views.layout.header';
-    angular.module('app').controller(controllerId, [
-        '$rootScope', '$state', 'abp.services.app.user','ngCart', function ($rootScope, $state, appSession,ngCart) {
+    angular.module('app').controller(controllerId, ['$scope',
+        '$rootScope', '$state', 'abp.services.app.user','ngCart', function ($scope,$rootScope, $state, appSession,ngCart) {
             var vm = this;
 
             vm.languages = abp.localization.languages;
@@ -26,6 +26,11 @@
             vm.getShownUserName = function () {
                 return user;
             };
+
+            $rootScope.checkout = function () {
+                alert();
+                $state.go('checkout', {});
+            }
         }
     ]);
 })();

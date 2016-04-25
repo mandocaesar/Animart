@@ -282,6 +282,7 @@
     <Content Include="App\Main\views\about\about.js" />
     <Content Include="App\Main\views\logistic\logistic-dashboard.js" />
     <Content Include="App\Main\views\retailer\retailer-dashboard.js" />
+    <Content Include="App\Main\views\retailer\checkout.js" />
     <Content Include="App\Main\views\supply\supply.js" />
     <Content Include="bower_components\angular-animate\angular-animate.js" />
     <Content Include="bower_components\angular-animate\angular-animate.min.js" />
@@ -984,6 +985,7 @@
     <Content Include="App\Main\views\bod\bod-dashboard.cshtml" />
     <Content Include="App\Main\views\logistic\logistic-dashboard.cshtml" />
     <Content Include="App\Main\views\home\item.cshtml" />
+    <Content Include="App\Main\views\retailer\checkout.cshtml" />
     <None Include="Properties\PublishProfiles\PublishFileSystem.pubxml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />

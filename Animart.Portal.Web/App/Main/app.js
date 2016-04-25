@@ -34,6 +34,10 @@
                     url: '/item/:id',
                     templateUrl: '/App/Main/views/home/item.cshtml'
                 })
+                .state('checkout', {
+                     url: '/checkout',
+                     templateUrl: '/App/Main/views/retailer/checkout.cshtml'
+                })
                 .state('supply', {
                     url: '/supply',
                     templateUrl: '/App/Main/views/supply/supply.cshtml',
