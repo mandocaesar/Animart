@@ -129,7 +129,7 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
         $scope.isApproved = false;
         $scope.isNotBOD = false;
 
-        if(result.status == "APPROVED" || result.status == "ACCOUNTING")
+        if(result.status === "APPROVED" || result.status === "ACCOUNTING")
         {
             $scope.isApproved = true;
             if (result.status === "APPROVED") {

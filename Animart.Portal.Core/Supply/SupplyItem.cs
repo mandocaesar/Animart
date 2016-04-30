@@ -40,5 +40,7 @@ namespace Animart.Portal.Supply
         public ICollection<OrderItem> OrderItems { get; set; }
 
         public virtual bool IsPo { get; set; }
+
+        public virtual DateTime AvailableUntil { get; set; }
     }
 }

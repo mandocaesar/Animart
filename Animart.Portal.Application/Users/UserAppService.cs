@@ -9,6 +9,7 @@ using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Session;
 using Animart.Portal.Authorization;
+using Animart.Portal.Extension;
 using Animart.Portal.Sessions.Dto;
 using Animart.Portal.User.Dto;
 using Animart.Portal.Users;
@@ -51,6 +52,12 @@ namespace Animart.Portal.Users
             };
             _user.Roles = new List<UserRole> {new UserRole() {RoleId = role.Id}};
             _userManager.Create(_user);
+
+            GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+            gmail.SendMessage(
+                "Welcome Aboard !", 
+                string.Format("Thank you for register to Animart Store please update your passwod once you're login <br/> User Name:{0} <br/> Password : ZXasqw12",_user.UserName),
+                _user.EmailAddress);
 
         }
 

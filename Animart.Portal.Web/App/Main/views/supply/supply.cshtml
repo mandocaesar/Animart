@@ -46,6 +46,14 @@
                 <label>Available:</label>
                 <input type="checkbox" ng-model="supply.available" class="form-control">
             </div>
+            <div class="form-group">
+                <label>Available:</label>
+                <input type="checkbox" ng-model="supply.isPo" class="form-control">
+            </div>
+            <div class="form-group" ng-show="supply.isPo">
+                <label>Available Until:</label>
+                <input type="checkbox" ng-model="supply.availableUntil" class="form-control">
+            </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" type="button" ng-click="ok()">Save</button>

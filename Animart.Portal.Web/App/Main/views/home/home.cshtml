@@ -1,4 +1,29 @@
 ﻿<div ng-controller="app.views.home as vm">
+    <div flex-xs flex-gt-xs="25" layout="column">
+        <h2>PO Item</h2><hr/>
+    </div>
+    <md-content class="md-padding" layout-xs="column" layout="row">
+        <div ng-repeat="posupply in poSupplies" flex-xs flex-gt-xs="25" layout="row">
+            <md-card>
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">{{posupply.name}}</span>
+                        <span class="md-subhead">{{posupply.price | currency:"Rp."}}</span>
+                    </md-card-title-text>
+                </md-card-title>
+                <md-card-content layout="row" layout-align="space-between">
+                    <img src="{{posupply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(posupply.id)" />
+                </md-card-content>
+                <md-card-actions layout="row" layout-align="middle center">
+                    <ngcart-addtocart id="{{ posupply.id }}" name="{{ posupply.name }}" price="{{ posupply.price }}" quantity="1" quantity-max="9999" data="item">Add To Cart</ngcart-addtocart>
+                </md-card-actions>
+            </md-card>
+        </div>
+        <hr />
+    </md-content>
+    <div flex-xs flex-gt-xs="25" layout="row">
+        <h2>Ready Stock Item</h2><hr />
+    </div>
     <md-content class="md-padding" layout-xs="column" layout="row">
         <div ng-repeat="supply in supplies" flex-xs flex-gt-xs="25" layout="column">
             <md-card>
@@ -9,10 +34,10 @@
                     </md-card-title-text>
                 </md-card-title>
                 <md-card-content layout="row" layout-align="space-between">
-                    <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(supply.id)"/>
+                    <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(supply.id)" />
                 </md-card-content>
                 <md-card-actions layout="row" layout-align="middle center">
-                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="30" data="item">Add To Cart</ngcart-addtocart>
+                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="{{supply.inStock}}" data="item">Add To Cart</ngcart-addtocart>
                 </md-card-actions>
             </md-card>
         </div>
@@ -30,7 +55,7 @@
             </span>
             <a class="btn btn-sm btn-primary"
                ng-click="ngCart.addItem(id, name, price, q, data)"
-               ng-transclude> Add To Cart</a>
+               ng-transclude>Add To Cart</a>
         </div>
         <mark ng-show="inCart()" style="background-color:transparent;">
             This item is in your cart. <a ng-click="ngCart.removeItemById(id)" style="cursor: pointer;">Remove</a>

@@ -18,6 +18,7 @@
             $scope.refresh = function () {
                 $scope.gridOptions.data = null;
                 supplyService.getSupplies().success(function (result) {
+                    console.log(result);
                     $scope.gridOptions.data = result;
                 });
             };
@@ -63,7 +64,8 @@
                 { name: 'available', displayName: 'Active', type: 'boolean' },
                 { name: 'description', displayName: 'Description' },
                 { name: 'hasImage', displayName: "Image", type: 'boolean', enableCellEdit: false },
-                { name: 'IsPO', displayName: "Is PO ?", type: 'boolean' },
+                { name: 'ispo', displayName: "Is PO ?", type: 'boolean' },
+                { name: 'availableUntil', displayName: "Available Until", type: 'date' },
                 { name: 'filename', displayName: 'File', width: '20%', editableCellTemplate: 'ui-grid/fileChooserEditor', editFileChooserCallback: $scope.storeFile }
             ];
 
@@ -73,11 +75,13 @@
                     .success(function (result) {
                         promise.resolve();
                         $scope.gridApi.rowEdit.setSavePromise(rowEntity, promise.promise);
+                        $scope.refresh();
                         abp.notify.info('Updated');
                     })
                     .error(function (result) {
                         promise.resolve();
                         $scope.gridApi.rowEdit.setSavePromise(rowEntity, promise.promise);
+                        $scope.refresh();
                         abp.notify.error('Error Occured');
                     });
             };
@@ -116,6 +120,7 @@
     angular.module('app').controller('supplyModalCtrl', [
     '$scope', 'abp.services.app.supply', '$uibModalInstance',
     function ($scope, supplyService, $uibModalInstance, result) {
+        
         $scope.ok = function () {
             supplyService.create($scope.supply)
               .success(function (rs) {

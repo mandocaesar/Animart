@@ -37,9 +37,11 @@ namespace Animart.Portal.Supply
 
         public List<SupplyItemDto> GetSupplies()
         {
-            var supplies = _supplyItemRepository.GetAll().Where(e=>e.Available).ToList();
-            return supplies.Select(e=> new SupplyItemDto
-            {   Available = e.Available,
+            var supplies = _supplyItemRepository.GetAll().Where(e => e.Available).ToList();
+
+            return supplies.Select(e => new SupplyItemDto
+            {
+                Available = e.Available,
                 Code = e.Code,
                 Id = e.Id,
                 CreationTime = e.CreationTime,
@@ -50,8 +52,48 @@ namespace Animart.Portal.Supply
                 Weight = e.Weight,
                 Description = e.Description,
                 HasImage = e.HasImage,
-                IsPO = e.IsPo
+                IsPO = e.IsPo,
+                AvailableUntil = e.AvailableUntil
             }).ToList();
+        }
+
+
+        public SuppliesDTO GetSuppliesRetailer()
+        {
+            var result = new SuppliesDTO();
+            var supplies = _supplyItemRepository.GetAll().Where(e=>e.Available).ToList();
+
+            result.Supply = supplies.Where(e=>!e.IsPo).Select(e=> new SupplyItemDto
+            {   Available = e.Available,
+                Code = e.Code,
+                Id = e.Id,
+                CreationTime = e.CreationTime,
+                CreatorUserId = e.CreatorUserId,
+                InStock = e.InStock,
+                Name = e.Name,
+                Price = e.Price,
+                Weight = e.Weight,
+                Description = e.Description,
+                HasImage = e.HasImage
+            }).ToList();
+
+            result.PoSupply = supplies.Where(e => e.IsPo && e.AvailableUntil.Date >= DateTime.Now.Date).Select(e => new SupplyItemDto
+            {
+                Available = e.Available,
+                Code = e.Code,
+                Id = e.Id,
+                CreationTime = e.CreationTime,
+                CreatorUserId = e.CreatorUserId,
+                InStock = e.InStock,
+                Name = e.Name,
+                Price = e.Price,
+                Weight = e.Weight,
+                Description = e.Description,
+                HasImage = e.HasImage,
+                AvailableUntil = e.AvailableUntil
+            }).ToList();
+
+            return result;
         }
 
         public PagedResultOutput<SupplyItem> GetSupplyByName(GetSupplyByNameInput input)
@@ -91,7 +133,8 @@ namespace Animart.Portal.Supply
                 CreatorUserId = AbpSession.GetUserId(),
                 Weight = supplyItem.Weight,
                 Description = supplyItem.Description,
-                IsPo = supplyItem.IsPO
+                IsPo = supplyItem.IsPO,
+                AvailableUntil = supplyItem.AvailableUntil
             });
         }
 
@@ -100,6 +143,7 @@ namespace Animart.Portal.Supply
             try
             {
                 var item = _supplyItemRepository.Single(e => e.Id == supplyItem.Id);
+
                 item.Name = supplyItem.Name;
                 item.InStock = supplyItem.InStock;
                 item.Price = supplyItem.Price;
@@ -109,6 +153,7 @@ namespace Animart.Portal.Supply
                 item.Description = supplyItem.Description;
                 item.HasImage = supplyItem.HasImage;
                 item.IsPo = supplyItem.IsPO;
+                item.AvailableUntil = supplyItem.AvailableUntil;
 
                 _supplyItemRepository.Update(item);
                 return true;

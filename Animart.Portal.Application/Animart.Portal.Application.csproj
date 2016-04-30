@@ -195,6 +195,7 @@
     <Compile Include="Shipment\IShipmentService.cs" />
     <Compile Include="Shipment\ShipmentService.cs" />
     <Compile Include="Supply\Dto\GetSupplyByNameInput.cs" />
+    <Compile Include="Supply\Dto\SuppliesDTO.cs" />
     <Compile Include="Supply\Dto\SupplyItemDto.cs" />
     <Compile Include="Supply\ISupplyService.cs" />
     <Compile Include="Supply\SupplyService.cs" />

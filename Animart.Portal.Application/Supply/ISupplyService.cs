@@ -13,6 +13,8 @@ namespace Animart.Portal.Supply
         [DontWrapResult]
         List<SupplyItemDto> GetSupplies();
         [DontWrapResult]
+        SuppliesDTO GetSuppliesRetailer();
+        [DontWrapResult]
         PagedResultOutput<SupplyItem> GetSupplyByName(GetSupplyByNameInput Input);
         [DontWrapResult]
         Task Create(SupplyItemDto supplyItem);

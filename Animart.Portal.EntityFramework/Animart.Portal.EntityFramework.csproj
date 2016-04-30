@@ -161,6 +161,10 @@
     <Compile Include="Migrations\201604101025467_PriceAdjusmentForOrderItem.Designer.cs">
       <DependentUpon>201604101025467_PriceAdjusmentForOrderItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604302159195_addPOFlagandAvailableDate.cs" />
+    <Compile Include="Migrations\201604302159195_addPOFlagandAvailableDate.Designer.cs">
+      <DependentUpon>201604302159195_addPOFlagandAvailableDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -212,6 +216,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604101025467_PriceAdjusmentForOrderItem.resx">
       <DependentUpon>201604101025467_PriceAdjusmentForOrderItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604302159195_addPOFlagandAvailableDate.resx">
+      <DependentUpon>201604302159195_addPOFlagandAvailableDate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

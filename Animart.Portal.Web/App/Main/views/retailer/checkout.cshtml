@@ -60,13 +60,13 @@
                 </tr>
             </thead>
             <tfoot>
-                <tr ng-show="ngCart.getTax()">
+                @*<tr ng-show="ngCart.getTax()">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td>Tax ({{ ngCart.getTaxRate() }}%):</td>
                     <td>{{ ngCart.getTax() | currency:"Rp." }}</td>
-                </tr>
+                </tr>*@
                 <tr ng-show="ngCart.getShipping()">
                     <td></td>
                     <td></td>
@@ -93,13 +93,13 @@
                         {{ item.getQuantity() | number }}&nbsp;&nbsp;
                         <span class="fa fa-plus-circle" ng-click="item.setQuantity(1, true)"></span>
                     </td>
-                    <td>{{ item.getPrice() | currency}}</td>
-                    <td>{{ item.getTotal() | currency }}</td>
-                  
+                    <td>{{ item.getPrice() | currency:"Rp."}}</td>
+                    <td>{{ item.getTotal() | currency:"Rp."}}</td>
+
                 </tr>
             </tbody>
         </table>
-        <a href="" class="btn btn-primary">Pay Now</a>
+        <a href="" class="btn btn-primary">Order Now</a>
     </div>
 
 </script>
