@@ -22,16 +22,17 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
+                @*<li class="dropdown">
                     <a href="" data-toggle="dropdown"><i ng-class="vm.currentLanguage.icon"></i> <span>{{vm.currentLanguage.displayName}}</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li ng-repeat="language in vm.languages" ng-hide="vm.currentLanguage.name == language.name"><a href="~/AbpLocalization/ChangeCulture?cultureName={{language.name}}"><i ng-class="language.icon"></i> {{language.displayName}}</a></li>
                     </ul>
-                </li>
+                </li>*@
                 <li class="dropdown">
                     <a href="" data-toggle="dropdown"><i class="fa fa-user"></i> <span>{{vm.getShownUserName().userName}}</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="@Url.Action("Logout", "Account")"><i class="fa fa-sign-out"></i> @L("Logout")</a></li>
+                        <li><a href="#" ng-click="editProfile()"><i class="fa fa-user"></i> @L("Profile")</a></li>
                     </ul>
                 </li>
                 <li class="dropdown" ng-if="vm.getShownUserName().currentRole == '5'">
@@ -54,7 +55,6 @@
     <i class="fa fa-shopping-cart"></i>
     {{ ngCart.getTotalItems() }} <ng-pluralize count="ngCart.getTotalItems()" when="{1: 'item', 'other':'items'}"></ng-pluralize> {{ ngCart.totalCost() | currency:"Rp." }}
 </script>
-
 
 <script type="text/ng-template" id="template/ngCart/cart.html">
     <div class="alert alert-warning" role="alert" ng-show="ngCart.getTotalItems() === 0">
@@ -118,8 +118,6 @@
 
 </script>
 
-
-
 <script type="text/ng-template" id="template/ngCart/checkout.html">
 
     <div ng-if="service=='http' || service == 'log'">
@@ -148,4 +146,40 @@
 
     </div>
 
+</script>
+
+<script type="text/ng-template" id="editProfile.html">
+    <div class="modal-header">
+        <h3 class="modal-title">My Profile</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Username:</label>
+            <input type="text" ng-model="user.UserName" class="form-control" disabled>
+        </div>
+        <div class="form-group">
+            <label>Name:</label>
+            <input type="text" ng-model="user.FirstName" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Last Name:</label>
+            <input type="text" ng-model="user.LastName" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Old Password:</label>
+            <input type="password" min="0" ng-model="user.Password" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>New Password:</label>
+            <input type="password" min="0" ng-model="user.NewPassword" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Confirm Password:</label>
+            <input type="password" min="0" ng-model="ConfirmPassword" class="form-control">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">Save</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
 </script>

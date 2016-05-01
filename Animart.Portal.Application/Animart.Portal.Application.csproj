@@ -200,6 +200,7 @@
     <Compile Include="Supply\ISupplyService.cs" />
     <Compile Include="Supply\SupplyService.cs" />
     <Compile Include="Users\Dto\RegisterUserInput.cs" />
+    <Compile Include="Users\Dto\UserProfileDto.cs" />
     <Compile Include="Users\Dto\UserDto.cs" />
     <Compile Include="Users\IUserAppService.cs" />
     <Compile Include="Users\UserAppService.cs" />

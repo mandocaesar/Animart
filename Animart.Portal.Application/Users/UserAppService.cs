@@ -79,11 +79,36 @@ namespace Animart.Portal.Users
                 _userRepository.Update(_user);
             }
             catch (Exception ex)
-            {
-                    
+            {       
                 throw ex;
             }
           
+        }
+
+
+        public bool UpdateUserProfile(UserProfileDto user)
+        {
+            try
+            {
+                var _user = _userRepository.Get(user.Id);
+                var roleId = _userRepository.Get(user.Id).Roles.First().RoleId;
+                var currentRole = _roleManager.FindById(roleId).DisplayName;
+                var checkPassword = new PasswordHasher().VerifyHashedPassword(_user.Password, user.Password);
+                if (checkPassword == PasswordVerificationResult.Success)
+                {
+                    _user.IsActive = user.IsActive;
+                    _user.Name = user.FirstName;
+                    _user.Surname = user.LastName;
+                    _user.Password = user.NewPassword;
+                    _userRepository.Update(_user);
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public async Task Delete(UserDto user)

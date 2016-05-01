@@ -14,6 +14,7 @@ namespace Animart.Portal.Users
         Task UpdateUser(UserDto user);
         Task UpdateUserRole(int userId, string role);
         Task Delete(UserDto user);
+        bool UpdateUserProfile(UserProfileDto user);
 
         List<UserDto> GetUsers();
         ListResultOutput<UserDto> GetUsersList();
