@@ -3,7 +3,7 @@
     <div class="alert alert-warning" role="alert" ng-show="ngCart.getTotalItems() === 0">
         Your cart is empty
     </div>
-    <div>
+    <div ng-controller="app.views.retailer.checkout">
         <md-input-container class="md-block">
             <label>Address</label>
             <input ng-model="po.address">
@@ -45,6 +45,7 @@
                 </md-select>
             </md-input-container>
         </div>
+        <a href="" class="btn btn-primary" ng-click="placeOrder()">Order Now</a>
     </div>
     <div class="table-responsive col-lg-12" ng-show="ngCart.getTotalItems() > 0">
 
@@ -72,14 +73,14 @@
                     <td></td>
                     <td></td>
                     <td>Shipping:</td>
-                    <td>{{ ngCart.getShipping() | currency:"Rp." }}</td>
+                    <td>{{ ngCart.getShipping() }} Kg</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td>Total:</td>
-                    <td>{{ ngCart.totalCost() | currency:"Rp." }}</td>
+                    <td>{{ ngCart.totalCost() - ngCart.getShipping() | currency:"Rp." }}</td>
                 </tr>
             </tfoot>
             <tbody>
@@ -99,7 +100,7 @@
                 </tr>
             </tbody>
         </table>
-        <a href="" class="btn btn-primary">Order Now</a>
+       
     </div>
 
 </script>

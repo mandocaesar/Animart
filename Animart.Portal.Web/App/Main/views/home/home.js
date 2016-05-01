@@ -3,8 +3,8 @@
     angular.module('app').controller(controllerId, [
         '$scope', 'abp.services.app.supply', 'ngCart', '$state', function ($scope, supplyService, ngCart, $state) {
 
-            ngCart.setTaxRate(10);
-            ngCart.setShipping(2.99);
+            ngCart.setTaxRate(0);
+            ngCart.setShipping(0);
 
             var vm = this;
             $scope.supplies = [];

@@ -62,7 +62,6 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal, $m
     ];
 
     $scope.LoadDashboard = function () {
-
         orderService.getDashboard().success(function (result) {
             $scope.dashboard = result;
         });

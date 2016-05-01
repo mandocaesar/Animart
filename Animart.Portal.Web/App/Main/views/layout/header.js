@@ -8,7 +8,7 @@
             vm.currentLanguage = abp.localization.currentLanguage;
 
             vm.menu = abp.nav.menus.MainMenu;
-            console.log(vm.menu);
+          //  console.log(vm.menu);
             vm.currentMenuName = $state.current.menu;
 
             $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
@@ -19,10 +19,14 @@
             appSession.user = null;
 
             appSession.getCurrentLoginInformations({ async: false }).success(function (result) {
-                console.log(result);
+           //     console.log(result);
                 user = result.user;
                 $scope.luser = user;
-            }).error(function(result) {console.log(result)});
+            }).error(
+                function (result) {
+                    //console.log(result)
+                }
+            );
 
             vm.getShownUserName = function () {
                 return user;

@@ -7,7 +7,7 @@ function ViewBODOrderController($http, $scope, $mdDialog, orderService, purchase
 
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
-        $scope.isBod = result.status=="BOD";
+        $scope.isBod = result.status==="BOD";
         $scope.supplies = result.items;
     });
 

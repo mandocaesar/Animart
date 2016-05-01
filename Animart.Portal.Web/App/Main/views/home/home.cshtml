@@ -15,7 +15,7 @@
                     <img src="{{posupply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(posupply.id)" />
                 </md-card-content>
                 <md-card-actions layout="row" layout-align="middle center">
-                    <ngcart-addtocart id="{{ posupply.id }}" name="{{ posupply.name }}" price="{{ posupply.price }}" quantity="1" quantity-max="9999" data="item">Add To Cart</ngcart-addtocart>
+                    <ngcart-addtocart id="{{ posupply.id }}" name="{{ posupply.name }}" price="{{ posupply.price }}" quantity="1" quantity-max="9999" data=posupply.weight>Add To Cart</ngcart-addtocart>
                 </md-card-actions>
             </md-card>
         </div>
@@ -37,7 +37,7 @@
                     <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(supply.id)" />
                 </md-card-content>
                 <md-card-actions layout="row" layout-align="middle center">
-                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="{{supply.inStock}}" data="item">Add To Cart</ngcart-addtocart>
+                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="{{supply.inStock}}" data=supply.weight>Add To Cart</ngcart-addtocart>
                 </md-card-actions>
             </md-card>
         </div>

@@ -53,7 +53,7 @@
 
 <script type="text/ng-template" id="template/ngCart/summary.html">
     <i class="fa fa-shopping-cart"></i>
-    {{ ngCart.getTotalItems() }} <ng-pluralize count="ngCart.getTotalItems()" when="{1: 'item', 'other':'items'}"></ng-pluralize> {{ ngCart.totalCost() | currency:"Rp." }}
+    {{ ngCart.getTotalItems() }} <ng-pluralize count="ngCart.getTotalItems()" when="{1: 'item', 'other':'items'}"></ng-pluralize> {{ ngCart.totalCost() - ngCart.getShipping()| currency:"Rp." }}
 </script>
 
 <script type="text/ng-template" id="template/ngCart/cart.html">
@@ -87,14 +87,14 @@
                     <td></td>
                     <td></td>
                     <td>Shipping:</td>
-                    <td>{{ ngCart.getShipping() | currency:"Rp." }}</td>
+                    <td>{{ ngCart.getShipping()}} Kg</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td>Total:</td>
-                    <td>{{ ngCart.totalCost() | currency:"Rp." }}</td>
+                    <td>{{ ngCart.totalCost() - ngCart.getShipping() | currency:"Rp." }}</td>
                 </tr>
             </tfoot>
             <tbody>

@@ -124,11 +124,13 @@ namespace Animart.Portal.Shipment
 
         public List<CityOptionsDto> GetCities()
         {
-            return _cityRepository.GetAll().Select(e => new CityOptionsDto()
+            var result = _cityRepository.GetAll().Select(e => new CityOptionsDto()
             {
                 Id = e.Id,
                 Name = e.Name
             }).ToList();
+
+            return result;
         }
 
         public List<CityOptionsDto> GetCityFilterByName(string name)
