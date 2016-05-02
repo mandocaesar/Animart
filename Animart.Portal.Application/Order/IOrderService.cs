@@ -11,7 +11,7 @@ namespace Animart.Portal.Order
     {
         Task<Guid> Create(Dto.CreatePurchaseOrderDto purchaseOrderrderItem);
 
-        bool Update(Dto.OrderItemInputDto orderItem);
+        bool Update(string id ,Dto.OrderItemInputDto orderItem);
 
         bool Delete(string id);
 
@@ -35,11 +35,12 @@ namespace Animart.Portal.Order
 
         bool UpdatePurchaseOrderStatus(string id, string status);
 
-        List<PurchaseOrderDto> GetAllPurchaseOrderForBod();
+        List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing();
 
         List<PurchaseOrderDto> GetAllPurchaseOrderForAccounting();
 
         List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic();
 
+        bool InsertReceiptNumber(string id, string receipt);
     }
 }

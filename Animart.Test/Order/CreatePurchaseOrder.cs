@@ -65,20 +65,20 @@ namespace Animart.Test.Order
             result.ShouldNotBeNull();
         }
 
-        [Test]
-        public void When_002AddOrderItemShouldBeTrue()
-        {
-            var item = _supplyService.GetSingleByName("Gundamdam");
-            var result = _orderService.GetAllPurchaseOrderByUserId().ToList();
-            _purchaseOrderDto = result[0];
+        //[Test]
+        //public void When_002AddOrderItemShouldBeTrue()
+        //{
+        //    var item = _supplyService.GetSingleByName("Gundamdam");
+        //    var result = _orderService.GetAllPurchaseOrderByUserId().ToList();
+        //    _purchaseOrderDto = result[0];
 
-            _orderService.AddOrderItem(_purchaseOrder.Id.ToString(), new OrderItemInputDto()
-            {
-                PurchaseOrder = _purchaseOrder.Id,
-                Quantity = 10,
-                SupplyItem = item.Id    
-            }).ShouldBeTrue();
-        }
+        //    _orderService.AddOrderItem(_purchaseOrder.Id.ToString(), new OrderItemInputDto()
+        //    {
+        //        PurchaseOrder = _purchaseOrder.Id,
+        //        Quantity = 10,
+        //        SupplyItem = item.Id    
+        //    }).ShouldBeTrue();
+        //}
 
         //[Test]
         //public void WhenDeleteOrderItemShouldBeTrue()

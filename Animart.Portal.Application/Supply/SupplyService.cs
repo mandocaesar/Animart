@@ -121,21 +121,30 @@ namespace Animart.Portal.Supply
 
         public async Task Create(SupplyItemDto supplyItem)
         {
-            await _supplyItemRepository.InsertAsync(new SupplyItem()
+            try
             {
-                Available = supplyItem.Available,
-                Code = supplyItem.Code,
-                InStock = supplyItem.InStock,
-                Name = supplyItem.Name,
-                Price = supplyItem.Price,
-                CreationTime = DateTime.Now,
-                CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
-                CreatorUserId = AbpSession.GetUserId(),
-                Weight = supplyItem.Weight,
-                Description = supplyItem.Description,
-                IsPo = supplyItem.IsPO,
-                AvailableUntil = supplyItem.AvailableUntil
-            });
+                await _supplyItemRepository.InsertAsync(new SupplyItem()
+                {
+                    Available = supplyItem.Available,
+                    Code = supplyItem.Code,
+                    InStock = supplyItem.InStock,
+                    Name = supplyItem.Name,
+                    Price = supplyItem.Price,
+                    CreationTime = DateTime.Now,
+                    CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
+                    CreatorUserId = AbpSession.GetUserId(),
+                    Weight = supplyItem.Weight,
+                    Description = supplyItem.Description,
+                    IsPo = supplyItem.IsPO,
+                    AvailableUntil = supplyItem.AvailableUntil == DateTime.MinValue ? DateTime.Now : supplyItem.AvailableUntil
+                });
+            }
+            catch (Exception ex)
+            {
+                    
+                throw ex;
+            }
+  
         }
 
         public bool Update(SupplyItemDto supplyItem)

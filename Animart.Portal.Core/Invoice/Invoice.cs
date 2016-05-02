@@ -18,15 +18,7 @@ namespace Animart.Portal.Invoice
 
         public virtual PurchaseOrder PurchaseOrder {get;set;}
 
-        public virtual decimal Total()
-        {
-            var total = 0;
-            foreach (var po in PurchaseOrder.OrderItems)
-            {
-                total = po.Quantity * po.Item.Price;
-            }
-            return total;
-        }
+        public virtual string ResiNumber { get; set; }
 
     }
 }

@@ -7,7 +7,7 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
 
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
-        $scope.isPaid = result.status == "ACCOUNTING";
+        $scope.isPaid = result.status === "ACCOUNTING";
         $scope.supplies = result.items;
         $scope.image = "";
         if ($scope.po.status === "ACCOUNTING") {
@@ -18,6 +18,26 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
     });
 
     $scope.file = {};
+
+    $scope.update = function () {
+        var hasError = false;
+        for (var i = 0; i < $scope.supplies.length; i++) {
+            orderService.update($scope.po.id, $scope.supplies[i]).error(function (r) {
+                hasError = true;
+            });
+
+            if (i === $scope.supplies.length - 1) {
+                if (hasError) {
+                    abp.message.error('error occured');
+                } else {
+                    $scope.$emit('updateDashboard', "ok");
+                    abp.message.info('Update Success');
+                }
+            }
+        }
+
+    };
+
     $scope.getFile = function (e) {
         $scope.$apply(function () {
             $scope.files = e.files;
@@ -79,6 +99,9 @@ function accountingController($http,$q, $rootScope, $scope, orderService, $uibMo
             $scope.$emit('updateDashboard', "ok");
         }, function () {
             $scope.status = 'You cancelled the dialog.';
+        }).finally(function (rs) {
+            $scope.refresh();
+            $scope.$emit('updateDashboard', "ok");
         });
     };
 

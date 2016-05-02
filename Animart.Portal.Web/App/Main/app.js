@@ -60,7 +60,7 @@
                     menu: 'RetailerDashboard' //Matches to name of 'City' menu in PortalNavigationProvider
                 }).state('marketingDashboard', {
                     url: '/marketingDashboard',
-                    templateUrl: '/App/Main/views/bod/bod-dashboard.cshtml',
+                    templateUrl: '/App/Main/views/marketing/marketing-dashboard.cshtml',
                     menu: 'marketingDashboard' //Matches to name of 'City' menu in PortalNavigationProvider
                 }).state('logisticDashboard', {
                     url: '/logisticDashboard',

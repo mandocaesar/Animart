@@ -40,5 +40,7 @@ namespace Animart.Portal.Order
         public  ICollection<OrderItem> OrderItems { get; set; }
 
         public string ReceiptNumber { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public User ModifiedBy { get; set; }
     }
 }

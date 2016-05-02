@@ -9,16 +9,37 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
         $scope.po = result;
         $scope.isBod = result.status==="MARKETING";
         $scope.supplies = result.items;
+        console.log(result);
     });
 
     $scope.file = {};
-    $scope.getFile = function (e) {
-        $scope.$apply(function () {
+    $scope.getFile = function(e) {
+        $scope.$apply(function() {
             $scope.files = e.files;
         });
-    }
+    };
+
     $scope.cancel = function () {
         $mdDialog.cancel();
+    };
+
+    $scope.update = function () {
+        var hasError = false;
+        for (var i = 0; i < $scope.supplies.length; i++) {
+            orderService.update($scope.po.id,$scope.supplies[i]).error(function(r) {
+                hasError = true;
+            });
+
+            if (i === $scope.supplies.length - 1) {
+                if (hasError) {
+                    abp.message.error('error occured');
+                } else {
+                    $scope.$emit('updateDashboard', "ok");
+                    abp.message.info('Update Success');
+                }
+            }
+        }
+        
     };
 
     $scope.approve = function () {
@@ -54,7 +75,7 @@ function marketingController($q, $rootScope, $scope, orderService, $uibModal, $m
         });
 
         $scope.gridOptions.data = null;
-        orderService.getAllPurchaseOrderForBod().success(function (result) {
+        orderService.getAllPurchaseOrderForMarketing().success(function (result) {
             console.log(result);
             $scope.gridOptions.data = result;
         });
@@ -73,9 +94,12 @@ function marketingController($q, $rootScope, $scope, orderService, $uibModal, $m
                 orderService: orderService
             }
         }).then(function (rs) {
+            $scope.refresh();
             $scope.$emit('updateDashboard', "ok");
         }, function () {
             $scope.status = 'You cancelled the dialog.';
+        }).finally(function () {
+            $scope.refresh();
         });
     };
 

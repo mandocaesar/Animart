@@ -207,14 +207,31 @@ namespace Animart.Portal.Order
             });
         }
 
-        public bool Update(Dto.OrderItemInputDto orderItem)
+        public bool Update(string id , Dto.OrderItemInputDto orderItem)
         {
             try
             {
-                var item = _orderItemRepository.Get(orderItem.Id);
-                item.Item = _supplyItemRepository.Get(orderItem.SupplyItem);
+                var item = _orderItemRepository.GetAll().FirstOrDefault(e=>e.Id == orderItem.Id);
+                item.Item = _supplyItemRepository.GetAll().FirstOrDefault(e=>e.Id == orderItem.SupplyItem);
+                item.PriceAdjustment = orderItem.PriceAdjusment;
                 item.Quantity = orderItem.Quantity;
-                item.PurchaseOrder = _purchaseOrderRepository.Get(orderItem.PurchaseOrder);
+
+                var poid = Guid.Parse(id);
+                item.PurchaseOrder = _purchaseOrderRepository.GetAll().FirstOrDefault(e=>e.Id == poid);
+
+                item.PurchaseOrder.ModifiedBy = _userRepository.Get(AbpSession.GetUserId());
+                item.PurchaseOrder.ModifiedOn = DateTime.Now;
+
+                var total = 0;
+                var items = item.PurchaseOrder.OrderItems.ToList();
+
+                for (int i = 0; i < items.Count; i++)
+                {
+                    var price = items[i].PriceAdjustment == 0 ? items[i].Item.Price : items[i].PriceAdjustment;
+                    total += price*items[i].Quantity;
+                }
+
+                item.PurchaseOrder.GrandTotal = total;
 
                 _orderItemRepository.Update(item);
 
@@ -307,11 +324,11 @@ namespace Animart.Portal.Order
 
         }
 
-        public List<PurchaseOrderDto> GetAllPurchaseOrderForBod()
+        public List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing()
         {
             try
             {
-                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "BOD").ToList();
+                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "MARKETING").ToList();
                 var result = list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
                 return result;
             }
@@ -346,6 +363,25 @@ namespace Animart.Portal.Order
             catch (Exception)
             {
                 return null;
+            }
+        }
+
+        public bool InsertReceiptNumber(string id, string receipt)
+        {
+            try
+            {
+                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == Guid.Parse(id));
+                po.ReceiptNumber = receipt;
+                po.Status = "Delivered";
+                _purchaseOrderRepository.Update(po);
+                GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", " Hello, your purchase order with id " + po.Id.ToString() + "has been updated to " + po.Status + " with receipt number" + po.ReceiptNumber + " please login to have look on it ",
+                    po.CreatorUser.EmailAddress);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }

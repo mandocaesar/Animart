@@ -169,6 +169,14 @@
     <Compile Include="Migrations\201605021001272_NameAndPriceForOrderItem.Designer.cs">
       <DependentUpon>201605021001272_NameAndPriceForOrderItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605021147076_addResiNumber-Invoice.cs" />
+    <Compile Include="Migrations\201605021147076_addResiNumber-Invoice.Designer.cs">
+      <DependentUpon>201605021147076_addResiNumber-Invoice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605021247273_addModifiedByAndTimePO.cs" />
+    <Compile Include="Migrations\201605021247273_addModifiedByAndTimePO.Designer.cs">
+      <DependentUpon>201605021247273_addModifiedByAndTimePO.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -226,6 +234,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605021001272_NameAndPriceForOrderItem.resx">
       <DependentUpon>201605021001272_NameAndPriceForOrderItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605021147076_addResiNumber-Invoice.resx">
+      <DependentUpon>201605021147076_addResiNumber-Invoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605021247273_addModifiedByAndTimePO.resx">
+      <DependentUpon>201605021247273_addModifiedByAndTimePO.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

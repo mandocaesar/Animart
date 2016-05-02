@@ -4,7 +4,6 @@
         function ($q, $rootScope, $scope, supplyService, $uibModal, $http) {
             var vm = this;
             $scope.newFile = {};
-
             $scope.gridOptions = {
                 enableRowSelection: true,
                 enableSelectAll: false,

@@ -139,9 +139,9 @@ namespace Animart.Portal.Migrations.Data
                     });
                 context.SaveChanges();
 
-               //// context.UserRoles.Add(new UserRole(adminUserForDefaultTenant.Id, adminRoleForDefaultTenant.Id));
+                context.UserRoles.Add(new UserRole(adminUserForDefaultTenant.Id, adminRoleForDefaultTenant.Id));
                //// context.UserRoles.Add(new UserRole(adminUserForDefaultTenant.Id, userRoleForDefaultTenant.Id));
-               // context.SaveChanges();
+                context.SaveChanges();
             }
 
 

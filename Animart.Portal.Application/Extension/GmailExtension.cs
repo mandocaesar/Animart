@@ -45,6 +45,7 @@ namespace Animart.Portal.Extension
                 message.From = new MailAddress(_emailAddress);
                 message.To.Add(receiverMail);
                 message.Subject = subject;
+                message.IsBodyHtml = true;
                 message.Body = body;
 
                 _client.Send(message);

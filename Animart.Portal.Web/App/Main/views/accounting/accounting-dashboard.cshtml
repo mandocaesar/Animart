@@ -95,10 +95,16 @@
                     </div>
                     <div layout-gt-sm="row">
                         <md-input-container>
-                            <md-subheader class="md-sticky">Ordered Items: </md-subheader>
+                            <md-subheader class="md-sticky">
+                                Ordered Items:<br/>
+                                <p>Name     Price       Adjustment      Qty</p>
+                                
+                            </md-subheader>
                             <md-list-item ng-repeat="supply in supplies">
-                                <p> {{ supply.item.name }} </p>
-                                <input type="number" min="0" class="pull-right" ng-model="supply.quantity" disabled style="margin-left:40px;">
+                                <p> {{ supply.item.name }}   </p>
+                                <p style="margin-left:10px"> {{supply.item.price | currency:"Rp."}}</p>
+                                <input type="number" min="0" class="pull-right" ng-model="supply.PriceAdjusment"   style="margin-left:40px;">
+                                <p style="margin-left:10px">   {{supply.quantity}}</p>
                             </md-list-item>
                         </md-input-container>
                     </div>
@@ -106,6 +112,9 @@
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <span flex></span>
+                <md-button ng-click="update()">
+                    Update
+                </md-button>
                 <md-button ng-click="cancel()">
                     Cancel
                 </md-button>

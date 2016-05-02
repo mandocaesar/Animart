@@ -33,7 +33,7 @@ namespace Animart.Portal.Web
                 .AddItem(
                     new MenuItemDefinition(
                         "RetailerDashboard",
-                        new LocalizableString("Dashboard", PortalConsts.LocalizationSourceName),
+                        new LocalizableString("Retailer Dashboard", PortalConsts.LocalizationSourceName),
                         url: "#/retailerDashboard",
                         icon: "fa fa-info",
                         requiredPermissionName: "CanAccessRetailer"
@@ -41,15 +41,15 @@ namespace Animart.Portal.Web
                 ).AddItem(
                     new MenuItemDefinition(
                         "MarketingDashboard",
-                        new LocalizableString("Dashboard", PortalConsts.LocalizationSourceName),
+                        new LocalizableString("Marketing Dashboard", PortalConsts.LocalizationSourceName),
                         url: "#/marketingDashboard",
                         icon: "fa fa-info",
-                        requiredPermissionName: "CanAccessRetailer"
+                        requiredPermissionName: "CanAccessMarketing"
                         )
                 ).AddItem(
                     new MenuItemDefinition(
                         "LogisticDashboard",
-                        new LocalizableString("Dashboard", PortalConsts.LocalizationSourceName),
+                        new LocalizableString("Logistic Dashboard", PortalConsts.LocalizationSourceName),
                         url: "#/logisticDashboard",
                         icon: "fa fa-info",
                         requiredPermissionName: "CanAccessLogistic"
@@ -57,7 +57,7 @@ namespace Animart.Portal.Web
                 ).AddItem(
                     new MenuItemDefinition(
                         "AcountingDashboard",
-                        new LocalizableString("Dashboard", PortalConsts.LocalizationSourceName),
+                        new LocalizableString("Accounting Dashboard", PortalConsts.LocalizationSourceName),
                         url: "#/accountingDashboard",
                         icon: "fa fa-info",
                         requiredPermissionName: "CanAccessAccounting"
@@ -89,7 +89,7 @@ namespace Animart.Portal.Web
                                 "Expedition",
                                 new LocalizableString("Expedition", PortalConsts.LocalizationSourceName),
                                 url: "#/expedition",
-                                icon: "fa fa-users",
+                                icon: "fa fa-truck",
                                 requiredPermissionName: "CanAccessAdministrator"
                                 )
                         ).AddItem(
@@ -97,7 +97,7 @@ namespace Animart.Portal.Web
                                 "Cities",
                                 new LocalizableString("Cities", PortalConsts.LocalizationSourceName),
                                 url: "#/cities",
-                                icon: "fa fa-users",
+                                icon: "fa fa-building-o",
                                 requiredPermissionName: "CanAccessAdministrator"
                                 )
                         )

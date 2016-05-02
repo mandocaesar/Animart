@@ -4,7 +4,7 @@
         function ($q, $rootScope, $scope, userService, $uibModal) {
             var vm = this;
 
-            $scope.roleDropdown = ['Admin','Logistic','Accounting','BOD','Retailer'];
+            $scope.roleDropdown = ['Admin','Logistic','Accounting','Marketing','Retailer'];
 
             $scope.gridOptions = {
                 enableRowSelection: true,
@@ -34,7 +34,7 @@
                         { id: 'Admin', role: 'Admin' },
                         { id: 'Logistic', role: 'Logistic' },
                         { id: 'Accounting', role: 'Accounting' },
-                        { id: 'BOD', role: 'BOD' },
+                        { id: 'Marketing', role: 'Marketing' },
                         { id: 'Retailer', role: 'Retailer' }
                     ]
                 },
@@ -60,7 +60,7 @@
                 var modalInstance = $uibModal.open({
                     animation: $scope.animationsEnabled,
                     templateUrl: 'addNewUser.html',
-                    controller: 'userModalCtrl',
+                    controller: 'userManagementModalCtrl',
                     size: 'm'
                 });
 
@@ -87,7 +87,7 @@
             'Admin': 'Admin',
             'Logistic': 'Logistic',
             'Accounting': 'Accounting',
-            'BOD': 'BOD',
+            'Marketing': 'Marketing',
             'Retailer': 'Retailer'
         };
 
@@ -100,10 +100,10 @@
         };
     });
 
-    angular.module('app').controller('userModalCtrl', [
+    angular.module('app').controller('userManagementModalCtrl', [
         '$scope', 'abp.services.app.user', '$uibModalInstance',
         function ($scope, userService, $uibModalInstance, result) {
-            $scope.roles = ['Admin', 'Logistic', 'Accounting', 'BOD', 'Retailer'];
+            $scope.roles = ['Admin', 'Logistic', 'Accounting', 'Marketing', 'Retailer'];
             $scope.ok = function() {
                 userService.createUser($scope.user)
                     .success(function(rs) {
