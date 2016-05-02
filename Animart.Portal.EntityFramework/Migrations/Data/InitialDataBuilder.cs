@@ -88,7 +88,7 @@ namespace Animart.Portal.Migrations.Data
                 context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanAccessAdministrator", IsGranted = false });
                 context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanAccessLogistic", IsGranted = false});
                 context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanAccessAccounting", IsGranted = false });
-                context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanAccessBOD", IsGranted = false });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanAccessMarketing", IsGranted = false });
                 context.Permissions.Add(new RolePermissionSetting { RoleId = adminRoleForDefaultTenant.Id, Name = "CanAccessRetailer", IsGranted = false });
                 context.SaveChanges();
             }
@@ -104,7 +104,7 @@ namespace Animart.Portal.Migrations.Data
                 var roleAccounting = context.Roles.Add(new Role(defaultTenant.Id, "Accounting", "Accounting"));
                 context.SaveChanges();
 
-                var roleBod = context.Roles.Add(new Role(defaultTenant.Id, "BOD", "BOD"));
+                var roleMarketing = context.Roles.Add(new Role(defaultTenant.Id, "Marketing", "Marketing"));
                 context.SaveChanges();
 
                 userRoleForDefaultTenant = context.Roles.Add(new Role(defaultTenant.Id, "Retailer", "Retailer")
@@ -114,7 +114,7 @@ namespace Animart.Portal.Migrations.Data
                 context.SaveChanges();
 
                 context.Permissions.Add(new RolePermissionSetting { RoleId = roleAccounting.Id, Name = "CanAccessAccounting", IsGranted = true });
-                context.Permissions.Add(new RolePermissionSetting { RoleId = roleBod.Id, Name = "CanAccessBOD", IsGranted = true });
+                context.Permissions.Add(new RolePermissionSetting { RoleId = roleMarketing.Id, Name = "CanAccessMarketing", IsGranted = true });
                 context.Permissions.Add(new RolePermissionSetting { RoleId = roleLogistic.Id, Name = "CanAccessLogistic", IsGranted = true });
                 context.Permissions.Add(new RolePermissionSetting { RoleId = userRoleForDefaultTenant.Id, Name = "CanAccessRetailer", IsGranted = true });
                 context.SaveChanges();
@@ -139,9 +139,9 @@ namespace Animart.Portal.Migrations.Data
                     });
                 context.SaveChanges();
 
-               // context.UserRoles.Add(new UserRole(adminUserForDefaultTenant.Id, adminRoleForDefaultTenant.Id));
-               // context.UserRoles.Add(new UserRole(adminUserForDefaultTenant.Id, userRoleForDefaultTenant.Id));
-                context.SaveChanges();
+               //// context.UserRoles.Add(new UserRole(adminUserForDefaultTenant.Id, adminRoleForDefaultTenant.Id));
+               //// context.UserRoles.Add(new UserRole(adminUserForDefaultTenant.Id, userRoleForDefaultTenant.Id));
+               // context.SaveChanges();
             }
 
 

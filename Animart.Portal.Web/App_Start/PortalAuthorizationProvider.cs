@@ -13,7 +13,7 @@ namespace Animart.Portal.Web.App_Start
             context.CreatePermission("CanAccessAdministrator");
             context.CreatePermission("CanAccessLogistic");
             context.CreatePermission("CanAccessAccounting");
-            context.CreatePermission("CanAccessBOD");
+            context.CreatePermission("CanAccessMarketing");
             context.CreatePermission("CanAccessRetailer");
         }
     }

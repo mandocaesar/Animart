@@ -273,7 +273,7 @@
     <Content Include="App\Main\views\admin\cityManagement.js" />
     <Content Include="App\Main\views\admin\expeditionManagement.js" />
     <Content Include="App\Main\views\admin\userManagement.js" />
-    <Content Include="App\Main\views\bod\bod-dashboard.js" />
+    <Content Include="App\Main\views\marketing\marketing-dashboard.js" />
     <Content Include="App\Main\views\home\item.js" />
     <Content Include="App\Main\views\layout\header.js" />
     <Content Include="App\Main\views\layout\layout.js" />
@@ -981,7 +981,7 @@
     <Content Include="bower_components\angular\package.json" />
     <Content Include="bower_components\angular\README.md" />
     <Content Include="App\Main\views\accounting\accounting-dashboard.cshtml" />
-    <Content Include="App\Main\views\bod\bod-dashboard.cshtml" />
+    <Content Include="App\Main\views\marketing\marketing-dashboard.cshtml" />
     <Content Include="App\Main\views\logistic\logistic-dashboard.cshtml" />
     <Content Include="App\Main\views\home\item.cshtml" />
     <Content Include="App\Main\views\retailer\checkout.cshtml" />

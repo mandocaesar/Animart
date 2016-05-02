@@ -58,10 +58,10 @@
                     url: '/retailerDashboard',
                     templateUrl: '/App/Main/views/retailer/retailer-dashboard.cshtml',
                     menu: 'RetailerDashboard' //Matches to name of 'City' menu in PortalNavigationProvider
-                }).state('bodDashboard', {
-                    url: '/bodDashboard',
+                }).state('marketingDashboard', {
+                    url: '/marketingDashboard',
                     templateUrl: '/App/Main/views/bod/bod-dashboard.cshtml',
-                    menu: 'BodDashboard' //Matches to name of 'City' menu in PortalNavigationProvider
+                    menu: 'marketingDashboard' //Matches to name of 'City' menu in PortalNavigationProvider
                 }).state('logisticDashboard', {
                     url: '/logisticDashboard',
                     templateUrl: '/App/Main/views/logistic/logistic-dashboard.cshtml',

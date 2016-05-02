@@ -90,7 +90,7 @@ namespace Animart.Portal.Order
 
         public bool CheckOrderItem(Dto.OrderItemInputDto orderItem)
         {
-            var supplyItem = _supplyItemRepository.GetAllList().First(e => e.Id == orderItem.supplyItem);
+            var supplyItem = _supplyItemRepository.GetAllList().First(e => e.Id == orderItem.SupplyItem);
             if (supplyItem.InStock < orderItem.Quantity)
             {
                 return false;
@@ -98,42 +98,47 @@ namespace Animart.Portal.Order
             return true;
         }
 
-        public bool AddOrderItem(string id, OrderItemInputDto orderItem)
+        public bool AddOrderItem(string id, List<OrderItemInputDto> orderItems)
         {
             try
             {
-
-                Guid poId = Guid.Parse(id);
-                var supplyItem = _supplyItemRepository.GetAllList().First(e => e.Id == orderItem.supplyItem);
-                if (supplyItem.InStock < orderItem.Quantity)
+                foreach (var orderItem in orderItems)
                 {
-                    return false;
+                    Guid poId = Guid.Parse(id);
+                    var supplyItem = _supplyItemRepository.GetAllList().First(e => e.Id == orderItem.SupplyItem);
+                    if (supplyItem.InStock < orderItem.Quantity)
+                    {
+                        return false;
+                    }
+
+                    if (orderItem.Quantity == 0)
+                    {
+                        return true;
+                    }
+
+                    var item = new OrderItem()
+                    {
+                        Item = supplyItem,
+                        PurchaseOrder = _purchaseOrderRepository.GetAllList().First(e => e.Id == poId),
+                        Quantity = orderItem.Quantity,
+                        Name = orderItem.Name,
+                        PriceAdjustment = 0,
+                        CreationTime = DateTime.Now,
+                        CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
+                        CreatorUserId = AbpSession.GetUserId(),
+                    };
+
+                    var _id = _orderItemRepository.InsertOrUpdateAndGetId(item);
+                    var po = _purchaseOrderRepository.GetAll().First(e => e.Id == poId);
+
+                    po.GrandTotal = po.OrderItems.Sum(e => e.Item.Price * e.Quantity);
+                    po.TotalWeight = po.OrderItems.Sum(e => e.Item.Weight * e.Quantity);
+                    _purchaseOrderRepository.Update(po);
+
+                    supplyItem.InStock -= orderItem.Quantity;
+                    _supplyItemRepository.Update(supplyItem);
                 }
-
-                if (orderItem.Quantity == 0)
-                {
-                    return true;
-                }
-
-                var item = new OrderItem()
-                {
-                    Item = supplyItem,
-                    PurchaseOrder = _purchaseOrderRepository.GetAllList().First(e => e.Id == poId),
-                    Quantity = orderItem.Quantity,
-                    CreationTime = DateTime.Now,
-                    CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
-                    CreatorUserId = AbpSession.GetUserId(),
-                };
-
-                var _id = _orderItemRepository.InsertOrUpdateAndGetId(item);
-                var po = _purchaseOrderRepository.GetAll().First(e => e.Id == poId);
-
-                po.GrandTotal = po.OrderItems.Sum(e => e.Item.Price * e.Quantity);
-                po.TotalWeight = po.OrderItems.Sum(e => e.Item.Weight * e.Quantity);
-                _purchaseOrderRepository.Update(po);
-
-                supplyItem.InStock -= orderItem.Quantity;
-                _supplyItemRepository.Update(supplyItem);
+               
 
                 return true;
 
@@ -207,7 +212,7 @@ namespace Animart.Portal.Order
             try
             {
                 var item = _orderItemRepository.Get(orderItem.Id);
-                item.Item = _supplyItemRepository.Get(orderItem.supplyItem);
+                item.Item = _supplyItemRepository.Get(orderItem.SupplyItem);
                 item.Quantity = orderItem.Quantity;
                 item.PurchaseOrder = _purchaseOrderRepository.Get(orderItem.PurchaseOrder);
 

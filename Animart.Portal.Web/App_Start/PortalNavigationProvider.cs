@@ -40,11 +40,11 @@ namespace Animart.Portal.Web
                         )
                 ).AddItem(
                     new MenuItemDefinition(
-                        "BodDashboard",
+                        "MarketingDashboard",
                         new LocalizableString("Dashboard", PortalConsts.LocalizationSourceName),
-                        url: "#/bodDashboard",
+                        url: "#/marketingDashboard",
                         icon: "fa fa-info",
-                        requiredPermissionName: "CanAccessBOD"
+                        requiredPermissionName: "CanAccessRetailer"
                         )
                 ).AddItem(
                     new MenuItemDefinition(

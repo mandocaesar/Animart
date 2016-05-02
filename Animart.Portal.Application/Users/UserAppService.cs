@@ -56,7 +56,9 @@ namespace Animart.Portal.Users
             GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
             gmail.SendMessage(
                 "Welcome Aboard !", 
-                string.Format("Thank you for register to Animart Store please update your passwod once you're login <br/> User Name:{0} <br/> Password : ZXasqw12",_user.UserName),
+                string.Format("<p> Welcome, </p>< p > Your Animart registration has now been approved and your account is ready to use.You may now log on to the system. </ p >" +
+                "<p> Your user - id is: {0} and your password: xxxxx </p><p> If you have any queries, please contact the Animart on + 62(22) 612 - 6824 </p>"+
+                "<p> Sincerely, </p><p > PT.Animart Hobi Kreatif Tel: (+62) 22 - 612 - 6824 </ p >",_user.UserName),
                 _user.EmailAddress);
 
         }

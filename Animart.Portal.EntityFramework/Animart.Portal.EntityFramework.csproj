@@ -165,6 +165,10 @@
     <Compile Include="Migrations\201604302159195_addPOFlagandAvailableDate.Designer.cs">
       <DependentUpon>201604302159195_addPOFlagandAvailableDate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605021001272_NameAndPriceForOrderItem.cs" />
+    <Compile Include="Migrations\201605021001272_NameAndPriceForOrderItem.Designer.cs">
+      <DependentUpon>201605021001272_NameAndPriceForOrderItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -219,6 +223,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604302159195_addPOFlagandAvailableDate.resx">
       <DependentUpon>201604302159195_addPOFlagandAvailableDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605021001272_NameAndPriceForOrderItem.resx">
+      <DependentUpon>201605021001272_NameAndPriceForOrderItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

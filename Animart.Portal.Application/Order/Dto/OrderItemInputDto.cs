@@ -10,7 +10,9 @@ namespace Animart.Portal.Order.Dto
     {
         public Guid Id { get; set; }
         public Guid PurchaseOrder { get; set; }
-        public Guid supplyItem { get; set; }
+        public Guid SupplyItem { get; set; }
+        public string Name { get; set; }
+        public int PriceAdjusment { get; set; }
         public int Quantity { get; set; }
     }
 }

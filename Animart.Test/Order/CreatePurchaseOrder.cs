@@ -76,7 +76,7 @@ namespace Animart.Test.Order
             {
                 PurchaseOrder = _purchaseOrder.Id,
                 Quantity = 10,
-                supplyItem = item.Id    
+                SupplyItem = item.Id    
             }).ShouldBeTrue();
         }
 

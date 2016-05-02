@@ -23,7 +23,7 @@ namespace Animart.Portal.Order
 
         PurchaseOrderDto GetSinglePurchaseOrder(string id);
 
-        bool AddOrderItem(string id, Dto.OrderItemInputDto orderItem);
+        bool AddOrderItem(string id, List<Dto.OrderItemInputDto> orderItems);
 
         bool UpdateOrderItem(string id, Dto.OrderItemInputDto orderItem);
 

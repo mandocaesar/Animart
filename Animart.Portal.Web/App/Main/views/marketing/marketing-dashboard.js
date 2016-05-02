@@ -1,13 +1,13 @@
-﻿angular.module('app').controller('app.views.bodDashboard', [
+﻿angular.module('app').controller('app.views.marketingDashboard', [
     '$q', '$rootScope', '$scope', 'abp.services.app.order', '$uibModal','$mdDialog',
-    bodController
+    marketingController
 ]);
 
-function ViewBODOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId) {
+function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId) {
 
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
-        $scope.isBod = result.status==="BOD";
+        $scope.isBod = result.status==="MARKETING";
         $scope.supplies = result.items;
     });
 
@@ -35,7 +35,7 @@ function ViewBODOrderController($http, $scope, $mdDialog, orderService, purchase
 }
 
 
-function bodController($q, $rootScope, $scope, orderService, $uibModal, $mdDialog) {
+function marketingController($q, $rootScope, $scope, orderService, $uibModal, $mdDialog) {
     
     $scope.gridOptions = {
         enableRowSelection: true,
@@ -64,7 +64,7 @@ function bodController($q, $rootScope, $scope, orderService, $uibModal, $mdDialo
         var ev = this.ev;
         $mdDialog.show({
             templateUrl: 'view-order-bod.tmpl.html',
-            controller: ViewBODOrderController,
+            controller: ViewMarketingOrderController,
             parent: angular.element(document.body),
             targetEvent: ev,
             clickOutsideToClose: true,
