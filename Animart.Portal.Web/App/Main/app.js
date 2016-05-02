@@ -38,6 +38,10 @@
                      url: '/checkout',
                      templateUrl: '/App/Main/views/retailer/checkout.cshtml'
                 })
+                  .state('hwto', {
+                      url: '/hwto',
+                      templateUrl: '/App/Main/views/home/howtoorder.cshtml'
+                  })
                 .state('supply', {
                     url: '/supply',
                     templateUrl: '/App/Main/views/supply/supply.cshtml',

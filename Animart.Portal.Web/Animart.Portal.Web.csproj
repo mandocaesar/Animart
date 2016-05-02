@@ -273,6 +273,7 @@
     <Content Include="App\Main\views\admin\cityManagement.js" />
     <Content Include="App\Main\views\admin\expeditionManagement.js" />
     <Content Include="App\Main\views\admin\userManagement.js" />
+    <Content Include="App\Main\views\home\howtoorder.js" />
     <Content Include="App\Main\views\marketing\marketing-dashboard.js" />
     <Content Include="App\Main\views\home\item.js" />
     <Content Include="App\Main\views\layout\header.js" />
@@ -985,6 +986,7 @@
     <Content Include="App\Main\views\logistic\logistic-dashboard.cshtml" />
     <Content Include="App\Main\views\home\item.cshtml" />
     <Content Include="App\Main\views\retailer\checkout.cshtml" />
+    <Content Include="App\Main\views\home\howtoOrder.cshtml" />
     <None Include="Properties\PublishProfiles\PublishFileSystem.pubxml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
