@@ -57,6 +57,10 @@
                 <md-subheader class="md-sticky">Grand Total : {{po.grandTotal | currency:"Rp"}}</md-subheader>
                 <div class="md-dialog-content">
                     <md-input-container class="md-block">
+                        <label>Receipt</label>
+                        <input ng-model="po.receiptNumber" ng-show="isPaid">
+                    </md-input-container>
+                    <md-input-container class="md-block">
                         <label>Address</label>
                         <input ng-model="po.address" disabled>
                     </md-input-container>
@@ -94,7 +98,7 @@
                             <md-subheader class="md-sticky">Ordered Items: </md-subheader>
                             <md-list-item ng-repeat="supply in supplies">
                                 <p> {{ supply.item.name }} </p>
-                                <input type="number" min="0" class="pull-right" ng-model="supply.quantity" style="margin-left:40px;">
+                                <input type="number" min="0" class="pull-right" ng-model="supply.quantity" style="margin-left:40px;" ng-disabled="isPaid">
                             </md-list-item>
                         </md-input-container>
                     </div>

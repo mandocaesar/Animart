@@ -64,6 +64,10 @@
                         <label>Address</label>
                         <input ng-model="po.address" disabled>
                     </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>Receipt</label>
+                        <input ng-model="po.receiptNumber" ng-show="isPaid">
+                    </md-input-container>
                     <div layout-gt-sm="row">
                         <md-input-container class="md-block" flex-gt-sm>
                             <label>Province</label>
@@ -103,7 +107,7 @@
                             <md-list-item ng-repeat="supply in supplies">
                                 <p> {{ supply.item.name }}   </p>
                                 <p style="margin-left:10px"> {{supply.item.price | currency:"Rp."}}</p>
-                                <input type="number" min="0" class="pull-right" ng-model="supply.PriceAdjusment"   style="margin-left:40px;">
+                                <input type="number" min="0" class="pull-right" ng-model="supply.priceAdjustment"   style="margin-left:40px;" ng-disabled="isPaid" />
                                 <p style="margin-left:10px">   {{supply.quantity}}</p>
                             </md-list-item>
                         </md-input-container>
@@ -112,13 +116,16 @@
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <span flex></span>
-                <md-button ng-click="update()">
+                <md-button ng-click="updateReceipt()" ng-show="isPaid">
+                    Update Receipt
+                </md-button>
+                <md-button ng-click="update()" ng-hide="isPaid">
                     Update
                 </md-button>
-                <md-button ng-click="cancel()">
+                <md-button ng-click="cancel()" ng-hide="isPaid">
                     Cancel
                 </md-button>
-                <md-button ng-click="approve()">
+                <md-button ng-click="approve()" ng-hide="isPaid">
                     Approve
                 </md-button>
             </md-dialog-actions>

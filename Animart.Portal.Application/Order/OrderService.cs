@@ -44,7 +44,7 @@ namespace Animart.Portal.Order
         {
             var result = new OrderDashboardDto();
             var userId = AbpSession.GetUserId();
-            result.BDO = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "BOD");
+            result.BDO = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "MARKETING");
             result.Delivered = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "LOGISTIC");
             result.Waiting = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "ACCOUNTING");
 
@@ -56,7 +56,7 @@ namespace Animart.Portal.Order
         {
             var result = new OrderDashboardDto();
             var userId = AbpSession.GetUserId();
-            result.BDO = _purchaseOrderRepository.Count(e => e.Status == "BOD");
+            result.BDO = _purchaseOrderRepository.Count(e => e.Status == "MARKETING");
             result.Delivered = _purchaseOrderRepository.Count(e => e.Status == "LOGISTIC");
             result.Waiting = _purchaseOrderRepository.Count(e => e.Status == "ACCOUNTING");
 
@@ -328,7 +328,7 @@ namespace Animart.Portal.Order
         {
             try
             {
-                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "MARKETING").ToList();
+                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "MARKETING" || e.Status == "LOGISTIC").ToList();
                 var result = list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
                 return result;
             }
@@ -342,7 +342,7 @@ namespace Animart.Portal.Order
         {
             try
             {
-                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "ACCOUNTING").ToList();
+                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "ACCOUNTING" || e.Status == "LOGISTIC").ToList();
                 var result = list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
                 return result;
             }
@@ -370,16 +370,17 @@ namespace Animart.Portal.Order
         {
             try
             {
-                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == Guid.Parse(id));
+                var poid = Guid.Parse(id);
+                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poid);
                 po.ReceiptNumber = receipt;
-                po.Status = "Delivered";
+                po.Status = "LOGISTIC";
                 _purchaseOrderRepository.Update(po);
                 GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
                 gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", " Hello, your purchase order with id " + po.Id.ToString() + "has been updated to " + po.Status + " with receipt number" + po.ReceiptNumber + " please login to have look on it ",
                     po.CreatorUser.EmailAddress);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }

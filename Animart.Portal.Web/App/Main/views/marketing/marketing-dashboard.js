@@ -7,7 +7,8 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
 
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
-        $scope.isBod = result.status==="MARKETING";
+        $scope.isBod = result.status === "MARKETING";
+        $scope.isPaid = result.status === "LOGISTIC" || result.status !== "MARKETING";
         $scope.supplies = result.items;
         console.log(result);
     });
@@ -53,6 +54,12 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Rejected");
         });
     };
+
+    $scope.updateReceipt = function () {
+        orderService.insertReceiptNumber(purchaseOrderId, $scope.po.receiptNumber).success(function () {
+            abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
+        });
+    }
 }
 
 

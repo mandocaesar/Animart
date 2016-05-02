@@ -6,11 +6,13 @@
 function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId) {
 
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
+        console.log(result);
         $scope.po = result;
-        $scope.isPaid = result.status === "ACCOUNTING";
+        $scope.isPaid = result.status === "LOGISTIC";
         $scope.supplies = result.items;
+        console.log($scope.supplies);
         $scope.image = "";
-        if ($scope.po.status === "ACCOUNTING") {
+        if ($scope.isPaid) {
 
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
             console.log($scope.image);
@@ -52,6 +54,12 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
         });
     };
+
+    $scope.updateReceipt = function() {
+        orderService.insertReceiptNumber(purchaseOrderId, $scope.po.receiptNumber).success(function () {
+            abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
+        });
+    }
 
 }
 
