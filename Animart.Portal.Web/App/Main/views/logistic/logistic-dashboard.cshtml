@@ -28,7 +28,83 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="btn btn-success" ng-click="placeorder()">Place Order</div>
+    <div class="row">
+        <div class="col">
+            <div ui-grid="gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
+        </div>
     </div>
 </div>
+
+
+<script type="text/ng-template" id="view-order-logistic.tmpl.html">
+    <md-dialog aria-label="Mango (Fruit)" ng-cloak>
+        <form name="poForm">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Place Order</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="cancel()">
+                        <md-icon md-svg-src="" aria-label="Close dialog"></md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+            <md-dialog-content>
+                <md-subheader class="md-sticky">Grand Total : {{po.grandTotal | currency:"Rp"}}</md-subheader>
+                <div class="md-dialog-content">
+                    <md-input-container class="md-block">
+                        <label>Receipt</label>
+                        <input ng-model="po.receiptNumber" ng-show="isPaid">
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>Address</label>
+                        <input ng-model="po.address" disabled>
+                    </md-input-container>
+                    <div layout-gt-sm="row">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Province</label>
+                            <input ng-model="po.province" disabled>
+                        </md-input-container>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>City</label>
+                            <input ng-model="po.city" disabled>
+                        </md-input-container>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Postal Code</label>
+                            <input name="postalCode" ng-model="po.postalCode" placeholder="12345"
+                                   required ng-pattern="/^[0-9]{5}$/" md-maxlength="5" disabled>
+                            <div ng-messages="poForm.postalCode.$error" role="alert" multiple>
+                                <div ng-message="required" class="my-message">You must supply a postal code.</div>
+                                <div ng-message="pattern" class="my-message">
+                                    That doesn't look like a valid postal
+                                    code.
+                                </div>
+                            </div>
+                        </md-input-container>
+
+                    </div>
+                    <div layout-gt-sm="row">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Expedition</label>
+                            <input ng-model="po.expedition" disabled>
+                        </md-input-container>
+                    </div>
+                    <div layout-gt-sm="row">
+                        <md-input-container>
+                            <md-subheader class="md-sticky">Ordered Items: </md-subheader>
+                            <md-list-item ng-repeat="supply in supplies">
+                                <p> {{ supply.item.name }} </p>
+                                <input type="number" min="0" class="pull-right" ng-model="supply.quantity" style="margin-left:40px;" ng-disabled="isPaid">
+                            </md-list-item>
+                        </md-input-container>
+                    </div>
+                </div>
+            </md-dialog-content>
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <md-button ng-click="updateReceipt()" ng-show="isPaid">
+                    Update Receipt
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+</script>

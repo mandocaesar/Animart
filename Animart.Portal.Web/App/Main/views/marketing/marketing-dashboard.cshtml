@@ -106,6 +106,9 @@
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <span flex></span>
+                <md-button ng-click="updateReceipt()" ng-show="isPaid">
+                    Update Receipt
+                </md-button>
                 <md-button ng-click="update()" ng-show="isBod">
                     Update
                 </md-button>
@@ -113,7 +116,7 @@
                     Cancel
                 </md-button>
                 <md-button ng-click="approve()">
-                    Approve
+                    Send to Marketing
                 </md-button>
                 <md-button ng-click="reject()" ng-show="isBod">
                     Reject

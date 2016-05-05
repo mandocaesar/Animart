@@ -4,7 +4,7 @@
         function ($q, $rootScope, $scope, userService, $uibModal) {
             var vm = this;
 
-            $scope.roleDropdown = ['Admin','Logistic','Accounting','Marketing','Retailer'];
+            $scope.roleDropdown = ['Admin', 'Logistic', 'Accounting', 'Marketing', 'Retailer'];
 
             $scope.gridOptions = {
                 enableRowSelection: true,
@@ -25,6 +25,8 @@
 
             $scope.gridOptions.columnDefs = [
                 { name: 'id', enableCellEdit: false },
+                { name: 'userName', displayName: 'User Name' },
+                { name: 'email', displayName: 'Email' },
                 { name: 'firstName', displayName: 'First Name' },
                 { name: 'lastName', displayName: 'Last Name' },
                 { name: 'lastLoginTime', displayName: 'Last Login', cellFilter: 'date' },
@@ -104,21 +106,21 @@
         '$scope', 'abp.services.app.user', '$uibModalInstance',
         function ($scope, userService, $uibModalInstance, result) {
             $scope.roles = ['Admin', 'Logistic', 'Accounting', 'Marketing', 'Retailer'];
-            $scope.ok = function() {
+            $scope.ok = function () {
                 userService.createUser($scope.user)
-                    .success(function(rs) {
+                    .success(function (rs) {
                         $scope.result = result;
                         $uibModalInstance.close($scope.result);
                         $uibModalInstance.dismiss('cancel');
                         abp.notify.info('User has been created');
                     })
-                    .error(function(er) {
+                    .error(function (er) {
                         abp.notify.error('Error Occured');
                         $uibModalInstance.dismiss('cancel');
                     });
             };
 
-            $scope.cancel = function() {
+            $scope.cancel = function () {
                 $uibModalInstance.dismiss('cancel');
             };
         }

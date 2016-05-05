@@ -37,7 +37,7 @@ namespace Animart.Portal.Supply
 
         public List<SupplyItemDto> GetSupplies()
         {
-            var supplies = _supplyItemRepository.GetAll().Where(e => e.Available).ToList();
+            var supplies = _supplyItemRepository.GetAll().ToList();
 
             return supplies.Select(e => new SupplyItemDto
             {

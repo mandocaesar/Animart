@@ -56,9 +56,9 @@ namespace Animart.Portal.Users
             GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
             gmail.SendMessage(
                 "Welcome Aboard !", 
-                string.Format("<p> Welcome, </p>< p > Your Animart registration has now been approved and your account is ready to use.You may now log on to the system. </ p >" +
-                "<p> Your user - id is: {0} and your password: xxxxx </p><p> If you have any queries, please contact the Animart on + 62(22) 612 - 6824 </p>"+
-                "<p> Sincerely, </p><p > PT.Animart Hobi Kreatif Tel: (+62) 22 - 612 - 6824 </ p >",_user.UserName),
+                string.Format("<p> Welcome,</p><br/> <p> Your Animart registration has now been approved and your account is ready to use.You may now log on to the system. </p>" +
+                "<br/><p> Your user - id is: {0} and your password: ZXasqw12 </p><p> If you have any queries, please contact the Animart on + 62(22) 612 - 6824 </p>" +
+                "<br/><p> Sincerely, </p><br/><p > PT.Animart Hobi Kreatif Tel: (+62) 22 - 612 - 6824 </p>", _user.UserName),
                 _user.EmailAddress);
 
         }
@@ -133,6 +133,7 @@ namespace Animart.Portal.Users
                 LastName = e.Surname,
                 IsActive = e.IsActive,
                 Email = e.EmailAddress,
+                UserName = e.UserName,
                 LastLoginTime = e.LastLoginTime
             }).ToList();
 

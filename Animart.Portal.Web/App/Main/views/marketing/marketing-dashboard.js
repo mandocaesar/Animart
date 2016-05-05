@@ -40,24 +40,23 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
                 }
             }
         }
-        
     };
 
     $scope.approve = function () {
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "ACCOUNTING").success(function () {
-            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Approved");
+            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " <br/> Has been sent to accounting for approval");
         });
     };
 
     $scope.reject = function () {
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "REJECT").success(function () {
-            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Rejected");
+            abp.message.success("Success", "Purchase Order " + purchaseOrderId + "<br/> Has Been Rejected");
         });
     };
 
     $scope.updateReceipt = function () {
         orderService.insertReceiptNumber(purchaseOrderId, $scope.po.receiptNumber).success(function () {
-            abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
+            abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " <br/> Has Been Updated");
         });
     }
 }
