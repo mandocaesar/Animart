@@ -56,22 +56,6 @@ namespace Animart.Portal.Web
                         )
                 ).AddItem(
                     new MenuItemDefinition(
-                        "Expedition",
-                        new LocalizableString("Expedition", PortalConsts.LocalizationSourceName),
-                        url: "#/expedition",
-                        icon: "fa fa-truck",
-                        requiredPermissionName: "CanAccessMarketing"
-                        )
-                ).AddItem(
-                    new MenuItemDefinition(
-                        "Cities",
-                        new LocalizableString("Cities", PortalConsts.LocalizationSourceName),
-                        url: "#/cities",
-                        icon: "fa fa-building-o",
-                        requiredPermissionName: "CanAccessMarketing"
-                        )
-                ).AddItem(
-                    new MenuItemDefinition(
                         "LogisticDashboard",
                         new LocalizableString("Logistic Dashboard", PortalConsts.LocalizationSourceName),
                         url: "#/logisticDashboard",
