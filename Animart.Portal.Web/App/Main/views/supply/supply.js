@@ -58,13 +58,14 @@
                 { name: 'id', enableCellEdit: false },
                 { name: 'code', displayName: 'Code' },
                 { name: 'name', displayName: 'Name' },
-                { name: 'price', displayName: 'Price', cellFilter: 'currency' },
+                { name: 'price', displayName: 'Price', cellFilter: 'currency:"Rp."' },
+                { name: 'weight', displayName: 'Weight', type: 'number' },
                 { name: 'inStock', displayName: 'Stock', type: 'number' },
                 { name: 'available', displayName: 'Active', type: 'boolean' },
                 { name: 'description', displayName: 'Description' },
-                { name: 'hasImage', displayName: "Image", type: 'boolean', enableCellEdit: false },
                 { name: 'ispo', displayName: "Is PO ?", type: 'boolean' },
                 { name: 'availableUntil', displayName: "Available Until", type: 'date' },
+                { name: 'hasImage', displayName: "Image", type: 'boolean', enableCellEdit: false },
                 { name: 'filename', displayName: 'File', width: '20%', editableCellTemplate: 'ui-grid/fileChooserEditor', editFileChooserCallback: $scope.storeFile }
             ];
 
