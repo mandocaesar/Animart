@@ -14,7 +14,7 @@
                         {{supply.description}}
                     </p>
                 </md-card-content>
-                <md-card-actions layout="row" layout-align="right center">
+                <md-card-actions layout="row" layout-align="right center" ng-if="vm.getShownUserName().currentRole == '5'">
                     <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="30" data="item">Add To Cart</ngcart-addtocart>
                 </md-card-actions>
             </md-card>

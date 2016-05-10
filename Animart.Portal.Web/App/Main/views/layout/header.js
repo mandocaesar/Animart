@@ -19,7 +19,7 @@
             appSession.user = null;
 
             appSession.getCurrentLoginInformations({ async: false }).success(function (result) {
-           //     console.log(result);
+                //console.log(result);
                 user = result.user;
                 $scope.luser = user;
             }).error(
