@@ -25,11 +25,11 @@
 
             $scope.gridOptions.columnDefs = [
                 { name: 'id', enableCellEdit: false },
-                { name: 'userName', displayName: 'User Name' },
-                { name: 'email', displayName: 'Email' },
+                { name: 'userName', displayName: 'User Name', enableCellEdit: false },
+                { name: 'email', displayName: 'Email', enableCellEdit: false },
                 { name: 'firstName', displayName: 'First Name' },
                 { name: 'lastName', displayName: 'Last Name' },
-                { name: 'lastLoginTime', displayName: 'Last Login', cellFilter: 'date' },
+                { name: 'lastLoginTime', displayName: 'Last Login', cellFilter: 'date', enableCellEdit: false },
                 {
                     name: 'role', displayName: 'Role', editableCellTemplate: 'ui-grid/dropdownEditor',
                     cellFilter: 'roleFilter', editDropdownValueLabel: 'role', editDropdownOptionsArray: [

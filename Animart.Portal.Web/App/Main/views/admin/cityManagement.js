@@ -66,6 +66,7 @@ function cityController($q, $rootScope, $scope, cityService, $uibModal) {
             $scope.refresh();
         });
     };
+   
     $scope.refresh();
 }
 
@@ -79,8 +80,11 @@ angular.module('app').controller('cityModalCtrl', ['$scope', 'abp.services.app.s
                     $uibModalInstance.dismiss('cancel');
                     abp.notify.info('City has been created');
                 }).error(function (rs) {
-                    abp.notify.error('Error Ocured while create city');
+                    abp.notify.error('Error Occured while create city');
                 });
+        };
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
         };
     }
 ]);

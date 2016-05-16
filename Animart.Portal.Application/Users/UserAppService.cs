@@ -68,17 +68,24 @@ namespace Animart.Portal.Users
             try
             {
                 var _user = _userRepository.Get(user.Id);
-                var roleId = _userRepository.Get(user.Id).Roles.First().RoleId;
-                var currentRole = _roleManager.FindById(roleId).DisplayName;
+                if (_userRepository.Get(user.Id).Roles.Count > 0)
+                {
+                    var roleId = _userRepository.Get(user.Id).Roles.First().RoleId;
+                    var currentRole = _roleManager.FindById(roleId).DisplayName;
+                    UserManager.RemoveFromRole(_user.Id, currentRole);
+                }
+                UserManager.AddToRole(_user.Id, user.Role);
 
                 _user.IsActive = user.IsActive;
                 _user.Name = user.FirstName;
                 _user.Surname = user.LastName;
                 _user.EmailAddress = user.Email;
-                UserManager.RemoveFromRole(_user.Id, currentRole);
-                UserManager.AddToRole(_user.Id, user.Role);
 
                 _userRepository.Update(_user);
+
+              
+
+              
             }
             catch (Exception ex)
             {       

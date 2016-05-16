@@ -24,5 +24,6 @@ namespace Animart.Portal.Sessions.Dto
         public ICollection<UserRole> Roles { get; set; }
 
         public string CurrentRole => Roles.FirstOrDefault().RoleId.ToString();
+        
     }
 }

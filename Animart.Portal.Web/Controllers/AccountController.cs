@@ -233,7 +233,7 @@ namespace Animart.Portal.Web.Controllers
                     //Username and Password are required if not external login
                     if (model.UserName.IsNullOrEmpty() || model.Password.IsNullOrEmpty())
                     {
-                        throw new UserFriendlyException(L("FormIsNotValidMessage"));
+                        throw new UserFriendlyException("Please insert your email or username, and password to login."); //L("FormIsNotValidMessage"));
                     }
                 }
 
