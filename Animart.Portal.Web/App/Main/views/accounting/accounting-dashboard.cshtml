@@ -107,7 +107,7 @@
                             <md-list-item ng-repeat="supply in supplies">
                                 <p> {{ supply.item.name }}   </p>
                                 <p style="margin-left:10px"> {{supply.item.price | currency:"Rp."}}</p>
-                                <input type="number" min="0" class="pull-right" ng-model="supply.priceAdjustment"   style="margin-left:40px;" ng-disabled="isPaid" />
+                                <input type="number" min="0" class="pull-right" ng-model="supply.priceAdjusment"   style="margin-left:40px;" ng-disabled="isPaid" />
                                 <p style="margin-left:10px">   {{supply.quantity}}</p>
                             </md-list-item>
                         </md-input-container>

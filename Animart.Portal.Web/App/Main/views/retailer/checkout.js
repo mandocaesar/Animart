@@ -17,24 +17,50 @@
             $scope.orderItems = [];
 
             expeditonService.getCities().success(function (result) {
-                console.log(result);
                 $scope.cities = result;
             });
 
             expeditonService.getShipmentCosts().success(function (result) {
-                console.log(result);
                 $scope.expeditions = result;
                 $scope.calculateShip();
+            });
 
+            $scope.updateShippingPrice = function () {
+                console.log(ngCart);
+                if ($scope.po.expedition !== '' && $scope.po.city !== '') {
+                    expeditonService.getShipmentCostFilterByExpeditionAndCity($scope.po.expedition, $scope.po.city).success(function(rs) {
+                        console.log(rs);
+                        ngCart.setShipping($scope.po.totalWeight * rs[0].nextKilo);
+                    });
+                }
+            };
+
+            //$rootScope.updateItem = function(id, qty) {
+            //    var items = ngCart.getItems();
+            //    for (var i = 0; i < items.length; i++) {
+            //        if (item.getId() === id) {
+            //            item.setQuantity(qty, true);
+            //        }
+            //    }
+            //    $scope.calculateShip();
+            //    $scope.updateShippingPrice();
+
+            //}
+
+            $scope.$on('ngCart:change', function (event, args) {
+                $scope.calculateShip();
+                $scope.updateShippingPrice();
             });
 
             $scope.calculateShip = function () {
                 var items = ngCart.getItems();
                 var totalWeight = 0;
+
                 for (var i = 0; i < items.length; i++) {
                     totalWeight = items[i].getData();
                     $scope.po.totalWeight = totalWeight;
                 }
+
                 ngCart.setShipping(totalWeight);
             };
 

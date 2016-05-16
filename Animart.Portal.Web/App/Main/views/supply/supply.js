@@ -55,6 +55,10 @@
             };
 
             $scope.gridOptions.columnDefs = [
+                {
+                    name: 'view', displayName: 'View',
+                    cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'
+                },
                 { name: 'id', enableCellEdit: false },
                 { name: 'code', displayName: 'Code' },
                 { name: 'name', displayName: 'Name' },
@@ -103,6 +107,24 @@
                 });
             };
 
+            $scope.showMe = function (id) {
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'addNewSupply.html',
+                    controller: 'editSupplyCtrl',
+                    resolve: {
+                        param: function () {
+                            return {'data':id};
+                        }
+                    },
+                    size: 'm'
+                });
+
+                modalInstance.result.then(function (result) {
+                    $scope.refresh();
+                });
+            };
+
             $scope.delete = function () {
                 var rows = $scope.gridApi.selection.getSelectedRows();
                 angular.forEach(rows, function (value, key) {
@@ -119,7 +141,7 @@
     angular.module('app').controller('supplyModalCtrl', [
     '$scope', 'abp.services.app.supply', '$uibModalInstance',
     function ($scope, supplyService, $uibModalInstance, result) {
-        
+        $scope.IsEdit = false;
         $scope.ok = function () {
             supplyService.create($scope.supply)
               .success(function (rs) {
@@ -139,4 +161,36 @@
         };
     }
     ]);
+
+    angular.module('app').controller('editSupplyCtrl', [
+    '$scope', 'abp.services.app.supply', '$uibModalInstance','param',
+    function ($scope, supplyService, $uibModalInstance, param) {
+        $scope.supply = {};
+        $scope.IsEdit = true;
+
+        supplyService.supply(param.data).success(function (rs) {
+            $scope.supply = rs;
+        }).error(function (er) {
+            abp.notify.error('Error Load Supply');
+            $uibModalInstance.dismiss('cancel');
+        });
+
+        $scope.update = function () {
+            supplyService.update($scope.supply)
+              .success(function (rs) {
+                  $uibModalInstance.dismiss('cancel');
+                  abp.notify.info('Supply Saved Successfully');
+              })
+                .error(function (er) {
+                    abp.notify.error('Error Occured');
+                    $uibModalInstance.dismiss('cancel');
+                });
+        };
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    }
+    ]);
+
 })();

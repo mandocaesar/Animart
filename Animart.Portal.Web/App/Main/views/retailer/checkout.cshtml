@@ -16,7 +16,7 @@
             </md-input-container>
             <md-input-container class="md-block" flex-gt-sm>
                 <label>City</label>
-                <md-select ng-model="po.city">
+                <md-select ng-model="po.city" ng-change="updateShippingPrice()">
                     <md-option ng-repeat="city in cities">
                         {{city.name}}
                     </md-option>
@@ -39,7 +39,7 @@
         <div layout-gt-sm="row">
             <md-input-container class="md-block" flex-gt-sm>
                 <label>Expedition</label>
-                <md-select ng-model="po.expedition">
+                <md-select ng-model="po.expedition" ng-change="updateShippingPrice()">
                     <md-option ng-repeat="expedition in expeditions">
                         {{expedition.expedition}}
                     </md-option>
@@ -49,9 +49,7 @@
         <a href="" class="btn btn-primary" ng-click="placeOrder()">Order Now</a>
     </div>
     <div class="table-responsive col-lg-12" ng-show="ngCart.getTotalItems() > 0">
-
         <table class="table table-striped ngCart cart">
-
             <thead>
                 <tr>
                     <th></th>
@@ -74,14 +72,14 @@
                     <td></td>
                     <td></td>
                     <td>Shipping:</td>
-                    <td>{{ ngCart.getShipping() }} Kg</td>
+                    <td>{{ ngCart.getShipping() | currency:"Rp. "}}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td>Total:</td>
-                    <td>{{ ngCart.totalCost() - ngCart.getShipping() | currency:"Rp." }}</td>
+                    <td>{{ ngCart.totalCost() | currency:"Rp." }}</td>
                 </tr>
             </tfoot>
             <tbody>

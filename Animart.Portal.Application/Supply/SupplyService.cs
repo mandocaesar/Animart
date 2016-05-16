@@ -153,16 +153,16 @@ namespace Animart.Portal.Supply
             {
                 var item = _supplyItemRepository.Single(e => e.Id == supplyItem.Id);
 
-                item.Name = supplyItem.Name;
+                item.Name = supplyItem.Name ?? item.Name;
                 item.InStock = supplyItem.InStock;
                 item.Price = supplyItem.Price;
-                item.Code = supplyItem.Code;
+                item.Code = supplyItem.Code ?? item.Code;
                 item.Available = supplyItem.Available;
                 item.Weight = supplyItem.Weight;
-                item.Description = supplyItem.Description;
+                item.Description = supplyItem.Description ?? item.Description;
                 item.HasImage = supplyItem.HasImage;
                 item.IsPo = supplyItem.IsPO;
-                item.AvailableUntil = supplyItem.AvailableUntil;
+                item.AvailableUntil = supplyItem.AvailableUntil == DateTime.MinValue ? DateTime.Now.Date : item.AvailableUntil;
 
                 _supplyItemRepository.Update(item);
                 return true;
