@@ -4,7 +4,7 @@
         Your cart is empty
     </div>
     <div ng-controller="app.views.retailer.checkout">
-        <a href="./#/hwto">How to Pay</a>
+       
         <md-input-container class="md-block">
             <label>Address</label>
             <input ng-model="po.address">
@@ -41,11 +41,12 @@
                 <label>Expedition</label>
                 <md-select ng-model="po.expedition" ng-change="updateShippingPrice()">
                     <md-option ng-repeat="expedition in expeditions">
-                        {{expedition.expedition}}
+                        {{expedition.expedition}} ({{expedition.type}})
                     </md-option>
                 </md-select>
             </md-input-container>
         </div>
+        <h2><a href="./#/hwto"><u>How to Pay</u></a></h2>
         <a href="" class="btn btn-primary" ng-click="placeOrder()">Order Now</a>
     </div>
     <div class="table-responsive col-lg-12" ng-show="ngCart.getTotalItems() > 0">

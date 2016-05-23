@@ -57,11 +57,11 @@
                 var totalWeight = 0;
 
                 for (var i = 0; i < items.length; i++) {
-                    totalWeight = items[i].getData();
+                    totalWeight = items[i].getData() * items[i].getQuantity();
                     $scope.po.totalWeight = totalWeight;
                 }
 
-                ngCart.setShipping(totalWeight);
+                ngCart.setShipping(0);
             };
 
             $scope.translateCart = function() {
@@ -92,7 +92,7 @@
                     return;
                 }
                 $scope.translateCart();
-                $scope.po.grandTotal = ngCart.totalCost() - ngCart.getShipping();
+                $scope.po.grandTotal = ngCart.totalCost();
 
                 orderService.create($scope.po).success(function (result) {
                     orderService.addOrderItem(result, $scope.orderItems).success(function(rs) {

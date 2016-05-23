@@ -37,7 +37,7 @@ namespace Animart.Portal.Shipment
                 CreatorUserId = AbpSession.GetUserId(),
                 Expedition = shipmentItem.Expedition,
                 Type = shipmentItem.Type,
-                First5Kilo = shipmentItem.First5Kilo,
+                First5Kilo = shipmentItem.NextKilo,
                 NextKilo = shipmentItem.NextKilo
             };
 

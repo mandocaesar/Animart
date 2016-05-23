@@ -45,8 +45,7 @@ function expeditionController($q, $rootScope, $scope, expeditionService, $uibMod
             name: 'city', displayName: 'City Name', editableCellTemplate: 'ui-grid/dropdownEditor', editDropdownIdLabel: 'Id', editDropDownValueLable: 'name',
             editDropdownRowEntityOptionsArrayPath: 'cityOptions'
         },
-        { name: 'first5Kilo', displayName: 'First 5 Kilo' },
-        { name: 'nextKilo', displayName: 'Next Kilo' }
+        { name: 'nextKilo', displayName: 'Per Kilo' }
     ];
 
     $scope.saveRow = function (rowEntity) {

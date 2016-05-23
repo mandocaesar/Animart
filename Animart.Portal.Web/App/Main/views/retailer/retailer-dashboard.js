@@ -50,11 +50,11 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal, $m
 
     $scope.gridOptions.columnDefs = [
         { name: 'id', enableCellEdit: false },
-        { name: 'expedition', displayName: 'Expedition' },
-        { name: 'province', displayName: 'Province' },
-        { name: 'address', displayName: 'Address' },
-        { name: 'totalWeight', displayName: 'Total Weight' },
-        { name: 'grandTotal', displayName: 'Grand Total' , cellFilter: 'currency:"Rp"'},
+        { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
+        { name: 'province', displayName: 'Province', enableCellEdit: false },
+        { name: 'address', displayName: 'Address', enableCellEdit: false },
+        { name: 'totalWeight', displayName: 'Total Weight', enableCellEdit: false },
+        { name: 'grandTotal', displayName: 'Grand Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
         {
             name: 'view',displayName:'View',
             cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'
