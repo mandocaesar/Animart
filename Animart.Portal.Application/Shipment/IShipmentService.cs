@@ -15,12 +15,15 @@ namespace Animart.Portal.Shipment
         Task Delete(Guid shipmentId);
         List<ShipmentCostDto> GetShipmentCosts();
         List<ShipmentCostDto> GetShipmentCostFilterByExpedition(string name);
-        List<ShipmentCostDto> GetShipmentCostFilterByExpeditionAndCity(string expeditionName, string city);
+        List<ShipmentCostDto> GetShipmentCostFilterByExpeditionAndCity(string expeditionName, string city, string type);
+        ShipmentCostDto GetShipment(Guid id);
 
         Task CreateCity(string name);
         Task UpdateCity(CityOptionsDto cityItem);
         bool DeleteCity(Guid id);
         List<CityOptionsDto> GetCities();
         List<CityOptionsDto> GetCityFilterByName(string name);
+
+
     }
 }

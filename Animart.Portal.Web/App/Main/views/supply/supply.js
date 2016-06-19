@@ -55,10 +55,7 @@
             };
 
             $scope.gridOptions.columnDefs = [
-                {
-                    name: 'view', displayName: 'View',
-                    cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'
-                },
+                
                 { name: 'id', enableCellEdit: false },
                 { name: 'code', displayName: 'Code' },
                 { name: 'name', displayName: 'Name' },
@@ -71,6 +68,10 @@
                 { name: 'availableUntil', displayName: "Available Until", type: 'date' },
                 { name: 'hasImage', displayName: "Image", type: 'boolean', enableCellEdit: false },
                 { name: 'filename', displayName: 'File', width: '20%', editableCellTemplate: 'ui-grid/fileChooserEditor', editFileChooserCallback: $scope.storeFile }
+                , {
+                    name: 'view', displayName: 'Edit',
+                    cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> Edit</button>'
+                }
             ];
 
             $scope.saveRow = function (rowEntity) {

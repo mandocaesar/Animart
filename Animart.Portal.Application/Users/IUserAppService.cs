@@ -17,6 +17,7 @@ namespace Animart.Portal.Users
         bool UpdateUserProfile(UserProfileDto user);
 
         List<UserDto> GetUsers();
+        UserDto GetUser(int id);
         ListResultOutput<UserDto> GetUsersList();
         Task<GetCurrentLoginInformationsOutput> GetCurrentLoginInformations();
     }

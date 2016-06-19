@@ -41,7 +41,7 @@
                 <label>Expedition</label>
                 <md-select ng-model="po.expedition" ng-change="updateShippingPrice()">
                     <md-option ng-repeat="expedition in expeditions">
-                        {{expedition.expedition}} ({{expedition.type}})
+                        {{expedition.expedition}} - {{expedition.type}}
                     </md-option>
                 </md-select>
             </md-input-container>
@@ -68,7 +68,7 @@
                     <td>Tax ({{ ngCart.getTaxRate() }}%):</td>
                     <td>{{ ngCart.getTax() | currency:"Rp." }}</td>
                 </tr>*@
-                <tr ng-show="ngCart.getShipping()">
+                <tr >
                     <td></td>
                     <td></td>
                     <td></td>

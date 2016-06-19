@@ -15,7 +15,6 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
         if ($scope.isPaid) {
 
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
-            console.log($scope.image);
         }
     });
 
@@ -24,18 +23,22 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
     $scope.update = function () {
         var hasError = false;
         for (var i = 0; i < $scope.supplies.length; i++) {
-            orderService.update($scope.po.id, $scope.supplies[i]).error(function (r) {
+            orderService.update($scope.po.id, $scope.supplies[i]).success(function(r) {
+                $scope.$emit('updateDashboard', "ok");
+                abp.message.info('Update Success');
+            }).error(function (r) {
                 hasError = true;
+                if (i === $scope.supplies.length - 1) {
+                    if (hasError) {
+                        abp.message.error('error occured');
+                    } else {
+                        $scope.$emit('updateDashboard', "ok");
+                        abp.message.info('Update Success');
+                    }
+                }
             });
 
-            if (i === $scope.supplies.length - 1) {
-                if (hasError) {
-                    abp.message.error('error occured');
-                } else {
-                    $scope.$emit('updateDashboard', "ok");
-                    abp.message.info('Update Success');
-                }
-            }
+            
         }
 
     };

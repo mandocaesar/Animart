@@ -11,6 +11,7 @@ using Abp.Domain.Uow;
 using Abp.Runtime.Session;
 using Animart.Portal.Extension;
 using Animart.Portal.Order.Dto;
+using Animart.Portal.Shipment;
 using Animart.Portal.Supply;
 using Animart.Portal.Supply.Dto;
 using AutoMapper;
@@ -24,11 +25,14 @@ namespace Animart.Portal.Order
         private readonly IRepository<Users.User, long> _userRepository;
         private readonly IRepository<SupplyItem, Guid> _supplyItemRepository;
         private readonly IRepository<PurchaseOrder, Guid> _purchaseOrderRepository;
+        private readonly IRepository<ShipmentCost, Guid> _shipmentCostRepository;
+        private readonly IRepository<City, Guid> _cityRepository;
         private readonly OrderDomainService _orderDomainService;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public OrderService(IRepository<OrderItem, Guid> orderItemRepository, IRepository<Users.User, long> userRepository, OrderDomainService orderDomainService,
-            IUnitOfWorkManager unitOfWorkManager, IRepository<PurchaseOrder, Guid> purchaseOrderRepository, IRepository<SupplyItem, Guid> suppluRepository)
+            IUnitOfWorkManager unitOfWorkManager, IRepository<PurchaseOrder, Guid> purchaseOrderRepository, IRepository<SupplyItem, Guid> suppluRepository, 
+            IRepository<ShipmentCost, Guid> shipmentCostRepository, IRepository<City, Guid> cityRepository)
         {
             _orderItemRepository = orderItemRepository;
             _userRepository = userRepository;
@@ -36,6 +40,8 @@ namespace Animart.Portal.Order
             _unitOfWorkManager = unitOfWorkManager;
             _purchaseOrderRepository = purchaseOrderRepository;
             _supplyItemRepository = suppluRepository;
+            _shipmentCostRepository = shipmentCostRepository;
+            _cityRepository = cityRepository;
 
         }
 
@@ -225,13 +231,21 @@ namespace Animart.Portal.Order
                 var total = 0;
                 var items = item.PurchaseOrder.OrderItems.ToList();
 
+                var expedition = item.PurchaseOrder.Expedition.Split('-');
+                var expeditionName = expedition[0].Trim();
+                var type = expedition[1].Trim();
+                var city = _cityRepository.Single(e => e.Name == item.PurchaseOrder.City);
+                var cost = _shipmentCostRepository.GetAllList().FirstOrDefault(e => e.Expedition == expeditionName && e.Type == type  && e.City == city);
+
                 for (int i = 0; i < items.Count; i++)
                 {
                     var price = items[i].PriceAdjustment == 0 ? items[i].Item.Price : items[i].PriceAdjustment;
-                    total += price*items[i].Quantity;
+                    total += (price*items[i].Quantity) + (cost.First5Kilo * items[i].Quantity);
                 }
 
-                item.PurchaseOrder.GrandTotal = total;
+              
+
+                item.PurchaseOrder.GrandTotal = total ;
 
                 _orderItemRepository.Update(item);
 

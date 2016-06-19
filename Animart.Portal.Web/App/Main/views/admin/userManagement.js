@@ -5,7 +5,7 @@
             var vm = this;
 
             $scope.roleDropdown = ['Admin', 'Logistic', 'Accounting', 'Marketing', 'Retailer'];
-
+            $scope.selectedUser = {};
             $scope.gridOptions = {
                 enableRowSelection: true,
                 enableSelectAll: false,
@@ -27,8 +27,8 @@
                 { name: 'id', enableCellEdit: false },
                 { name: 'userName', displayName: 'User Name', enableCellEdit: false },
                 { name: 'email', displayName: 'Email', enableCellEdit: false },
-                { name: 'firstName', displayName: 'First Name' },
-                { name: 'lastName', displayName: 'Last Name' },
+                { name: 'firstName', displayName: 'First Name', enableCellEdit: false },
+                { name: 'lastName', displayName: 'Last Name', enableCellEdit: false },
                 { name: 'lastLoginTime', displayName: 'Last Login', cellFilter: 'date', enableCellEdit: false },
                 {
                     name: 'role', displayName: 'Role', editableCellTemplate: 'ui-grid/dropdownEditor',
@@ -40,7 +40,11 @@
                         { id: 'Retailer', role: 'Retailer' }
                     ]
                 },
-                { name: 'isActive', displayName: 'Active', type: 'boolean' }
+                { name: 'isActive', displayName: 'Active', type: 'boolean', enableCellEdit: false },
+                {
+                    name: 'edit', displayName: 'Edit',
+                    cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.open(row.entity.id)"><i class="fa fa-pencil"></i> Edit</button>'
+                }
             ];
 
 
@@ -58,15 +62,22 @@
                 gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
             };
 
-            $scope.open = function () {
+            $scope.open = function (id) {
+                if (id != null) {
+                    $scope.selectedUser = id;
+                   
+                };
+
                 var modalInstance = $uibModal.open({
                     animation: $scope.animationsEnabled,
-                    templateUrl: 'addNewUser.html',
+                    templateUrl: 'userModal.html',
+                    scope: $scope,
                     controller: 'userManagementModalCtrl',
                     size: 'm'
                 });
 
                 modalInstance.result.then(function (result) {
+                    $scope.selectedUser = {};
                     $scope.refresh();
                 });
             };
@@ -106,7 +117,53 @@
         '$scope', 'abp.services.app.user', '$uibModalInstance',
         function ($scope, userService, $uibModalInstance, result) {
             $scope.roles = ['Admin', 'Logistic', 'Accounting', 'Marketing', 'Retailer'];
+            $scope.user = {
+                Id:0,
+                UserName: '',
+                FirstName: '',
+                LastName: '',
+                Email: '',
+                Role: '',
+                IsActive:false
+            };
+            $scope.init = function() {
+                if ($scope.selectedUser != undefined && $scope.selectedUser != null) {
+                    userService.getUser($scope.selectedUser)
+                       .success(function (result) {
+                            debugger;
+                           $scope.user.Id = result.id;
+                           $scope.user.UserName = result.userName;
+                           $scope.user.FirstName = result.firstName;
+                           $scope.user.LastName = result.lastName;
+                           $scope.user.Email = result.email;
+                           $scope.user.Role = result.role;
+                           $scope.user.IsActive = result.isActive;
+                        })
+                       .error(function () { abp.notify.error('Error Occured'); });
+                    
+                   // $scope.$apply();
+                }
+            };
+
             $scope.ok = function () {
+                if ($scope.selectedUser != undefined && $scope.selectedUser != null) {
+                    $scope.updateUser();
+                } else {
+                    $scope.addUser();
+                }
+            };
+
+            $scope.cancel = function () {
+                $uibModalInstance.dismiss('cancel');
+            };
+
+            $scope.updateUser = function () {
+                userService.updateUser($scope.user)
+                   .success(function (result) { abp.notify.info('Updated'); })
+                   .error(function (result) { abp.notify.error('Error Occured'); });
+            };
+
+            $scope.addUser = function () {
                 userService.createUser($scope.user)
                     .success(function (rs) {
                         $scope.result = result;
@@ -118,11 +175,9 @@
                         abp.notify.error('Error Occured');
                         $uibModalInstance.dismiss('cancel');
                     });
-            };
+            }
 
-            $scope.cancel = function () {
-                $uibModalInstance.dismiss('cancel');
-            };
+            $scope.init();
         }
     ]);
 })();

@@ -46,17 +46,26 @@ namespace Animart.Portal.Shipment
 
         public async Task Update(ShipmentCostDto shipmentItem)
         {
-            var editItem = _shipmentRepository.Get(shipmentItem.Id);
-            editItem.City = _cityRepository.FirstOrDefault(e => e.Name == shipmentItem.City);
-            editItem.Expedition = shipmentItem.Expedition;
-            editItem.Type = shipmentItem.Type;
+            try
+            {
+                var editItem = _shipmentRepository.Single(e=>e.Id == shipmentItem.Id);
+                var cityId = Guid.Parse(shipmentItem.City);
+                editItem.City = _cityRepository.FirstOrDefault(e => e.Id == cityId);
+                editItem.Expedition = shipmentItem.Expedition;
+                editItem.Type = shipmentItem.Type;
 
-            await _shipmentRepository.UpdateAsync(editItem);
+                await _shipmentRepository.UpdateAsync(editItem);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task Delete(Guid shipmentId)
         {
-            await _shipmentRepository.DeleteAsync(shipmentId);
+            var item = _shipmentRepository.Single(e => e.Id == shipmentId);
+            await _shipmentRepository.DeleteAsync(item);
         }
 
         public List<ShipmentCostDto> GetShipmentCosts()
@@ -89,12 +98,14 @@ namespace Animart.Portal.Shipment
             }).ToList();
         }
 
-        public List<ShipmentCostDto> GetShipmentCostFilterByExpeditionAndCity(string expeditionName, string city)
+        public List<ShipmentCostDto> GetShipmentCostFilterByExpeditionAndCity(string expeditionName, string city, string type)
         {
             var _expedition = expeditionName.Trim();
             var _city = city.Trim();
+            var _type = type.Trim();
+            var cityId = _cityRepository.Single(e => e.Name.ToLower() == _city.ToLower());
 
-            var result =  _shipmentRepository.GetAllList().Where(e => e.Expedition == _expedition && e.City.Name == _city).Select(e => new ShipmentCostDto()
+            var result =  _shipmentRepository.GetAllList().Where(e => e.Expedition == _expedition && e.City == cityId && e.Type == _type).Select(e => new ShipmentCostDto()
             {
                 City = e.City.Name,
                 CreationTime = e.CreationTime,
@@ -108,6 +119,23 @@ namespace Animart.Portal.Shipment
             }).ToList();
 
             return result;
+        }
+
+        public ShipmentCostDto GetShipment(Guid id)
+        {
+            var item = _shipmentRepository.Single(e => e.Id == id);
+
+            return new ShipmentCostDto()
+            {
+                City = item.City.Id.ToString(),
+                CreationTime = item.CreationTime,
+                CreatorUserId = item.CreatorUserId,
+                First5Kilo = item.First5Kilo,
+                Expedition = item.Expedition,
+                NextKilo = item.NextKilo,
+                Id = item.Id,
+                Type = item.Type
+            };
         }
 
         public async Task CreateCity(string name)

@@ -72,19 +72,19 @@ namespace Animart.Portal.Users
                 {
                     var roleId = _userRepository.Get(user.Id).Roles.First().RoleId;
                     var currentRole = _roleManager.FindById(roleId).DisplayName;
-                    UserManager.RemoveFromRole(_user.Id, currentRole);
+                    if (currentRole != user.Role)
+                    {
+                        UserManager.RemoveFromRole(_user.Id, currentRole);
+                        UserManager.AddToRole(_user.Id, user.Role);
+                    }
                 }
-                UserManager.AddToRole(_user.Id, user.Role);
-
+               
                 _user.IsActive = user.IsActive;
                 _user.Name = user.FirstName;
                 _user.Surname = user.LastName;
                 _user.EmailAddress = user.Email;
 
                 _userRepository.Update(_user);
-
-              
-
               
             }
             catch (Exception ex)
@@ -154,6 +154,23 @@ namespace Animart.Portal.Users
                 }
             }
             return users;
+        }
+
+        public UserDto GetUser(int id)
+        {
+            
+            var user = _userRepository.Get(id);
+             return new UserDto()
+            {
+                Id = user.Id,
+                FirstName = user.Name,
+                LastName = user.Surname,
+                IsActive = user.IsActive,
+                Email = user.EmailAddress,
+                UserName = user.UserName,
+                LastLoginTime = user.LastLoginTime,
+                Role = _roleManager.FindById(user.Roles.FirstOrDefault().RoleId).DisplayName
+            };
         }
 
         public ListResultOutput<UserDto> GetUsersList()
