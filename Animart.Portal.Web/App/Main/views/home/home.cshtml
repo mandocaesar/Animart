@@ -26,7 +26,7 @@
     </div>
     <md-content class="md-padding" layout-xs="column" layout="row">
         <div ng-repeat="supply in supplies" flex-xs flex-gt-xs="25" layout="column">
-            <md-card>
+            <md-card ng-if="supply.inStock>0">
                 <md-card-title>
                     <md-card-title-text>
                         <span class="md-headline">{{supply.name}}</span>
@@ -37,7 +37,7 @@
                     <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(supply.id)" />
                 </md-card-content>
                 <md-card-actions layout="row" layout-align="middle center"  ng-if="vm.getShownUserName().currentRole == '5'">
-                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="{{supply.inStock}}" data=supply.weight>Add To Cart</ngcart-addtocart>
+                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1"  quantity-max="{{supply.inStock}}" data=supply.weight>Add To Cart</ngcart-addtocart>
                 </md-card-actions>
             </md-card>
         </div>

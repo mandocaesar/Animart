@@ -67,7 +67,7 @@
                     //alert(items[i].getData());
                 }
                 console.log($scope.po);
-                alert($scope.po.expedition.nextKilo);
+                //alert($scope.po.expedition.nextKilo);
 
                 ngCart.setShipping(totalWeight * $scope.po.expedition.nextKilo);
             };
