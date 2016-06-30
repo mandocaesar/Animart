@@ -41,7 +41,7 @@
                 <label>Expedition</label>
                 <md-select ng-model="po.expedition" ng-change="updateShippingPrice()">
                     <md-option ng-repeat="expedition in expeditions">
-                        {{expedition.expedition}} ({{expedition.type}})
+                        {{expedition.expedition}} ({{expedition.type}}) - {{expedition.nextKilo}}
                     </md-option>
                 </md-select>
             </md-input-container>

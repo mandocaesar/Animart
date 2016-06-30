@@ -42,7 +42,8 @@ function expeditionController($q, $rootScope, $scope, expeditionService, $uibMod
         { name: 'expedition', displayName: 'Expedition Agent' },
         { name: 'type', displayName: 'Type' },
         {
-            name: 'city', displayName: 'City Name', editableCellTemplate: 'ui-grid/dropdownEditor', editDropdownIdLabel: 'Id', editDropDownValueLable: 'name',
+            name: 'city', displayName: 'City Name', editableCellTemplate: 'ui-grid/dropdownEditor',
+            editDropdownIdLabel: 'id', editDropDownValueLable: 'name',
             editDropdownRowEntityOptionsArrayPath: 'cityOptions'
         },
         { name: 'nextKilo', displayName: 'Per Kilo' }

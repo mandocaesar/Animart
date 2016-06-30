@@ -48,9 +48,9 @@ namespace Animart.Portal.Shipment
         {
             var editItem = _shipmentRepository.Get(shipmentItem.Id);
             editItem.City = _cityRepository.FirstOrDefault(e => e.Name == shipmentItem.City);
+            editItem.NextKilo = shipmentItem.NextKilo;
             editItem.Expedition = shipmentItem.Expedition;
             editItem.Type = shipmentItem.Type;
-
             await _shipmentRepository.UpdateAsync(editItem);
         }
 
@@ -67,7 +67,7 @@ namespace Animart.Portal.Shipment
                 CreationTime = e.CreationTime,
                 CreatorUserId = e.CreatorUserId,
                 Expedition = e.Expedition,
-                First5Kilo = e.First5Kilo,
+                First5Kilo = e.NextKilo,
                 NextKilo = e.NextKilo,
                 Type = e.Type,
                 Id = e.Id
@@ -82,7 +82,7 @@ namespace Animart.Portal.Shipment
                 CreationTime = e.CreationTime,
                 CreatorUserId = e.CreatorUserId,
                 Expedition = e.Expedition,
-                First5Kilo = e.First5Kilo,
+                First5Kilo = e.NextKilo,
                 NextKilo = e.NextKilo,
                 Type = e.Type,
                 Id = e.Id
@@ -100,7 +100,7 @@ namespace Animart.Portal.Shipment
                 CreationTime = e.CreationTime,
                 CreatorUserId = e.CreatorUserId,
                 Expedition = e.Expedition,
-                First5Kilo = e.First5Kilo,
+                First5Kilo = e.NextKilo,
                 NextKilo = e.NextKilo,
                 Type = e.Type,
                 Id = e.Id
