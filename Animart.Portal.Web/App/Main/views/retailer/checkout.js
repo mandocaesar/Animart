@@ -29,7 +29,10 @@
             $scope.updateShippingPrice = function () {
                 console.log(ngCart);
                 if ($scope.po.expedition !== '' && $scope.po.city !== '') {
-                    expeditonService.getShipmentCostFilterByExpeditionAndCity($scope.po.expedition, $scope.po.city).success(function(rs) {
+                    var name = $scope.po.expedition.split('-')[0];
+                    var type = $scope.po.expedition.split('-')[1];
+                    
+                    expeditonService.getShipmentCostFilterByExpeditionAndCity(name, $scope.po.city,type).success(function(rs) {
                         console.log(rs);
                         ngCart.setShipping($scope.po.totalWeight * rs[0].nextKilo);
                     });

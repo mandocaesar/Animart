@@ -6,7 +6,7 @@
                     <md-card-title>
                         <md-card-title-text style="color: white">
                             <span class="md-headline">{{dashboard.bdo}} Order(s)</span>
-                            <span class="md-subhead">in BOD Review</span>
+                            <span class="md-subhead">in Review</span>
                         </md-card-title-text>
                     </md-card-title>
                 </md-card>
@@ -98,35 +98,40 @@
                         </md-input-container>
                     </div>
                     <div layout-gt-sm="row">
-                        <md-input-container>
-                            <md-subheader class="md-sticky">
-                                Ordered Items:<br/>
-                                <p>Name     Price       Adjustment      Qty</p>
-                                
-                            </md-subheader>
-                            <md-list-item ng-repeat="supply in supplies">
-                                <p> {{ supply.item.name }}   </p>
-                                <p style="margin-left:10px"> {{supply.item.price | currency:"Rp."}}</p>
-                                <input type="number" min="0" class="pull-right" ng-model="supply.priceAdjusment"   style="margin-left:40px;" ng-disabled="isPaid" />
-                                <p style="margin-left:10px">   {{supply.quantity}}</p>
-                            </md-list-item>
-                        </md-input-container>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Price</td>
+                                    <td>Adjustment</td>
+                                    <td>Qty</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="supply in supplies">
+                                    <td>{{ supply.item.name }}</td>
+                                    <td>{{supply.item.price | currency:"Rp."}}</td>
+                                    <td><input type="number" min="0" class="pull-right" ng-model="supply.priceAdjusment" style="margin-left:40px;" ng-disabled="isPaid" /></td>
+                                    <td>{{supply.quantity}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <span flex></span>
                 <md-button ng-click="updateReceipt()" ng-show="isPaid">
-                    Update Receipt
+                    Finnalize
                 </md-button>
                 <md-button ng-click="update()" ng-hide="isPaid">
                     Update
                 </md-button>
                 <md-button ng-click="cancel()" ng-hide="isPaid">
-                    Cancel
+                    Reject
                 </md-button>
                 <md-button ng-click="approve()" ng-hide="isPaid">
-                    Approve
+                    Send to Logistic
                 </md-button>
             </md-dialog-actions>
         </form>
