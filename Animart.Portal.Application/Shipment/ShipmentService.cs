@@ -48,12 +48,12 @@ namespace Animart.Portal.Shipment
         {
             try
             {
-                var editItem = _shipmentRepository.Single(e=>e.Id == shipmentItem.Id);
+                var editItem = _shipmentRepository.Single(e => e.Id == shipmentItem.Id);
                 var cityId = Guid.Parse(shipmentItem.City);
                 editItem.City = _cityRepository.FirstOrDefault(e => e.Id == cityId);
+                editItem.NextKilo = shipmentItem.NextKilo;
                 editItem.Expedition = shipmentItem.Expedition;
                 editItem.Type = shipmentItem.Type;
-
                 await _shipmentRepository.UpdateAsync(editItem);
             }
             catch (Exception ex)
@@ -65,6 +65,7 @@ namespace Animart.Portal.Shipment
         public async Task Delete(Guid shipmentId)
         {
             var item = _shipmentRepository.Single(e => e.Id == shipmentId);
+
             await _shipmentRepository.DeleteAsync(item);
         }
 
@@ -76,7 +77,7 @@ namespace Animart.Portal.Shipment
                 CreationTime = e.CreationTime,
                 CreatorUserId = e.CreatorUserId,
                 Expedition = e.Expedition,
-                First5Kilo = e.First5Kilo,
+                First5Kilo = e.NextKilo,
                 NextKilo = e.NextKilo,
                 Type = e.Type,
                 Id = e.Id
@@ -91,7 +92,7 @@ namespace Animart.Portal.Shipment
                 CreationTime = e.CreationTime,
                 CreatorUserId = e.CreatorUserId,
                 Expedition = e.Expedition,
-                First5Kilo = e.First5Kilo,
+                First5Kilo = e.NextKilo,
                 NextKilo = e.NextKilo,
                 Type = e.Type,
                 Id = e.Id
@@ -105,13 +106,13 @@ namespace Animart.Portal.Shipment
             var _type = type.Trim();
             var cityId = _cityRepository.Single(e => e.Name.ToLower() == _city.ToLower());
 
-            var result =  _shipmentRepository.GetAllList().Where(e => e.Expedition == _expedition && e.City == cityId && e.Type == _type).Select(e => new ShipmentCostDto()
+            var result = _shipmentRepository.GetAllList().Where(e => e.Expedition == _expedition && e.City == cityId && e.Type == _type).Select(e => new ShipmentCostDto()
             {
                 City = e.City.Name,
                 CreationTime = e.CreationTime,
                 CreatorUserId = e.CreatorUserId,
                 Expedition = e.Expedition,
-                First5Kilo = e.First5Kilo,
+                First5Kilo = e.NextKilo,
                 NextKilo = e.NextKilo,
                 Type = e.Type,
                 Id = e.Id
@@ -119,23 +120,6 @@ namespace Animart.Portal.Shipment
             }).ToList();
 
             return result;
-        }
-
-        public ShipmentCostDto GetShipment(Guid id)
-        {
-            var item = _shipmentRepository.Single(e => e.Id == id);
-
-            return new ShipmentCostDto()
-            {
-                City = item.City.Id.ToString(),
-                CreationTime = item.CreationTime,
-                CreatorUserId = item.CreatorUserId,
-                First5Kilo = item.First5Kilo,
-                Expedition = item.Expedition,
-                NextKilo = item.NextKilo,
-                Id = item.Id,
-                Type = item.Type
-            };
         }
 
         public async Task CreateCity(string name)
@@ -189,6 +173,23 @@ namespace Animart.Portal.Shipment
                 Id = e.Id,
                 Name = e.Name
             }).ToList();
+        }
+        
+        public ShipmentCostDto GetShipment(Guid id)
+        {
+            var item = _shipmentRepository.Single(e => e.Id == id);
+
+            return new ShipmentCostDto()
+            {
+                City = item.City.Id.ToString(),
+                CreationTime = item.CreationTime,
+                CreatorUserId = item.CreatorUserId,
+                First5Kilo = item.First5Kilo,
+                Expedition = item.Expedition,
+                NextKilo = item.NextKilo,
+                Id = item.Id,
+                Type = item.Type
+            };
         }
     }
 }
