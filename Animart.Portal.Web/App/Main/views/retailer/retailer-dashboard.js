@@ -21,10 +21,10 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal, $m
     };
     $scope.animationsEnabled = true;
 
-    $scope.refresh = function () {
+    $scope.refresh = function (isLogistic) {
         $scope.gridOptions.data = null;
-        orderService.getAllPurchaseOrderByUserId().success(function (result) {
-            console.log(result);
+        orderService.getAllPurchaseOrderByUserId(isLogistic).success(function (result) {
+          //  console.log(result);
             $scope.gridOptions.data = result;
         });
     };
@@ -72,7 +72,7 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal, $m
     };
 
     $scope.$on('updateDashboard', function (event, data) { $scope.LoadDashboard(); });
-    $scope.refresh();
+    $scope.refresh(false);
     $scope.LoadDashboard();
 };
 

@@ -21,6 +21,7 @@
             appSession.getCurrentLoginInformations({ async: false }).success(function (result) {
                 //console.log(result);
                 user = result.user;
+                $rootScope.Address = user.Address;
                 $scope.luser = user;
             }).error(
                 function (result) {
@@ -59,6 +60,7 @@
            $scope.user = {};
            $scope.user.Id = $scope.luser.id;
            $scope.user.UserName = $scope.luser.userName;
+           $scope.user.Address = $scope.luser.address;
            $scope.user.FirstName = $scope.luser.name;
            $scope.user.LastName = $scope.luser.surname;
            $scope.user.Email = $scope.luser.emailAddress;

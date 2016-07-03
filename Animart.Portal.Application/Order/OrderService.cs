@@ -280,14 +280,20 @@ namespace Animart.Portal.Order
             }
         }
 
-        public List<PurchaseOrderDto> GetAllPurchaseOrderByUserId()
+        public List<PurchaseOrderDto> GetAllPurchaseOrderByUserId(bool IsLogistic)
         {
             try
             {
                 var uid = AbpSession.GetUserId();
                 var list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid).ToList();
-                var a = list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
-                return a;
+                if (!IsLogistic)
+                {
+                     return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status != "LOGISTIC").ToList();
+                }
+                else
+                {
+                     return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w=>w.Status == "LOGISTIC").ToList();
+                }
             }
             catch (Exception ex)
             {
