@@ -25,6 +25,8 @@ namespace Animart.Portal.Order.Dto
         public decimal TotalWeight { get; set; }
 
         public decimal GrandTotal { get; set; }
+        public decimal ShipmentCost { get; set; }
+        public decimal TotalShipmentCost { get; set; }
 
         public string ReceiptNumber { get; set; }
 

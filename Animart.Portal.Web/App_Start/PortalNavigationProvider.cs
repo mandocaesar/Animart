@@ -40,8 +40,8 @@ namespace Animart.Portal.Web
                         )
                 ).AddItem(
                     new MenuItemDefinition(
-                        "HowToPay",
-                        new LocalizableString("HowToPay", PortalConsts.LocalizationSourceName),
+                        "HowToOrder",
+                        new LocalizableString("HowToOrder", PortalConsts.LocalizationSourceName),
                         url: "/#/hwto",
                         icon: "fa fa-info",
                         requiredPermissionName: "CanAccessRetailer"

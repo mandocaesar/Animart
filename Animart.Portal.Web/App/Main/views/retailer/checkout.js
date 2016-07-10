@@ -142,7 +142,6 @@
                     return;
                 }
                 $scope.po.hideOrderBtn = true;
-                $scope.translateCart();
                 $scope.po.grandTotal = ngCart.totalCost();
                 //alert($scope.po.grandTotal);
 

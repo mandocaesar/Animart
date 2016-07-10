@@ -19,7 +19,7 @@
     <text name="AccountingDashboard" value="Accounting Dashboard"/>
     <text name="MarketingDashboard" value="Marketing Dashboard"/>
     <text name="RetailerDashboard" value="Retailer Dashboard"/>
-    <text name="HowToPay" value="How To Pay"/>
+    <text name="HowToOrder" value="How To Order"/>
     <text name="LogisticDashboard" value="Logistic Dashboard"/>
     <text name="Profile" value="User Profile"/>
 

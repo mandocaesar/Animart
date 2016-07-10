@@ -1,12 +1,12 @@
 ﻿angular.module('app').controller('app.views.retailerDashboard', [
-    '$q', '$rootScope', '$scope', 'abp.services.app.order', '$uibModal', '$mdSidenav', '$mdDialog',
+    '$q', '$rootScope', '$scope', 'abp.services.app.order', 'abp.services.app.shipment', '$uibModal', '$mdSidenav', '$mdDialog',
     dashboardController
 ]).controller('LeftCtrl', [
     '$q', '$rootScope', '$scope', 'abp.services.app.supply', 'abp.services.app.shipment', 'abp.services.app.order', '$mdDialog',
     leftController
 ]);
 
-function dashboardController($q, $rootScope, $scope, orderService, $uibModal, $mdSidenav, $mdDialog) {
+function dashboardController($q, $rootScope, $scope, orderService, expedition, $uibModal, $mdSidenav, $mdDialog) {
     $scope.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     $scope.series = ['Order Made'];
     $scope.data = [];
@@ -31,16 +31,17 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal, $m
 
     $scope.showMe = function (id) {
         var ev = this.ev;
-            $mdDialog.show({
-                templateUrl: 'view-order.tmpl.html',
-                controller: ViewOrderController,
-                parent: angular.element(document.body),
-                targetEvent: ev,
-                clickOutsideToClose: true,
-                locals: {
-                    purchaseOrderId:id,
-                    orderService: orderService
-                }
+        $mdDialog.show({
+            templateUrl: 'view-order.tmpl.html',
+            controller: ViewOrderController,
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: true,
+            locals: {
+                purchaseOrderId: id,
+                orderService: orderService,
+                expeditionService: expedition
+    }
             }).then(function (rs) {
                     $scope.$emit('updateDashboard', "ok");
             }, function () {
@@ -53,8 +54,9 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal, $m
         { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
         { name: 'province', displayName: 'Province', enableCellEdit: false },
         { name: 'address', displayName: 'Address', enableCellEdit: false },
-        { name: 'totalWeight', displayName: 'Total Weight', enableCellEdit: false },
-        { name: 'grandTotal', displayName: 'Grand Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
+        //{ name: 'totalWeight', displayName: 'Total Weight (kg)', enableCellEdit: false },
+        { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
+        //{ name: 'shipmentCost', displayName: 'Shipment Cost', cellFilter: 'currency:"Rp"', enableCellEdit: false },
         {
             name: 'view',displayName:'View',
             cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'
@@ -120,10 +122,21 @@ function leftController($q, $rootScope, $scope, supplyService, expeditonService,
     };
 };
 
-function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId) {
+function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId, expeditionService) {
 
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function(result) {
         $scope.po = result;
+        //if ($scope.po.expedition !== '' && $scope.po.city !== '') {
+        //    var name = $scope.po.expedition.split('-')[0];
+        //    var type = $scope.po.expedition.split('-')[1];
+        //    expeditionService.getShipmentCostFilterByExpeditionAndCity(name, $scope.po.city, type).success(function (rs) {
+        //        //console.log(rs);
+        //        //alert(rs[0].nextKilo);
+        //        $scope.po.shipping = rs[0].nextKilo;
+        //        $scope.po.shippingTotal = (rs[0].nextKilo*$scope.po.totalWeight);
+        //    });
+        //}
+        console.log(result);
        
         $scope.isApproved = false;
         $scope.isNotBOD = false;
@@ -140,8 +153,9 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
             console.log($scope.image);
         }
-        console.log($scope.isApproved);
+        //console.log($scope.isApproved);
         $scope.supplies = result.items;
+        console.log(result.items);
     });
 
     $scope.file = {};

@@ -55,11 +55,11 @@
     </md-content>
 
     <script type="text/ng-template" id="order.tmpl.html">
-        <md-dialog aria-label="Mango (Fruit)" ng-cloak>
+        <md-dialog aria-label="Mango (Fruit)" ng-cloak class="fullscreen-dialog">
             <form name="poForm">
                 <md-toolbar>
                     <div class="md-toolbar-tools">
-                        <h2>Place Order</h2>
+                        <h2>Order Details</h2>
                         <span flex></span>
                         <md-button class="md-icon-button" ng-click="cancel()">
                             <md-icon md-svg-src="" aria-label="Close dialog"></md-icon>
@@ -134,12 +134,12 @@
         </md-dialog>
     </script>
 
-    <script type="text/ng-template" id="view-order.tmpl.html">
-        <md-dialog aria-label="Mango (Fruit)" ng-cloak>
+<script type="text/ng-template" id="view-order.tmpl.html">
+        <md-dialog aria-label="Mango (Fruit)" ng-cloak class="fullscreen-dialog">
             <form name="poForm">
                 <md-toolbar>
                     <div class="md-toolbar-tools">
-                        <h2>Place Order</h2>
+                        <h2>Order Details</h2>
                         <span flex></span>
                         <md-button class="md-icon-button" ng-click="cancel()">
                             <md-icon md-svg-src="" aria-label="Close dialog"></md-icon>
@@ -147,59 +147,135 @@
                     </div>
                 </md-toolbar>
                 <md-dialog-content>
-                    <md-subheader class="md-sticky">Grand Total : {{po.grandTotal | currency:"Rp"}}</md-subheader>
+                   @* <md-subheader class="md-sticky">Grand Total : {{po.grandTotal + po.shippingTotal | currency:"Rp"}}</md-subheader>*@
                     <div class="md-dialog-content">
                         <md-card>
-                            <img src="{{image}}" class="md-card-image" alt="image caption">
                             <md-card-content>Payment Receipt</md-card-content>
+                            <md-card-content>
+                                <img src="{{image}}" class="md-card-image" alt="image caption">
+                            </md-card-content>                       
                         </md-card>
-                        <md-input-container class="md-block">
-                            <label>Address</label>
-                            <input ng-model="po.address" disabled>
-                        </md-input-container>
-                        <div layout-gt-sm="row">
-                            <md-input-container class="md-block" flex-gt-sm>
-                                <label>Province</label>
-                                <input ng-model="po.province" disabled>
-                            </md-input-container>
-                            <md-input-container class="md-block" flex-gt-sm>
-                                <label>City</label>
-                                <input ng-model="po.city" disabled>
-                            </md-input-container>
-                            <md-input-container class="md-block" flex-gt-sm>
-                                <label>Postal Code</label>
-                                <input name="postalCode" ng-model="po.postalCode" placeholder="12345"
-                                       required ng-pattern="/^[0-9]{5}$/" md-maxlength="5" disabled>
-                                <div ng-messages="poForm.postalCode.$error" role="alert" multiple>
-                                    <div ng-message="required" class="my-message">You must supply a postal code.</div>
-                                    <div ng-message="pattern" class="my-message">
-                                        That doesn't look like a valid postal
-                                        code.
-                                    </div>
-                                </div>
-                            </md-input-container>
-                        </div>
-                        <div layout-gt-sm="row">
-                            <md-input-container class="md-block" flex-gt-sm>
-                                <label>Expedition</label>
-                                <input ng-model="po.expedition" disabled>
-                            </md-input-container>
-                        </div>
-                        <div layout-gt-sm="row">
-                            <md-input-container>
-                                <md-subheader class="md-sticky">Ordered Items: </md-subheader>
-                                <md-list-item ng-repeat="supply in supplies">
-                                    <p> {{ supply.item.name }} </p>
-                                    <input type="number" min="0" class="pull-right" ng-model="supply.quantity" disabled style="margin-left:40px;">
-                                </md-list-item>
-                            </md-input-container>
-                        </div>
                         <div layout-gt-sm="row" ng-show="isApproved" ng-disable="isNotBOD">
                             <input type="file" id="file" name="file" onchange="angular.element(this).scope().getFile(this)" />
                             <md-button ng-click="upload()" style="margin-right:20px;" ng-hide="error" ng-disabled="checkStatus">
                                 Upload payment receipt
                             </md-button>
                         </div>
+                        <md-subheader class="md-sticky">Ordered Items: </md-subheader>
+                        <div layout-gt-sm="row">
+                            <md-input-container  class="table-responsive col-lg-12">                                
+                                <div>
+                                    <table class="table table-striped ngCart cart table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Weight (kg)</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="supply in supplies">
+                                                <td>
+                                                    {{ supply.item.name }}
+                                                </td>
+                                                <td>
+                                                    {{ supply.item.weight }}
+                                                </td>
+                                                <td>
+                                                    {{supply.quantity}}
+                                                </td>
+                                                <td>
+                                                    {{ supply.item.price | currency:"Rp." }}
+                                                </td>
+                                                <td>
+                                                    {{ supply.item.price * supply.quantity | currency:"Rp." }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>                                          
+                                            <tr>
+                                                <td colspan="4" align="right"><strong>SubTotal:</strong></td>
+                                                <td>{{ po.grandTotal | currency:"Rp." }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
+                                                <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" align="right"><strong>Total:</strong></td>
+                                                <td><strong>{{ po.grandTotal + po.totalShipmentCost | currency:"Rp." }}</strong></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    </table>
+                                </div>
+                            </md-input-container>
+                        </div>
+                        <md-subheader class="md-sticky">Shipping Address Information: </md-subheader>
+                        <div layout-gt-sm="row" class="table-responsive col-lg-12">
+                            <table class="table table-striped ngCart cart table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5">
+                                            <div>
+                                                <md-input-container class="md-block">
+                                                    <label>Address</label>
+                                                    <input ng-model="po.address" disabled>
+                                                </md-input-container>
+                                                <div layout-gt-sm="row">
+                                                    <md-input-container class="md-block" flex-gt-sm>
+                                                        <label>Province</label>
+                                                        <input ng-model="po.province" disabled>
+                                                    </md-input-container>
+                                                    <md-input-container class="md-block" flex-gt-sm>
+                                                        <label>City</label>
+                                                        <input ng-model="po.city" disabled>
+                                                    </md-input-container>
+                                                    <md-input-container class="md-block" flex-gt-sm>
+                                                        <label>Postal Code</label>
+                                                        <input name="postalCode" ng-model="po.postalCode" placeholder="12345"
+                                                               required ng-pattern="/^[0-9]{5}$/" md-maxlength="5" disabled>
+                                                        <div ng-messages="poForm.postalCode.$error" role="alert" multiple>
+                                                            <div ng-message="required" class="my-message">You must supply a postal code.</div>
+                                                            <div ng-message="pattern" class="my-message">
+                                                                That doesn't look like a valid postal
+                                                                code.
+                                                            </div>
+                                                        </div>
+                                                    </md-input-container>
+                                                </div>
+                                                <md-input-container class="md-block" flex-gt-sm>
+                                                    <label>Expedition</label>
+                                                    <input ng-model="po.expedition" disabled>
+                                                </md-input-container>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4" align="right" width="70%"><strong>Shipping per(kg):</strong></td>
+                                        <td>{{ po.shipmentCost | currency:"Rp." }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" align="right"><strong>Total Weight:</strong></td>
+                                        <td>{{ po.totalWeight }} kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" align="right"><strong>Total Shipping:</strong></td>
+                                        <td><strong>{{ po.totalShipmentCost| currency:"Rp." }}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>                        
+                        @*<div layout-gt-sm="row" ng-show="isApproved" ng-disable="isNotBOD">
+                            <input type="file" id="file" name="file" onchange="angular.element(this).scope().getFile(this)" />
+                            <md-button ng-click="upload()" style="margin-right:20px;" ng-hide="error" ng-disabled="checkStatus">
+                                Upload payment receipt
+                            </md-button>
+                        </div>*@
                     </div>
                 </md-dialog-content>
                 <md-dialog-actions layout="row">
@@ -207,7 +283,6 @@
                     <md-button ng-click="cancel()">
                         Cancel
                     </md-button>
-
                 </md-dialog-actions>
             </form>
         </md-dialog>

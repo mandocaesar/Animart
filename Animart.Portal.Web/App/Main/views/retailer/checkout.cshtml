@@ -4,11 +4,11 @@
         Your cart is empty
     </div>
     <div class="table-responsive col-lg-12" ng-show="ngCart.getTotalItems() > 0" ng-controller="app.views.retailer.checkout">
-        <label>Items</label>
+        <label>Review Order</label>
         <table class="table table-striped ngCart cart table-bordered">
             <thead>
                 <tr>
-                    <th>Delete Item</th>
+                    <th></th>
                     <th>Name</th>
                     <th>Price</th>
                     <th>Quantity</th>
@@ -41,7 +41,7 @@
             </tfoot>
             </table>
           
-            <label>Shipping Information</label>
+            <label>Shipping Address and Expedition Information</label>
             <label style="color:red;">*Please fill your shipping address information</label>
             <table class="table table-striped ngCart cart table-bordered">
                 <tbody>
@@ -80,12 +80,15 @@
                                         </div>
                                     </md-input-container>
                                 </div>
+                                <div layout-gt-sm="row" ng-hide="po.showExpedition">
+                                   <label style="color:red;">*Please select your city first, to choose an expedition</label>
+                                </div>
                                 <div layout-gt-sm="row" ng-show="po.showExpedition">
                                     <md-input-container class="md-block" flex-gt-sm>
                                         <label><strong>Expedition</strong></label>
                                         <md-select ng-model="po.expedition" ng-change="updateShippingPrice()">
                                             <md-option ng-repeat="expedition in expeditions">
-                                                {{expedition.expedition}}-{{expedition.type}}-{{expedition.nextKilo | currency:"Rp."}}
+                                                {{expedition.expedition}}-{{expedition.type}}
                                             </md-option>
                                         </md-select>
                                     </md-input-container>

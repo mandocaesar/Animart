@@ -77,12 +77,23 @@ namespace Animart.Portal.Order
                 if (Guid.TryParse(id, out _id))
                 {
                     _id = Guid.Parse(id);
-
+                    
                     var result = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == _id).MapTo<PurchaseOrderDto>();
-                  //  result.OrderItems = new List<OrderItem>();
+                    //  result.OrderItems = new List<OrderItem>();
+
+                    var _expedition = result.Expedition.Split('-')[0];
+                    var _city = result.City;
+                    var _type = result.Expedition.Split('-')[1];
+                    var cityId = _cityRepository.Single(e => e.Name.ToLower() == _city.ToLower());
+                    var shipment =
+                        _shipmentCostRepository.GetAllList()
+                            .FirstOrDefault(e => e.Expedition == _expedition && e.City == cityId && e.Type == _type);
+                    var cost = (shipment != null) ? (shipment.NextKilo) : 0;
                     var orderItems = _orderItemRepository.GetAll().Where(e => e.PurchaseOrder.Id == result.Id).ToList();
                     result.Items = orderItems.Select(e=>e.MapTo<OrderItemDto>()).ToList();
-
+                    result.TotalWeight = result.Items.Sum(e=>e.Item.Weight * e.Quantity);
+                    result.ShipmentCost = cost;
+                    result.TotalShipmentCost = cost * result.TotalWeight;
                     return result;
                 }
                 return null;
