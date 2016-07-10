@@ -1,11 +1,23 @@
 ﻿(function () {
     var controllerId = 'app.views.retailer.checkout';
     angular.module('app').controller(controllerId, [
-        '$rootScope', '$scope', '$state', 'abp.services.app.user', 'abp.services.app.order', 'abp.services.app.shipment', 'ngCart',
+        '$rootScope', '$scope', '$state', 'abp.services.app.user', 'abp.services.app.order', 'abp.services.app.shipment', 'ngCart', 
         function ($rootScope, $scope, $state, appSession, orderService, expeditonService, ngCart) {
             var vm = this;
+
+            var user = null;
+            $scope.loggedUser = {};
+            appSession.getCurrentLoginInformations({ async: false }).success(function (result) {
+                user = result.user;
+                $scope.po.address = user.address;
+               
+            }).error(
+                 function (result) {
+                     console.log(result);
+                 }
+             );
             $scope.po = {
-                address: '',
+                address:'',
                 province: '',
                 city: '',
                 postalCode: '',
@@ -13,6 +25,7 @@
                 grandTotal: 0,
                 status: 'MARKETING'
             };
+          
 
             $scope.orderItems = [];
 

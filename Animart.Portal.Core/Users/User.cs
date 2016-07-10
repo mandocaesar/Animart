@@ -7,6 +7,8 @@ namespace Animart.Portal.Users
 {
     public class User :AbpUser<Tenant, User>
     {
+        public string Address { get; set; }
+
         public static string CreateRandomPassword()
         {
             return Guid.NewGuid().ToString("N").Truncate(16);

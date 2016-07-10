@@ -15,7 +15,7 @@ namespace Animart.Portal.Order
 
         bool Delete(string id);
 
-        List<PurchaseOrderDto> GetAllPurchaseOrderByUserId();
+        List<PurchaseOrderDto> GetAllPurchaseOrderByUserId(bool isLogistic);
 
         OrderDashboardDto GetDashboard();
 

@@ -81,6 +81,7 @@ namespace Animart.Portal.Users
                
                 _user.IsActive = user.IsActive;
                 _user.Name = user.FirstName;
+                _user.Address = user.Address;
                 _user.Surname = user.LastName;
                 _user.EmailAddress = user.Email;
 
@@ -107,8 +108,9 @@ namespace Animart.Portal.Users
                 {
                     _user.IsActive = user.IsActive;
                     _user.Name = user.FirstName;
+                    _user.Address = user.Address;
                     _user.Surname = user.LastName;
-                    _user.Password = user.NewPassword;
+                    _user.Password = new PasswordHasher().HashPassword(user.NewPassword);
                     _userRepository.Update(_user);
                     return true;
                 }
@@ -138,6 +140,7 @@ namespace Animart.Portal.Users
                 Id = e.Id,
                 FirstName = e.Name,
                 LastName = e.Surname,
+                Address = e.Address,
                 IsActive = e.IsActive,
                 Email = e.EmailAddress,
                 UserName = e.UserName,
@@ -165,6 +168,7 @@ namespace Animart.Portal.Users
                 Id = user.Id,
                 FirstName = user.Name,
                 LastName = user.Surname,
+                Address = user.Address,
                 IsActive = user.IsActive,
                 Email = user.EmailAddress,
                 UserName = user.UserName,
@@ -188,6 +192,7 @@ namespace Animart.Portal.Users
             var output = new GetCurrentLoginInformationsOutput
             {
                 User = (await GetCurrentUserAsync()).MapTo<UserLoginInfoDto>()
+                
             };
             
             return output;
