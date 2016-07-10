@@ -25,7 +25,8 @@
                 expedition: '',
                 grandTotal: 0,
                 status: 'MARKETING',
-                shipping:0
+                shipping: 0,
+                showExpedition:false
             };
 
             $scope.orderItems = [];
@@ -47,9 +48,16 @@
                     expeditonService.getShipmentCostFilterByCity($scope.po.city).success(function (rs) {
                         //console.log(rs);
                         //alert(rs[0].nextKilo);
-                        $scope.expeditions = rs;
-                        console.log(rs);
-                        ngCart.setShipping(0);
+
+                        if (rs == null || rs.length==0) {
+                            alert("Sorry your city is not available for shipment at the moment. Please contact marketing@animart.co.id for inquries.");
+                            $scope.po.showExpedition = false;
+                        } else {
+                            $scope.expeditions = rs;
+                            console.log(rs);
+                            ngCart.setShipping(0);
+                            $scope.po.showExpedition = true;
+                        }
                     });
                 }
             };

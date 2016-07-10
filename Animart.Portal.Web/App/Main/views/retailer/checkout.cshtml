@@ -80,7 +80,7 @@
                                         </div>
                                     </md-input-container>
                                 </div>
-                                <div layout-gt-sm="row">
+                                <div layout-gt-sm="row" ng-show="po.showExpedition">
                                     <md-input-container class="md-block" flex-gt-sm>
                                         <label><strong>Expedition</strong></label>
                                         <md-select ng-model="po.expedition" ng-change="updateShippingPrice()">
