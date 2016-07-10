@@ -61,7 +61,7 @@ namespace Animart.Portal.Supply
         public SuppliesDTO GetSuppliesRetailer()
         {
             var result = new SuppliesDTO();
-            var supplies = _supplyItemRepository.GetAll().Where(e=>e.Available).ToList();
+            var supplies = _supplyItemRepository.GetAll().Where(e=>e.Available && e.InStock>0).ToList();
 
             result.Supply = supplies.Where(e=>!e.IsPo).Select(e=> new SupplyItemDto
             {   Available = e.Available,
