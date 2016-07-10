@@ -23,18 +23,26 @@ namespace Animart.Portal.Web
                         requiresAuthentication: true
                         )
                 )//.AddItem(
-                //    new MenuItemDefinition(
-                //        "About",
-                //        new LocalizableString("About", PortalConsts.LocalizationSourceName),
-                //        url: "#/about",
-                //        icon: "fa fa-info"
-                //        )
-                //)
+                 //    new MenuItemDefinition(
+                 //        "About",
+                 //        new LocalizableString("About", PortalConsts.LocalizationSourceName),
+                 //        url: "#/about",
+                 //        icon: "fa fa-info"
+                 //        )
+                 //)
                 .AddItem(
                     new MenuItemDefinition(
                         "RetailerDashboard",
                         new LocalizableString("RetailerDashboard", PortalConsts.LocalizationSourceName),
                         url: "#/retailerDashboard",
+                        icon: "fa fa-info",
+                        requiredPermissionName: "CanAccessRetailer"
+                        )
+                ).AddItem(
+                    new MenuItemDefinition(
+                        "HowToPay",
+                        new LocalizableString("HowToPay", PortalConsts.LocalizationSourceName),
+                        url: "/#/hwto",
                         icon: "fa fa-info",
                         requiredPermissionName: "CanAccessRetailer"
                         )

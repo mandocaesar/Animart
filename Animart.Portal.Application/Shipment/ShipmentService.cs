@@ -99,6 +99,24 @@ namespace Animart.Portal.Shipment
             }).ToList();
         }
 
+        public List<ShipmentCostDto> GetShipmentCostFilterByCity(string city)
+        {
+            var _city = city.Trim();
+            var cityId = _cityRepository.Single(e => e.Name.ToLower() == _city.ToLower());
+
+            return _shipmentRepository.GetAllList().Where(e => e.City == cityId).Select(e => new ShipmentCostDto()
+            {
+                City = e.City.Name,
+                CreationTime = e.CreationTime,
+                CreatorUserId = e.CreatorUserId,
+                Expedition = e.Expedition,
+                First5Kilo = e.NextKilo,
+                NextKilo = e.NextKilo,
+                Type = e.Type,
+                Id = e.Id
+            }).ToList();
+        }
+
         public List<ShipmentCostDto> GetShipmentCostFilterByExpeditionAndCity(string expeditionName, string city, string type)
         {
             var _expedition = expeditionName.Trim();

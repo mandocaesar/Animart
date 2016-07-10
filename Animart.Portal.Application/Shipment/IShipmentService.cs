@@ -15,6 +15,7 @@ namespace Animart.Portal.Shipment
         Task Delete(Guid shipmentId);
         List<ShipmentCostDto> GetShipmentCosts();
         List<ShipmentCostDto> GetShipmentCostFilterByExpedition(string name);
+        List<ShipmentCostDto> GetShipmentCostFilterByCity(string city);
         List<ShipmentCostDto> GetShipmentCostFilterByExpeditionAndCity(string expeditionName, string city, string type);
         ShipmentCostDto GetShipment(Guid id);
 
