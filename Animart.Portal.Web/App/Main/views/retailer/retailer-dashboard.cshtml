@@ -12,21 +12,21 @@
                 </md-card>
             </div>
             <div flex-xs="" flex-gt-xs="33" layout="column">
-                <md-card class="md-theme-green">
-                    <md-card-title style="background-color: #72d572">
-                        <md-card-title-text style="color: white">
-                            <span class="md-headline">{{dashboard.delivered}} Order(s)</span>
-                            <span class="md-subhead">Has been Delivered</span>
-                        </md-card-title-text>
-                    </md-card-title>
-                </md-card>
-            </div>
-            <div flex-xs="" flex-gt-xs="33" layout="column">
                 <md-card class="yellow">
                     <md-card-title style="background-color: #e6ee9c">
                         <md-card-title-text style="color: white">
                             <span class="md-headline">{{dashboard.waiting}} Order(s)</span>
                             <span class="md-subhead">Waiting For Payement</span>
+                        </md-card-title-text>
+                    </md-card-title>
+                </md-card>
+            </div>
+            <div flex-xs="" flex-gt-xs="33" layout="column">
+                <md-card class="md-theme-green">
+                    <md-card-title style="background-color: #72d572">
+                        <md-card-title-text style="color: white">
+                            <span class="md-headline">{{dashboard.delivered}} Order(s)</span>
+                            <span class="md-subhead">Has been Delivered</span>
                         </md-card-title-text>
                     </md-card-title>
                 </md-card>
@@ -149,18 +149,21 @@
                 <md-dialog-content>
                    @* <md-subheader class="md-sticky">Grand Total : {{po.grandTotal + po.shippingTotal | currency:"Rp"}}</md-subheader>*@
                     <div class="md-dialog-content">
-                        <md-card>
-                            <md-card-content>Payment Receipt</md-card-content>
-                            <md-card-content>
-                                <img src="{{image}}" class="md-card-image" alt="image caption">
-                            </md-card-content>                       
-                        </md-card>
-                        <div layout-gt-sm="row" ng-show="isApproved" ng-disable="isNotBOD">
-                            <input type="file" id="file" name="file" onchange="angular.element(this).scope().getFile(this)" />
-                            <md-button ng-click="upload()" style="margin-right:20px;" ng-hide="error" ng-disabled="checkStatus">
-                                Upload payment receipt
-                            </md-button>
+                        <div layout-gt-sm="row">
+                            <md-subheader class="md-sticky">Payment Receipt: </md-subheader>
+                            <md-card>
+                                <md-card-content>
+                                    <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
+                                </md-card-content>
+                            </md-card>
+                            <div layout-gt-sm="row" ng-show="isApproved" ng-disable="isNotBOD">
+                                <input type="file" id="file" name="file" onchange="angular.element(this).scope().getFile(this)" />
+                                <md-button ng-click="upload()" style="margin-right:20px;" ng-hide="error" ng-disabled="checkStatus">
+                                    Upload payment receipt
+                                </md-button>
+                            </div>
                         </div>
+                        
                         <md-subheader class="md-sticky">Ordered Items: </md-subheader>
                         <div layout-gt-sm="row">
                             <md-input-container  class="table-responsive col-lg-12">                                
@@ -196,7 +199,7 @@
                                         </tbody>
                                         <tfoot>                                          
                                             <tr>
-                                                <td colspan="4" align="right"><strong>SubTotal:</strong></td>
+                                                <td colspan="4" align="right" width="70%"><strong>SubTotal:</strong></td>
                                                 <td>{{ po.grandTotal | currency:"Rp." }}</td>
                                             </tr>
                                             <tr>
@@ -208,7 +211,6 @@
                                                 <td><strong>{{ po.grandTotal + po.totalShipmentCost | currency:"Rp." }}</strong></td>
                                             </tr>
                                         </tfoot>
-                                    </table>
                                     </table>
                                 </div>
                             </md-input-container>
