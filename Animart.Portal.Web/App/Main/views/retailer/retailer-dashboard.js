@@ -74,7 +74,7 @@ function dashboardController($q, $rootScope, $scope, orderService, expedition, $
     };
 
     $scope.$on('updateDashboard', function (event, data) { $scope.LoadDashboard(); });
-    $scope.refresh(false);
+    $scope.refresh(1);
     $scope.LoadDashboard();
 };
 

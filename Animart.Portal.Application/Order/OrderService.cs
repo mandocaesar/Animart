@@ -30,6 +30,15 @@ namespace Animart.Portal.Order
         private readonly OrderDomainService _orderDomainService;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
+        private enum STATUS
+        {
+            MARKETING = 1,
+            ACCOUNTING = 2,
+            PAID=3,
+            LOGISTIC = 4,
+            DONE = 5
+        }
+
         public OrderService(IRepository<OrderItem, Guid> orderItemRepository, IRepository<Users.User, long> userRepository, OrderDomainService orderDomainService,
             IUnitOfWorkManager unitOfWorkManager, IRepository<PurchaseOrder, Guid> purchaseOrderRepository, IRepository<SupplyItem, Guid> suppluRepository, 
             IRepository<ShipmentCost, Guid> shipmentCostRepository, IRepository<City, Guid> cityRepository)
@@ -62,9 +71,9 @@ namespace Animart.Portal.Order
         {
             var result = new OrderDashboardDto();
             var userId = AbpSession.GetUserId();
-            result.BDO = _purchaseOrderRepository.Count(e => e.Status == "MARKETING");
-            result.Delivered = _purchaseOrderRepository.Count(e => e.Status == "LOGISTIC");
-            result.Waiting = _purchaseOrderRepository.Count(e => e.Status == "ACCOUNTING");
+            result.BDO = _purchaseOrderRepository.Count(e => e.Status == "MARKETING" || e.Status=="ACCOUNTING");
+            result.Delivered = _purchaseOrderRepository.Count(e => e.Status == "LOGISTIC" || e.Status == "DONE");
+            result.Waiting = _purchaseOrderRepository.Count(e => e.Status == "PAID");
 
             return result;
         }
@@ -291,19 +300,25 @@ namespace Animart.Portal.Order
             }
         }
 
-        public List<PurchaseOrderDto> GetAllPurchaseOrderByUserId(bool IsLogistic)
+        public List<PurchaseOrderDto> GetAllPurchaseOrderByUserId(int num)
         {
             try
             {
                 var uid = AbpSession.GetUserId();
                 var list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid).ToList();
-                if (!IsLogistic)
+                switch (num)
                 {
-                     return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status != "LOGISTIC").ToList();
-                }
-                else
-                {
-                     return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w=>w.Status == "LOGISTIC").ToList();
+                    case (int)STATUS.ACCOUNTING:
+                    case (int)STATUS.MARKETING:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING" || w.Status == "ACCOUNTING").ToList();
+                    case (int)STATUS.PAID:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAID").ToList();
+                    case (int)STATUS.LOGISTIC:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "LOGISTIC").ToList();
+                    case (int)STATUS.DONE:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "DONE").ToList();                        
+                    default:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING" || w.Status == "ACCOUNTING").ToList();
                 }
             }
             catch (Exception ex)

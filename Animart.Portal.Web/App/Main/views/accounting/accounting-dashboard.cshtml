@@ -13,17 +13,17 @@
             </div>
             <div flex-xs="" flex-gt-xs="33" layout="column">
                 <md-card class="yellow">
-                    <md-card-title style="background-color: #e6ee9c">
+                    <md-card-title style="background-color: #72d572">
                         <md-card-title-text style="color: white">
                             <span class="md-headline">{{dashboard.waiting}} Order(s)</span>
-                            <span class="md-subhead">Waiting For Payement</span>
+                            <span class="md-subhead">Waiting For Payment</span>
                         </md-card-title-text>
                     </md-card-title>
                 </md-card>
             </div>
             <div flex-xs="" flex-gt-xs="33" layout="column">
                 <md-card class="md-theme-green">
-                    <md-card-title style="background-color: #72d572">
+                    <md-card-title style="background-color: #284e28">
                         <md-card-title-text style="color: white">
                             <span class="md-headline">{{dashboard.delivered}} Order(s)</span>
                             <span class="md-subhead">Has been Delivered</span>
@@ -36,8 +36,10 @@
             <div class="col">
                 <div class="row">
                     <div clas="col" style="margin-bottom: 5px; float: right">
-                        <span class="btn btn-success" ng-click="refresh(false)" style="padding:5px; width: 100px; text-align:center">Pending</span>
-                        <span class="btn btn-info" ng-click="refresh(true)" style="padding:5px; width: 100px; text-align:center">Paid</span>
+                        <span class="btn btn-success" ng-click="refresh(1)" style="padding:5px; width:100px; text-align:center">Need Review</span>
+                        <span class="btn btn-warning" ng-click="refresh(3)" style="padding: 5px; text-align: center">Waiting For Payment</span>
+                        <span class="btn btn-info" ng-click="refresh(4)" style="padding:5px; width:100px; text-align:center">On Delivery</span>
+                        <span class="btn btn-primary" ng-click="refresh(5)" style="padding: 5px; margin-right: 10px; width: 100px; text-align: center">Done</span>
                     </div>
                 </div>
             </div>
