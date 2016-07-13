@@ -181,6 +181,10 @@
     <Compile Include="Migrations\201607030828162_UserAddress.Designer.cs">
       <DependentUpon>201607030828162_UserAddress.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201607130539528_AddQuantityAdjustmentOrder.cs" />
+    <Compile Include="Migrations\201607130539528_AddQuantityAdjustmentOrder.Designer.cs">
+      <DependentUpon>201607130539528_AddQuantityAdjustmentOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -247,6 +251,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201607030828162_UserAddress.resx">
       <DependentUpon>201607030828162_UserAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201607130539528_AddQuantityAdjustmentOrder.resx">
+      <DependentUpon>201607130539528_AddQuantityAdjustmentOrder.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

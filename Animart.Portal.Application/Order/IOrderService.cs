@@ -35,11 +35,11 @@ namespace Animart.Portal.Order
 
         bool UpdatePurchaseOrderStatus(string id, string status);
 
-        List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing();
+        List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing(int num);
 
-        List<PurchaseOrderDto> GetAllPurchaseOrderForAccounting();
+        List<PurchaseOrderDto> GetAllPurchaseOrderForAccounting(int num);
 
-        List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic();
+        List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic(int num);
 
         bool InsertReceiptNumber(string id, string receipt);
     }

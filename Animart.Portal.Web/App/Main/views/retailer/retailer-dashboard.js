@@ -141,14 +141,14 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
         $scope.isApproved = false;
         $scope.isNotBOD = false;
 
-        if(result.status === "APPROVED" || result.status === "ACCOUNTING")
+        if(result.status === "APPROVED" || result.status === "PAYMENT")
         {
             $scope.isApproved = true;
             if (result.status === "APPROVED") {
                 $scope.isNotBOD = true;
             }
         }
-        if ($scope.po.status === "ACCOUNTING") {
+        if ($scope.po.status === "PAYMENT") {
 
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
             console.log($scope.image);

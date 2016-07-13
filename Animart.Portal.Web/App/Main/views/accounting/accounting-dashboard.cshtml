@@ -36,10 +36,13 @@
             <div class="col">
                 <div class="row">
                     <div clas="col" style="margin-bottom: 5px; float: right">
-                        <span class="btn btn-success" ng-click="refresh(1)" style="padding:5px; width:100px; text-align:center">Need Review</span>
-                        <span class="btn btn-warning" ng-click="refresh(3)" style="padding: 5px; text-align: center">Waiting For Payment</span>
-                        <span class="btn btn-info" ng-click="refresh(4)" style="padding:5px; width:100px; text-align:center">On Delivery</span>
-                        <span class="btn btn-primary" ng-click="refresh(5)" style="padding: 5px; margin-right: 10px; width: 100px; text-align: center">Done</span>
+                        <span class="btn btn-danger" ng-click="changeTab(0)" style="padding: 5px; width: 100px; text-align: center">Rejected</span>
+                        <span class="btn btn-default" ng-click="changeTab(1)" style="padding:5px; width:100px; text-align:center">In Marketing</span>
+                        <span class="btn btn-success" ng-click="changeTab(2)" style="padding:5px; width:100px; text-align:center">Need Review</span>
+                        <span class="btn btn-warning" ng-click="changeTab(3)" style="padding: 5px; text-align: center">Waiting For Payment</span>
+                        <span class="btn btn-success" ng-click="changeTab(6)" style="padding: 5px; text-align: center">Paid</span>
+                        <span class="btn btn-info" ng-click="changeTab(4)" style="padding:5px; width:100px; text-align:center">On Delivery</span>
+                        <span class="btn btn-primary" ng-click="changeTab(5)" style="padding: 5px; margin-right: 10px; width: 100px; text-align: center">Done</span>
                     </div>
                 </div>
             </div>
@@ -86,8 +89,9 @@
                                             <th>Name</th>
                                             <th>Weight (kg)</th>
                                             <th>Quantity</th>
+                                            <th>Quantity Adjustment</th>
                                             <th>Price</th>
-                                            <th>Adjustment</th>
+                                            <th>Price Adjustment</th>
                                             <th>Total</th>
                                         </tr>
                                     </thead>
@@ -103,10 +107,13 @@
                                                 {{supply.quantity}}
                                             </td>
                                             <td>
+                                                {{supply.quantityAdjustment}}
+                                            </td>
+                                            <td>
                                                 {{ supply.item.price | currency:"Rp." }}
                                             </td>
                                             <td>
-                                                <input type="number" min="0" class="pull-right" ng-model="supply.priceAdjusment" style="margin-left:40px;" ng-disabled="isPaid" />
+                                                <input type="number" min="0" class="pull-right" ng-model="supply.priceAdjustment" style="margin-left:40px;" ng-disabled="isPaid" />
                                             </td>
                                             <td>
                                                 {{ supply.item.price * supply.quantity | currency:"Rp." }}
@@ -115,15 +122,15 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="5" align="right" width="80%"><strong>SubTotal:</strong></td>
+                                            <td colspan="6" align="right" width="80%"><strong>SubTotal:</strong></td>
                                             <td>{{ po.grandTotal | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="5" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
+                                            <td colspan="6" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="5" align="right"><strong>Total:</strong></td>
+                                            <td colspan="6" align="right"><strong>Total:</strong></td>
                                             <td><strong>{{ po.grandTotal + po.totalShipmentCost | currency:"Rp." }}</strong></td>
                                         </tr>
                                     </tfoot>
@@ -196,7 +203,7 @@
                     Finnalize
                 </md-button>
                 <md-button ng-click="update()" ng-hide="isPaid">
-                    Update
+                    Update Price Adjustment
                 </md-button>
                 <md-button ng-click="cancel()" ng-hide="isPaid">
                     Reject

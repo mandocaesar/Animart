@@ -8,7 +8,7 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         console.log(result);
         $scope.po = result;
-        $scope.isPaid = result.status === "LOGISTIC";
+        $scope.isPaid = result.status === "LOGISTIC" || result.status==="DONE";
         $scope.supplies = result.items;
         console.log($scope.supplies);
         $scope.image = "";
@@ -81,6 +81,12 @@ function accountingController($http,$q, $rootScope, $scope, orderService, $uibMo
     };
     $scope.animationsEnabled = true;
 
+    $scope.statusGrid = 1;
+    $scope.changeTab = function(num) {
+        $scope.statusGrid = num;
+        $scope.refresh();
+    };
+
     $scope.refresh = function () {
         orderService.getDashboardAdmin().success(function (result) {
             console.log(result);
@@ -88,7 +94,7 @@ function accountingController($http,$q, $rootScope, $scope, orderService, $uibMo
         });
 
         $scope.gridOptions.data = null;
-        orderService.getAllPurchaseOrderForAccounting().success(function (result) {
+        orderService.getAllPurchaseOrderForAccounting($scope.statusGrid).success(function (result) {
             console.log(result);
             $scope.gridOptions.data = result;
         });
@@ -118,10 +124,10 @@ function accountingController($http,$q, $rootScope, $scope, orderService, $uibMo
 
     $scope.gridOptions.columnDefs = [
         { name: 'id', enableCellEdit: false },
-        { name: 'expedition', displayName: 'Expedition' },
-        { name: 'province', displayName: 'Province' },
-        { name: 'address', displayName: 'Address' },
-        { name: 'totalWeight', displayName: 'Total Weight' },
+        { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
+        { name: 'province', displayName: 'Province', enableCellEdit: false },
+        { name: 'address', displayName: 'Address', enableCellEdit: false },
+        { name: 'totalWeight', displayName: 'Total Weight', enableCellEdit: false },
         { name: 'grandTotal', displayName: 'Grand Total', cellFilter: 'currency:"Rp"' },
         {
             name: 'view', displayName: 'View',

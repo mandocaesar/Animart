@@ -74,6 +74,12 @@ function marketingController($q, $rootScope, $scope, orderService, $uibModal, $m
     };
     $scope.animationsEnabled = true;
 
+    $scope.statusGrid = 1;
+    $scope.changeTab = function (num) {
+        $scope.statusGrid = num;
+        $scope.refresh();
+    };
+
     $scope.refresh = function () {
         orderService.getDashboardAdmin().success(function (result) {
             console.log(result);
@@ -81,7 +87,7 @@ function marketingController($q, $rootScope, $scope, orderService, $uibModal, $m
         });
 
         $scope.gridOptions.data = null;
-        orderService.getAllPurchaseOrderForMarketing().success(function (result) {
+        orderService.getAllPurchaseOrderForMarketing($scope.statusGrid).success(function (result) {
             console.log(result);
             $scope.gridOptions.data = result;
         });

@@ -43,6 +43,7 @@
             <div class="col">
                 <div class="row">
                     <div clas="col" style="margin-bottom: 5px; float: right">
+                        <span class="btn btn-danger" ng-click="refresh(0)" style="padding:5px; width:100px; text-align:center">Rejected</span>
                         <span class="btn btn-success" ng-click="refresh(1)" style="padding:5px; width:100px; text-align:center">In Review</span> 
                         <span class="btn btn-warning" ng-click="refresh(3)" style="padding: 5px; text-align: center">Waiting For Payment</span>
                         <span class="btn btn-info" ng-click="refresh(4)" style="padding:5px; width:100px; text-align:center">On Delivery</span>
@@ -194,16 +195,16 @@
                                                     {{supply.quantity}}
                                                 </td>
                                                 <td>
-                                                    {{supply.quantity}}
+                                                    {{supply.quantityAdjustment}}
                                                 </td>
                                                 <td>
                                                     {{ supply.item.price | currency:"Rp." }}
                                                 </td>
                                                 <td>
-                                                    {{ supply.item.price | currency:"Rp." }}
+                                                    {{ supply.item.priceAdjustment | currency:"Rp." }}
                                                 </td>
                                                 <td>
-                                                    {{ supply.item.price * supply.quantity | currency:"Rp." }}
+                                                    {{ supply.item.priceAdjustment * supply.quantityAdjustment | currency:"Rp." }}
                                                 </td>
                                             </tr>
                                         </tbody>

@@ -17,7 +17,9 @@ namespace Animart.Portal.Order
         public virtual string Name { get; set; }
         public virtual int Price { get; set; }
         public virtual int PriceAdjustment { get; set; }
-        public int Quantity { get; set; }
+        public virtual int Quantity { get; set; }
+        public virtual int QuantityAdjustment { get; set; }
+
         public PurchaseOrder PurchaseOrder { get; set; }
 
     }

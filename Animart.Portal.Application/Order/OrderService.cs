@@ -32,11 +32,13 @@ namespace Animart.Portal.Order
 
         private enum STATUS
         {
+            REJECT=0,
             MARKETING = 1,
             ACCOUNTING = 2,
-            PAID=3,
+            PAYMENT=3,
             LOGISTIC = 4,
-            DONE = 5
+            DONE = 5,
+            PAID = 6,
         }
 
         public OrderService(IRepository<OrderItem, Guid> orderItemRepository, IRepository<Users.User, long> userRepository, OrderDomainService orderDomainService,
@@ -73,7 +75,7 @@ namespace Animart.Portal.Order
             var userId = AbpSession.GetUserId();
             result.BDO = _purchaseOrderRepository.Count(e => e.Status == "MARKETING" || e.Status=="ACCOUNTING");
             result.Delivered = _purchaseOrderRepository.Count(e => e.Status == "LOGISTIC" || e.Status == "DONE");
-            result.Waiting = _purchaseOrderRepository.Count(e => e.Status == "PAID");
+            result.Waiting = _purchaseOrderRepository.Count(e => e.Status == "PAYMENT");
 
             return result;
         }
@@ -89,7 +91,7 @@ namespace Animart.Portal.Order
                     
                     var result = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == _id).MapTo<PurchaseOrderDto>();
                     //  result.OrderItems = new List<OrderItem>();
-
+                    
                     var _expedition = result.Expedition.Split('-')[0];
                     var _city = result.City;
                     var _type = result.Expedition.Split('-')[1];
@@ -102,6 +104,7 @@ namespace Animart.Portal.Order
                     result.Items = orderItems.Select(e=>e.MapTo<OrderItemDto>()).ToList();
                     result.TotalWeight = result.Items.Sum(e=>e.Item.Weight * e.Quantity);
                     result.ShipmentCost = cost;
+                    
                     result.TotalShipmentCost = cost * result.TotalWeight;
                     return result;
                 }
@@ -147,8 +150,9 @@ namespace Animart.Portal.Order
                         Item = supplyItem,
                         PurchaseOrder = _purchaseOrderRepository.GetAllList().First(e => e.Id == poId),
                         Quantity = orderItem.Quantity,
+                        QuantityAdjustment = orderItem.Quantity,
                         Name = orderItem.Name,
-                        PriceAdjustment = 0,
+                        PriceAdjustment = supplyItem.Price,
                         CreationTime = DateTime.Now,
                         CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
                         CreatorUserId = AbpSession.GetUserId(),
@@ -259,8 +263,8 @@ namespace Animart.Portal.Order
 
                 for (int i = 0; i < items.Count; i++)
                 {
-                    var price = items[i].PriceAdjustment == 0 ? items[i].Item.Price : items[i].PriceAdjustment;
-                    total += (price*items[i].Quantity) + (cost.First5Kilo * items[i].Quantity);
+                    var price = items[i].PriceAdjustment;// == 0 ? items[i].Item.Price : items[i].PriceAdjustment;
+                    total += (price*items[i].QuantityAdjustment);// + (cost.First5Kilo * items[i].Quantity);
                 }
 
               
@@ -308,9 +312,14 @@ namespace Animart.Portal.Order
                 var list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid).ToList();
                 switch (num)
                 {
+
+                    case (int)STATUS.REJECT:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "REJECT").ToList();
                     case (int)STATUS.ACCOUNTING:
                     case (int)STATUS.MARKETING:
                         return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING" || w.Status == "ACCOUNTING").ToList();
+                    case (int)STATUS.PAYMENT:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAYMENT").ToList();
                     case (int)STATUS.PAID:
                         return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAID").ToList();
                     case (int)STATUS.LOGISTIC:
@@ -370,13 +379,30 @@ namespace Animart.Portal.Order
 
         }
 
-        public List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing()
+        public List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing(int num)
         {
             try
             {
-                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "MARKETING" || e.Status == "LOGISTIC").ToList();
-                var result = list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
-                return result;
+                var list = _purchaseOrderRepository.GetAll().ToList(); //.Where(e => e.Status == "MARKETING")
+                switch (num)
+                {
+                    case (int)STATUS.REJECT:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "REJECT").ToList();
+                    case (int)STATUS.ACCOUNTING:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "ACCOUNTING").ToList();
+                    case (int)STATUS.MARKETING:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING").ToList();
+                    case (int)STATUS.PAYMENT:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAYMENT").ToList();
+                    case (int)STATUS.PAID:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAID").ToList();
+                    case (int)STATUS.LOGISTIC:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "LOGISTIC").ToList();
+                    case (int)STATUS.DONE:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "DONE").ToList();
+                    default:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING").ToList();
+                }
             }
             catch (Exception)
             {
@@ -384,13 +410,30 @@ namespace Animart.Portal.Order
             }
         }
 
-        public List<PurchaseOrderDto> GetAllPurchaseOrderForAccounting()
+        public List<PurchaseOrderDto> GetAllPurchaseOrderForAccounting(int num)
         {
             try
             {
-                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "ACCOUNTING" || e.Status == "LOGISTIC").ToList();
-                var result = list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
-                return result;
+                var list = _purchaseOrderRepository.GetAll().ToList(); //Where(e => e.Status == "ACCOUNTING").
+                switch (num)
+                {
+                    case (int)STATUS.REJECT:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "REJECT").ToList();
+                    case (int)STATUS.ACCOUNTING:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "ACCOUNTING").ToList();
+                    case (int)STATUS.MARKETING:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING").ToList();
+                    case (int)STATUS.PAYMENT:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAYMENT").ToList();
+                    case (int)STATUS.PAID:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAID").ToList();
+                    case (int)STATUS.LOGISTIC:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "LOGISTIC").ToList();
+                    case (int)STATUS.DONE:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "DONE").ToList();
+                    default:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "ACCOUNTING").ToList();
+                }
             }
             catch (Exception)
             {
@@ -398,13 +441,28 @@ namespace Animart.Portal.Order
             }
         }
 
-        public List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic()
+        public List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic(int num)
         {
             try
             {
-                var list = _purchaseOrderRepository.GetAll().Where(e => e.Status == "LOGISTIC").ToList();
-                var result = list.Select(item => item.MapTo<PurchaseOrderDto>()).ToList();
-                return result;
+                var list = _purchaseOrderRepository.GetAll().ToList(); //.Where(e => e.Status == "LOGISTIC")
+                switch (num)
+                {
+                    //case (int)STATUS.REJECT:
+                    //    return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "REJECT").ToList();
+                    //case (int)STATUS.ACCOUNTING:
+                    //    return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "ACCOUNTING").ToList();
+                    //case (int)STATUS.MARKETING:
+                    //    return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING").ToList();
+                    //case (int)STATUS.PAYMENT:
+                    //    return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAYMENT").ToList();
+                    case (int)STATUS.LOGISTIC:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "LOGISTIC").ToList();
+                    case (int)STATUS.DONE:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "DONE").ToList();
+                    default:
+                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "LOGISTIC").ToList();
+                }
             }
             catch (Exception)
             {
@@ -419,7 +477,7 @@ namespace Animart.Portal.Order
                 var poid = Guid.Parse(id);
                 var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poid);
                 po.ReceiptNumber = receipt;
-                po.Status = "LOGISTIC";
+                po.Status = "DONE";
                 _purchaseOrderRepository.Update(po);
                 GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
                 gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", " Hello, your purchase order with id " + po.Id.ToString() + "has been updated to " + po.Status + " with receipt number" + po.ReceiptNumber + " please login to have look on it ",
