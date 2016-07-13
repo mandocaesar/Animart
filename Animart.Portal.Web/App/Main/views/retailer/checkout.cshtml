@@ -24,7 +24,7 @@
                         <span class="fa fa-minus-circle" ng-class="{'disabled':item.getQuantity()==1}"
                               ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;
                         {{ item.getQuantity() | number }}&nbsp;&nbsp;
-                        <span class="fa fa-plus-circle" ng-click="item.setQuantity(1, true)"></span>
+                        @*<span class="fa fa-plus-circle" ng-click="item.setQuantity(1, true)"></span>*@
                     </td>
                     <td>{{ item.getTotal() | currency:"Rp."}}</td>
                 </tr>

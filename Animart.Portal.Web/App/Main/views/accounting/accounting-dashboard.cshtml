@@ -40,7 +40,7 @@
                         <span class="btn btn-default" ng-click="changeTab(1)" style="padding:5px; width:100px; text-align:center">In Marketing</span>
                         <span class="btn btn-success" ng-click="changeTab(2)" style="padding:5px; width:100px; text-align:center">Need Review</span>
                         <span class="btn btn-warning" ng-click="changeTab(3)" style="padding: 5px; text-align: center">Waiting For Payment</span>
-                        <span class="btn btn-success" ng-click="changeTab(6)" style="padding: 5px; text-align: center">Paid</span>
+                        <span class="btn btn-success" ng-click="changeTab(6)" style="padding: 5px; text-align: center;width:100px;">Paid</span>
                         <span class="btn btn-info" ng-click="changeTab(4)" style="padding:5px; width:100px; text-align:center">On Delivery</span>
                         <span class="btn btn-primary" ng-click="changeTab(5)" style="padding: 5px; margin-right: 10px; width: 100px; text-align: center">Done</span>
                     </div>
@@ -74,8 +74,9 @@
                             <md-card-content>
                                 <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
                             </md-card-content>
-                            <md-input-container class="md-block">
-                                <input ng-model="po.receiptNumber" ng-show="isPaid">
+                            <md-input-container class="md-block"  ng-show="isPaid">
+                                @*<input ng-model="po.receiptNumber">*@
+                                <label>Resi No:</label> {{po.receiptNumber}}
                             </md-input-container>
                         </md-card>
                     </div>
@@ -113,10 +114,10 @@
                                                 {{ supply.item.price | currency:"Rp." }}
                                             </td>
                                             <td>
-                                                <input type="number" min="0" class="pull-right" ng-model="supply.priceAdjustment" style="margin-left:40px;" ng-disabled="isPaid" />
+                                                <input type="number" min="0" step="any" class="pull-right" ng-model="supply.priceAdjustment" style="margin-left:40px;" ng-disabled="isPaid" />
                                             </td>
                                             <td>
-                                                {{ supply.item.price * supply.quantity | currency:"Rp." }}
+                                                {{ supply.priceAdjustment * supply.quantityAdjustment | currency:"Rp." }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -199,9 +200,9 @@
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <span flex></span>
-                <md-button ng-click="updateReceipt()" ng-show="isPaid">
+                @*<md-button ng-click="updateReceipt()" ng-show="isPaid">
                     Finnalize
-                </md-button>
+                </md-button>*@
                 <md-button ng-click="update()" ng-hide="isPaid">
                     Update Price Adjustment
                 </md-button>
@@ -209,7 +210,13 @@
                     Reject
                 </md-button>
                 <md-button ng-click="approve()" ng-hide="isPaid">
+                    Approve For Payment
+                </md-button>
+                <md-button ng-click="sendToLogistic()" ng-show="isPaid">
                     Send to Logistic
+                </md-button>
+                <md-button ng-click="cancel()" ng-show="isBod">
+                    Cancel
                 </md-button>
             </md-dialog-actions>
         </form>

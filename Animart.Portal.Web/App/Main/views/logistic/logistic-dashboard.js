@@ -8,9 +8,12 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, pur
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
         $scope.isBod = result.status === "LOGISTIC";
-        $scope.isPaid = result.status === "LOGISTIC" || result.status !== "MARKETING";
+        $scope.isPaid = result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC";
         $scope.supplies = result.items;
-        console.log(result);
+        //console.log(result);
+        if ($scope.isPaid) {
+            $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
+        }
     });
 
     $scope.file = {};

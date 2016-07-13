@@ -11,6 +11,7 @@
                     </md-card-title>
                 </md-card>
             </div>
+            <a href="~/App/Main/views/logistic/logistic-dashboard.cshtml">~/App/Main/views/logistic/logistic-dashboard.cshtml</a>
             <div flex-xs="" flex-gt-xs="33" layout="column">
                 <md-card class="yellow">
                     <md-card-title style="background-color: #72d572">
@@ -70,6 +71,11 @@
                             <md-card-content>
                                 <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
                             </md-card-content>
+                            <md-input-container class="md-block" ng-show="isPaid">
+                                <label>Resi No:</label>
+                                <input ng-model="po.receiptNumber">
+                                @*<label>Resi No:</label> {{po.receiptNumber}}*@
+                            </md-input-container>
                         </md-card>                       
                     </div>
                     
@@ -83,7 +89,9 @@
                                             <th>Name</th>
                                             <th>Weight (kg)</th>
                                             <th>Quantity</th>
+                                            <th>Quantity Adjustment</th>
                                             <th>Price</th>
+                                            <th>Price Adjustment</th>
                                             <th>Total</th>
                                         </tr>
                                     </thead>
@@ -96,27 +104,33 @@
                                                 {{ supply.item.weight }}
                                             </td>
                                             <td>
-                                                {{supply.quantity}}
+                                                {{supply.item.quantity}}
+                                            </td>
+                                            <td>
+                                                {{supply.quantityAdjustment}}
                                             </td>
                                             <td>
                                                 {{ supply.item.price | currency:"Rp." }}
                                             </td>
                                             <td>
-                                                {{ supply.item.price * supply.quantity | currency:"Rp." }}
+                                                {{ supply.priceAdjustment | currency:"Rp." }}
+                                            </td>
+                                            <td>
+                                                {{ supply.priceAdjustment * supply.quantityAdjustment | currency:"Rp." }}
                                             </td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="4" align="right" width="70%"><strong>SubTotal:</strong></td>
+                                            <td colspan="6" align="right" width="70%"><strong>SubTotal:</strong></td>
                                             <td>{{ po.grandTotal | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
+                                            <td colspan="6" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4" align="right"><strong>Total:</strong></td>
+                                            <td colspan="6" align="right"><strong>Total:</strong></td>
                                             <td><strong>{{ po.grandTotal + po.totalShipmentCost | currency:"Rp." }}</strong></td>
                                         </tr>
                                     </tfoot>
@@ -186,9 +200,9 @@
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <span flex></span>
-                @*<md-button ng-click="updateReceipt()" ng-show="isPaid">
+                <md-button ng-click="updateReceipt()" ng-show="isPaid">
                     Update Receipt
-                </md-button>*@
+                </md-button>
                 <md-button ng-click="cancel()">
                     Cancel
                 </md-button>

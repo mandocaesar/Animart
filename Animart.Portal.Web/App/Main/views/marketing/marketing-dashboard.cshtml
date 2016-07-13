@@ -75,9 +75,10 @@
                             <md-card-content>
                                 <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
                             </md-card-content>
-                            <md-input-container class="md-block">   
-                                <label>Receipt Number:</label>                           
-                                <input ng-model="po.receiptNumber" ng-show="isPaid">
+                            <md-input-container class="md-block" ng-show="isPaid">   
+                                @*<label>Receipt Number:</label>                           
+                                <input ng-model="po.receiptNumber" ng-show="isPaid">*@
+                                <label>Resi No:</label> {{po.receiptNumber}}
                             </md-input-container>
                         </md-card>
                     </div>
@@ -94,6 +95,7 @@
                                             <th>Quantity</th>
                                             <th>Quantity Adjustment</th>
                                             <th>Price</th>
+                                            <th>Price Adjustment</th>
                                             <th>Total</th>
                                         </tr>
                                     </thead>
@@ -109,27 +111,30 @@
                                                 {{supply.quantity}}
                                             </td>
                                             <td>
-                                                <input type="number" min="0" class="pull-right" ng-model="supply.quantity" style="margin-left:40px;" ng-disabled="isPaid">
+                                                <input type="number" min="0" class="pull-right" ng-model="supply.quantityAdjustment" style="margin-left:40px;" ng-disabled="isPaid">
                                             </td>
                                             <td>
                                                 {{ supply.item.price | currency:"Rp." }}
                                             </td>
                                             <td>
-                                                {{ supply.item.price * supply.quantity | currency:"Rp." }}
+                                                {{ supply.priceAdjustment | currency:"Rp." }}
+                                            </td>
+                                            <td>
+                                                {{ supply.priceAdjustment * supply.quantityAdjustment | currency:"Rp." }}
                                             </td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="5" align="right" width="80%"><strong>SubTotal:</strong></td>
+                                            <td colspan="6" align="right" width="80%"><strong>SubTotal:</strong></td>
                                             <td>{{ po.grandTotal | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="5" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
+                                            <td colspan="6" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="5" align="right"><strong>Total:</strong></td>
+                                            <td colspan="6" align="right"><strong>Total:</strong></td>
                                             <td><strong>{{ po.grandTotal + po.totalShipmentCost | currency:"Rp." }}</strong></td>
                                         </tr>
                                     </tfoot>

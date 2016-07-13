@@ -8,12 +8,11 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         console.log(result);
         $scope.po = result;
-        $scope.isPaid = result.status === "LOGISTIC" || result.status==="DONE";
+        $scope.isPaid = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
         $scope.supplies = result.items;
-        console.log($scope.supplies);
+        //console.log($scope.supplies);
         $scope.image = "";
         if ($scope.isPaid) {
-
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
         }
     });
@@ -53,8 +52,14 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
     };
 
     $scope.approve = function () {
-        orderService.updatePurchaseOrderStatus(purchaseOrderId, "LOGISTIC").success(function () {
+        orderService.updatePurchaseOrderStatus(purchaseOrderId, "PAYMENT").success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
+        });
+    };
+
+    $scope.sendToLogistic = function () {
+        orderService.updatePurchaseOrderStatus(purchaseOrderId, "LOGISTIC").success(function () {
+            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Sent to Logistic");
         });
     };
 
@@ -81,7 +86,7 @@ function accountingController($http,$q, $rootScope, $scope, orderService, $uibMo
     };
     $scope.animationsEnabled = true;
 
-    $scope.statusGrid = 1;
+    $scope.statusGrid = 2;
     $scope.changeTab = function(num) {
         $scope.statusGrid = num;
         $scope.refresh();

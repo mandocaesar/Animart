@@ -148,7 +148,7 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
                 $scope.isNotBOD = true;
             }
         }
-        if ($scope.po.status === "PAYMENT") {
+        if ($scope.po.status === "PAID") {
 
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
             console.log($scope.image);
@@ -180,7 +180,7 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
         }).success(function (data) {
             if (data) {
                 abp.message.success("Success", "Files uploaded successfully.");
-                orderService.updatePurchaseOrderStatus($scope.po.id, "ACCOUNTING");
+                orderService.updatePurchaseOrderStatus($scope.po.id, "PAID");
             } else {
                     abp.message.error("Error", "Files uploaded unsuccess");
                 }

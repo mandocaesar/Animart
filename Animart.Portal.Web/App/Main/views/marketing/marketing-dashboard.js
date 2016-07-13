@@ -8,9 +8,12 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
         $scope.isBod = result.status === "MARKETING";
-        $scope.isPaid = result.status === "LOGISTIC" || result.status !== "MARKETING";
+        $scope.isPaid = result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC";
         $scope.supplies = result.items;
-        console.log(result);
+        //console.log(result);
+        if ($scope.isPaid) {
+            $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
+        }
     });
 
     $scope.file = {};
@@ -44,13 +47,13 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
 
     $scope.approve = function () {
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "ACCOUNTING").success(function () {
-            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " <br/> Has been sent to accounting for approval");
+            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has been sent to accounting for approval");
         });
     };
 
     $scope.reject = function () {
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "REJECT").success(function () {
-            abp.message.success("Success", "Purchase Order " + purchaseOrderId + "<br/> Has Been Rejected");
+            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Rejected");
         });
     };
 

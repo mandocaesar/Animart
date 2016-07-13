@@ -102,7 +102,7 @@ namespace Animart.Portal.Order
                     var cost = (shipment != null) ? (shipment.NextKilo) : 0;
                     var orderItems = _orderItemRepository.GetAll().Where(e => e.PurchaseOrder.Id == result.Id).ToList();
                     result.Items = orderItems.Select(e=>e.MapTo<OrderItemDto>()).ToList();
-                    result.TotalWeight = result.Items.Sum(e=>e.Item.Weight * e.Quantity);
+                    result.TotalWeight = result.Items.Sum(e=>e.Item.Weight * e.QuantityAdjustment);
                     result.ShipmentCost = cost;
                     
                     result.TotalShipmentCost = cost * result.TotalWeight;
@@ -137,13 +137,14 @@ namespace Animart.Portal.Order
                     var supplyItem = _supplyItemRepository.GetAllList().First(e => e.Id == orderItem.SupplyItem);
                     if (supplyItem.InStock < orderItem.Quantity)
                     {
-                        return false;
+                        orderItem.Quantity = supplyItem.InStock;
+                        //return false;
                     }
 
-                    if (orderItem.Quantity == 0)
-                    {
-                        return true;
-                    }
+                    //if (orderItem.Quantity == 0)
+                    //{
+                    //    return true;
+                    //}
 
                     var item = new OrderItem()
                     {
@@ -161,7 +162,7 @@ namespace Animart.Portal.Order
                     var _id = _orderItemRepository.InsertOrUpdateAndGetId(item);
                     var po = _purchaseOrderRepository.GetAll().First(e => e.Id == poId);
 
-                    po.GrandTotal = po.OrderItems.Sum(e => e.Item.Price * e.Quantity);
+                    //po.GrandTotal = po.OrderItems.Sum(e => e.Item.Price * e.Quantity);
                     po.TotalWeight = po.OrderItems.Sum(e => e.Item.Weight * e.Quantity);
                     _purchaseOrderRepository.Update(po);
 
@@ -243,8 +244,9 @@ namespace Animart.Portal.Order
             {
                 var item = _orderItemRepository.GetAll().FirstOrDefault(e=>e.Id == orderItem.Id);
                 item.Item = _supplyItemRepository.GetAll().FirstOrDefault(e=>e.Id == orderItem.SupplyItem);
-                item.PriceAdjustment = orderItem.PriceAdjusment;
-                item.Quantity = orderItem.Quantity;
+                item.PriceAdjustment = orderItem.PriceAdjustment;
+                item.QuantityAdjustment = orderItem.QuantityAdjustment;
+                //item.Quantity = orderItem.Quantity;
 
                 var poid = Guid.Parse(id);
                 item.PurchaseOrder = _purchaseOrderRepository.GetAll().FirstOrDefault(e=>e.Id == poid);
@@ -253,6 +255,7 @@ namespace Animart.Portal.Order
                 item.PurchaseOrder.ModifiedOn = DateTime.Now;
 
                 var total = 0;
+                var totalWeight = 0;
                 var items = item.PurchaseOrder.OrderItems.ToList();
 
                 var expedition = item.PurchaseOrder.Expedition.Split('-');
@@ -263,11 +266,11 @@ namespace Animart.Portal.Order
 
                 for (int i = 0; i < items.Count; i++)
                 {
+                    totalWeight += (int)(items[i].QuantityAdjustment*items[i].Item.Weight);
                     var price = items[i].PriceAdjustment;// == 0 ? items[i].Item.Price : items[i].PriceAdjustment;
                     total += (price*items[i].QuantityAdjustment);// + (cost.First5Kilo * items[i].Quantity);
                 }
-
-              
+                item.PurchaseOrder.TotalWeight = totalWeight;
 
                 item.PurchaseOrder.GrandTotal = total ;
 

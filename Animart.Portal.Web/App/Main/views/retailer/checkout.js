@@ -77,22 +77,30 @@
                 }
             };
 
-            $rootScope.updateItem = function(id, qty) {
-                var items = ngCart.getItems();
-                for (var i = 0; i < items.length; i++) {
-                    if (item.getId() === id) {
-                        item.setQuantity(qty, true);
-                    }
-                }
-                $scope.calculateShip();
-                $scope.updateShippingPrice();
+            //$rootScope.updateItem = function(id, qty) {
+            //    var items = ngCart.getItems();
+            //    for (var i = 0; i < items.length; i++) {
+            //        if (items[i].getId() === id) {
+            //            items[i].setQuantity(qty, true);
+            //        }
+            //    }
+            //    $scope.calculateShip();
+            //    $scope.updateShippingPrice();
 
-            }
+            //}
 
             $scope.$on('ngCart:change', function (event, args) {
+                $scope.checkItemQuantity();
                 $scope.calculateShip();
                 $scope.updateShippingPrice();
             });
+
+            $scope.checkItemQuantity = function() {
+                var items = ngCart.getItems();
+                for (var i = 0; i < items.length; i++) {
+                    //totalWeight = items[i].getQuantity();
+                }
+            };
 
             $scope.calculateShip = function () {
                 var items = ngCart.getItems();
@@ -141,16 +149,16 @@
                 if (validate() === false) {
                     return;
                 }
+                $scope.translateCart();
+                //console.log($scope.orderItems);
                 $scope.po.hideOrderBtn = true;
                 $scope.po.grandTotal = ngCart.totalCost();
                 //alert($scope.po.grandTotal);
 
                 orderService.create($scope.po).success(function (result) {
-                    orderService.addOrderItem(result, $scope.orderItems).success(function(rs) {
+                    orderService.addOrderItem(result, $scope.orderItems).success(function (rs) {
                         abp.message.info('Order Placed ID:' + result);
                         ngCart.empty();
-                        
-
                     }).error(function(rs) {
                         abp.message.error(rs);
                     });
