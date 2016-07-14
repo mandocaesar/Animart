@@ -108,6 +108,15 @@ function accountingController($http,$q, $rootScope, $scope, orderService, $uibMo
         $scope.statusGrid = num;
         $scope.refresh();
     };
+    $scope.tabOrders = [
+        { no: 5, name: "Done" },
+        { no: 4, name: "On Delivery" },
+        { no: 6, name: "Paid" },
+        {no:3,name:"Waiting For Payment"},
+        { no: 2, name: "Need Review" },
+        { no: 1, name: "In Marketing" },
+        {no:0,name:"Rejected"}
+    ];
 
     $scope.refresh = function () {
         orderService.getDashboardAdmin().success(function (result) {

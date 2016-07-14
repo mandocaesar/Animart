@@ -5,7 +5,7 @@
             var vm = this;
 
             $scope.roleDropdown = ['Admin', 'Logistic', 'Accounting', 'Marketing', 'Retailer'];
-            $scope.selectedUser = {};
+            //$scope.selectedUser = {};
             $scope.gridOptions = {
                 enableRowSelection: true,
                 enableSelectAll: false,
@@ -63,10 +63,10 @@
             };
 
             $scope.open = function (id) {
-                if (id != null) {
+                if (id !== null && id !== undefined) {
                     $scope.selectedUser = id;
-                   
-                };
+                } else
+                    $scope.selectedUser = null;
 
                 var modalInstance = $uibModal.open({
                     animation: $scope.animationsEnabled,
@@ -76,7 +76,7 @@
                     size: 'm'
                 });
 
-                modalInstance.result.then(function (result) {
+                modalInstance.result.then(function () {
                     $scope.selectedUser = {};
                     $scope.refresh();
                 });
@@ -124,13 +124,16 @@
                 LastName: '',
                 Email: '',
                 Role: '',
-                IsActive:false
+                IsActive:true
             };
+            $scope.title = "Add New";
             $scope.init = function() {
-                if ($scope.selectedUser != undefined && $scope.selectedUser != null) {
+                if ($scope.selectedUser !== undefined && $scope.selectedUser !== null) {
+                    //console.log($scope.selectedUser);
                     userService.getUser($scope.selectedUser)
                        .success(function (result) {
-                            debugger;
+                           //debugger;
+                           $scope.title = "Edit";
                            $scope.user.Id = result.id;
                            $scope.user.UserName = result.userName;
                            $scope.user.FirstName = result.firstName;
@@ -154,12 +157,17 @@
             };
 
             $scope.cancel = function () {
-                $uibModalInstance.dismiss('cancel');
+                $uibModalInstance.close();
             };
 
             $scope.updateUser = function () {
                 userService.updateUser($scope.user)
-                   .success(function (result) { abp.notify.info('Updated'); })
+                   .success(function (result) {
+                       $scope.result = result;
+                       $uibModalInstance.close($scope.result);
+                       $uibModalInstance.dismiss('cancel');
+                       abp.notify.info('Updated');
+                   })
                    .error(function (result) { abp.notify.error('Error Occured'); });
             };
 

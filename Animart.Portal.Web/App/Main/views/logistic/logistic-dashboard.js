@@ -54,11 +54,15 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal,$md
     };
     $scope.animationsEnabled = true;
 
-    $scope.statusGrid = 1;
+    $scope.statusGrid = 4;
     $scope.changeTab = function (num) {
         $scope.statusGrid = num;
         $scope.refresh();
     };
+    $scope.tabOrders = [
+      { no: 5, name: "Done" },
+      { no: 4, name: "On Delivery" }
+    ];
 
     $scope.refresh = function () {
         orderService.getDashboardAdmin().success(function (result) {

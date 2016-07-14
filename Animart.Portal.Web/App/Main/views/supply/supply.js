@@ -12,12 +12,13 @@
                 rowHeight: 35,
                 showGridFooter: true
             };
+            $scope.title = "Add New";
             $scope.animationsEnabled = true;
 
             $scope.refresh = function () {
                 $scope.gridOptions.data = null;
                 supplyService.getSupplies().success(function (result) {
-                    console.log(result);
+                    //console.log(result);
                     $scope.gridOptions.data = result;
                 });
             };
@@ -169,6 +170,7 @@
     function ($scope, supplyService, $uibModalInstance, param) {
         $scope.supply = {};
         $scope.IsEdit = true;
+        $scope.title = "Edit";
 
         supplyService.supply(param.data).success(function (rs) {
             $scope.supply = rs;
@@ -179,7 +181,9 @@
 
         $scope.update = function () {
             supplyService.update($scope.supply)
-              .success(function (rs) {
+              .success(function (result) {
+                  $scope.result = result;
+                  $uibModalInstance.close($scope.result);
                   $uibModalInstance.dismiss('cancel');
                   abp.notify.info('Supply Saved Successfully');
               })

@@ -35,14 +35,23 @@
         <div class="row">
             <div class="col">
                 <div class="row">
-                    <div clas="col" style="margin-bottom: 5px; float: right">
-                        <span class="btn btn-danger" ng-click="changeTab(0)" style="padding: 5px; width: 100px; text-align: center">Rejected</span>
+                    <div clas="col" style="margin-bottom: 5px; float: right;" ng-repeat="tab in tabOrders">
+                        @*<span class="btn btn-danger" ng-click="changeTab(0)" style="padding: 5px; width: 100px; text-align: center">Rejected</span>
                         <span class="btn btn-default" ng-click="changeTab(1)" style="padding:5px; width:100px; text-align:center">In Marketing</span>
                         <span class="btn btn-success" ng-click="changeTab(2)" style="padding:5px; width:100px; text-align:center">Need Review</span>
                         <span class="btn btn-warning" ng-click="changeTab(3)" style="padding: 5px; text-align: center">Waiting For Payment</span>
                         <span class="btn btn-success" ng-click="changeTab(6)" style="padding: 5px; text-align: center;width:100px;">Paid</span>
                         <span class="btn btn-info" ng-click="changeTab(4)" style="padding:5px; width:100px; text-align:center">On Delivery</span>
-                        <span class="btn btn-primary" ng-click="changeTab(5)" style="padding: 5px; margin-right: 10px; width: 100px; text-align: center">Done</span>
+                        <span class="btn btn-primary" ng-click="changeTab(5)" style="padding: 5px; margin-right: 10px; width: 100px; text-align: center">Done</span>*@
+                        <span class="btn btn-default" ng-click="changeTab(tab.no)" ng-class="{'btn-primary': tab.no == statusGrid }" style="padding: 5px;margin-right:10px; min-width:100px; text-align: center;">{{tab.name}}</span>
+                        
+                        @*<span class="btn btn-default" ng-click="changeTab(0)" ng-class="{'btn-primary': 0 == statusGrid }" style="padding: 5px; width: 100px; text-align: center">Rejected</span>
+                        <span class="btn btn-default" ng-click="changeTab(1)" ng-class="{'btn-primary': 1 == statusGrid }" style="padding:5px; width:100px; text-align:center">In Marketing</span>
+                        <span class="btn btn-default" ng-click="changeTab(2)" ng-class="{'btn-primary': 2 == statusGrid }" style="padding:5px; width:100px; text-align:center">Need Review</span>
+                        <span class="btn btn-default" ng-click="changeTab(3)" ng-class="{'btn-primary': 3 == statusGrid }" style="padding: 5px; text-align: center">Waiting For Payment</span>
+                        <span class="btn btn-default" ng-click="changeTab(6)" ng-class="{'btn-primary': 6 == statusGrid }" style="padding: 5px; text-align: center;width:100px;">Paid</span>
+                        <span class="btn btn-default" ng-click="changeTab(4)" ng-class="{'btn-primary': 4 == statusGrid }" style="padding:5px; width:100px; text-align:center">On Delivery</span>
+                        <span class="btn btn-default" ng-click="changeTab(5)" ng-class="{'btn-primary': 5 == statusGrid }" style="padding: 5px; margin-right: 10px; width: 100px; text-align: center">Done</span>*@
                     </div>
                 </div>
             </div>

@@ -17,7 +17,7 @@ function expeditionController($q, $rootScope, $scope, expeditionService, $uibMod
     $scope.refresh = function () {
         $scope.gridOptions.data = null;
         expeditionService.getShipmentCosts().success(function (result) {
-            console.log(result);
+            //console.log(result);
             $scope.gridOptions.data = result;
         });
     };
@@ -39,15 +39,15 @@ function expeditionController($q, $rootScope, $scope, expeditionService, $uibMod
 
     $scope.gridOptions.columnDefs = [
         { name: 'id', enableCellEdit: false },
-        { name: 'expedition', displayName: 'Expedition Agent' },
-        { name: 'type', displayName: 'Type' },
+        { name: 'expedition', displayName: 'Expedition Agent', enableCellEdit: false },
+        { name: 'type', displayName: 'Type', enableCellEdit: false },
         {
             name: 'city', displayName: 'City Name', editableCellTemplate: 'ui-grid/dropdownEditor',
             editDropdownIdLabel: 'id', editDropDownValueLable: 'name',
             editDropdownRowEntityOptionsArrayPath: 'cityOptions'
         },
-        { name: 'nextKilo', displayName: 'Per Kilo' },
-         {
+        { name: 'nextKilo', displayName: 'Per Kilo', enableCellEdit: false }
+        ,{
              name: 'edit', displayName: 'Edit',
              cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.open(row.entity.id)"><i class="fa fa-pencil"></i> Edit</button>'
          }
@@ -57,7 +57,7 @@ function expeditionController($q, $rootScope, $scope, expeditionService, $uibMod
         var promise = $q.defer();
         expeditionService.update(rowEntity)
             .success(function (result) { abp.notify.info('Expedition Updated!') })
-            .error(function (result) { abp.notify.error('Error Ocurred') });
+            .error(function (result) { abp.notify.error('Error Occurred') });
         $scope.gridApi.rowEdit.setSavePromise(rowEntity, promise.promise);
         promise.resolve();
     };
@@ -78,9 +78,12 @@ function expeditionController($q, $rootScope, $scope, expeditionService, $uibMod
 
     $scope.open = function (id) {
 
-        if (id !== null || id !== undefined) {
+        if (id !== null && id !== undefined) {
             $scope.selectedItem = id;
         }
+        else
+            $scope.selectedItem = null;
+
 
         var modalInstance = $uibModal.open({
             animation: $scope.animationEnabled,
@@ -112,7 +115,7 @@ function ($scope, expeditonService, $uibModalInstance, result) {
             $scope.title = "Edit";
             expeditonService.getShipment($scope.selectedItem)
                 .success(function (result) {
-                    console.log(result);
+                    //console.log(result);
                     $scope.shipmentItem.Id = result.id;
                     $scope.shipmentItem.Expedition = result.expedition;
                     $scope.shipmentItem.Type = result.type;
@@ -120,7 +123,7 @@ function ($scope, expeditonService, $uibModalInstance, result) {
                     $scope.shipmentItem.City = result.city;
                 })
                 .error(function (result) {
-                    abp.notify.error('Error Ocured while loading expedition');
+                    abp.notify.error('Error Occured while loading expedition data');
                 }
             );
         }
@@ -128,7 +131,7 @@ function ($scope, expeditonService, $uibModalInstance, result) {
 
     $scope.ok = function () {
         //console.log($scope.shipmentItem);
-        if ($scope.selectedItem !== null || $scope.selectedItem !== undefined) {
+        if ($scope.selectedItem !== null && $scope.selectedItem !== undefined) {
             $scope.update();
         } else {
             $scope.create();
@@ -141,20 +144,25 @@ function ($scope, expeditonService, $uibModalInstance, result) {
 
     $scope.create = function () {
         expeditonService.create($scope.shipmentItem)
-            .success(function (rs) {
+            .success(function (result) {
                 $scope.result = result;
                 $uibModalInstance.close($scope.result);
                 $uibModalInstance.dismiss('cancel');
                 abp.notify.info('Expedition has been created');
             }).error(function (rs) {
-                abp.notify.error('Error Ocured while create expedition');
+                abp.notify.error('Error Occured while create expedition data');
             });
     };
 
     $scope.update = function () {
         expeditonService.update($scope.shipmentItem)
-          .success(function (result) { abp.notify.info('Expedition Updated!') })
-          .error(function (result) { abp.notify.error('Error Ocurred') });
+          .success(function (result) {
+              $scope.result = result;
+              $uibModalInstance.close($scope.result);
+              $uibModalInstance.dismiss('cancel');
+              abp.notify.info('Expedition Updated!');
+          })
+          .error(function (result) { abp.notify.error('Error Occurred') });
     };
 
     $scope.init();

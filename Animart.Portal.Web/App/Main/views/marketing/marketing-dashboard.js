@@ -61,7 +61,7 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
 
     $scope.updateReceipt = function () {
         orderService.insertReceiptNumber(purchaseOrderId, $scope.po.receiptNumber).success(function () {
-            abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " <br/> Has Been Updated");
+            abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
         });
     }
 }
@@ -84,7 +84,15 @@ function marketingController($q, $rootScope, $scope, orderService, $uibModal, $m
         $scope.statusGrid = num;
         $scope.refresh();
     };
-
+    $scope.tabOrders = [
+      { no: 5, name: "Done" },
+      { no: 4, name: "On Delivery" },
+      { no: 6, name: "Paid" },
+      { no: 3, name: "Waiting For Payment" },
+      { no: 1, name: "Need Review" },
+      { no: 2, name: "In Accounting" },
+      { no: 0, name: "Rejected" }
+    ];
     $scope.refresh = function () {
         orderService.getDashboardAdmin().success(function (result) {
             console.log(result);
