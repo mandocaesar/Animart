@@ -80,11 +80,11 @@
                     <md-subheader class="md-sticky" ng-show="isPaid">Resi No: </md-subheader>
                     <div layout-gt-sm="row" ng-show="isPaid">
                         <md-card>
-                            <md-input-container class="md-block" ng-show="isPaid">
+                            @*<md-input-container class="md-block" ng-show="isPaid">
                                 @*<input ng-model="po.receiptNumber">*@
                                 @*<label>Resi No:</label>*@
                                 {{po.receiptNumber}}
-                            </md-input-container>
+                            @*</md-input-container>*@*@
                         </md-card>
                     </div>
                     
@@ -115,8 +115,11 @@
                                             <td>
                                                 {{supply.quantity}}
                                             </td>
-                                            <td>
-                                                <input type="number" min="0" class="pull-right" ng-model="supply.quantityAdjustment" style="margin-left:40px;" ng-disabled="isPaid">
+                                            <td ng-hide="isBod && !isPayment">
+                                                {{supply.quantityAdjustment}}
+                                            </td>
+                                            <td ng-show="isBod && !isPayment">
+                                                <input type="number" min="0" class="pull-right" ng-model="supply.quantityAdjustment" style="margin-left:40px;width:100%;" ng-disabled="isPaid">
                                             </td>
                                             <td>
                                                 {{ supply.item.price | currency:"Rp." }}

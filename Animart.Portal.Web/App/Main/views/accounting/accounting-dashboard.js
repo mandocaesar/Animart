@@ -10,6 +10,7 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
         $scope.po = result;
         $scope.isPayment = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
         $scope.isPaid = result.status === "PAID";
+        $scope.isNeedPayment = result.status === "PAYMENT";
         $scope.isDone = result.status === "LOGISTIC" || result.status === "DONE";
         $scope.supplies = result.items;
         $scope.isBod = result.status === "ACCOUNTING";
@@ -52,6 +53,13 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
     }
     $scope.close = function () {
         $mdDialog.cancel();
+    };
+
+
+    $scope.changeToPaid = function () {
+        orderService.updatePurchaseOrderStatus(purchaseOrderId, "PAID").success(function () {
+            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
+        });
     };
 
     $scope.approve = function () {
@@ -141,8 +149,9 @@ function accountingController($http,$q, $rootScope, $scope, orderService, $uibMo
         { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
         { name: 'province', displayName: 'Province', enableCellEdit: false },
         { name: 'address', displayName: 'Address', enableCellEdit: false },
+        { name: 'status', displayName: 'Status', enabledCellEdit:false },
         { name: 'totalWeight', displayName: 'Total Weight', enableCellEdit: false },
-        { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"' },
+        { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
         {
             name: 'view', displayName: 'View',
             cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'

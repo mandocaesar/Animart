@@ -164,11 +164,11 @@
                         <md-subheader class="md-sticky" ng-show="isPaid">Resi No: </md-subheader>
                         <div layout-gt-sm="row" ng-show="isPaid">
                             <md-card>
-                                <md-input-container class="md-block" ng-show="isPaid">
+                                @*<md-input-container class="md-block" ng-show="isPaid">
                                     @*<input ng-model="po.receiptNumber">*@
                                     @*<label>Resi No:</label>*@
                                     {{po.receiptNumber}}
-                                </md-input-container>
+                                @*</md-input-container>*@
                             </md-card>
                         </div>
                         <div layout-gt-sm="row" ng-show="isPayment" @*ng-hide="isPaid" ng-disable="isNotBOD"*@>
@@ -304,9 +304,9 @@
                 </md-dialog-content>
                 <md-dialog-actions layout="row">
                     <span flex></span>
-                    <md-button ng-click="receive()" ng-show="isLogistic">
+                    @*<md-button ng-click="receive()" ng-show="isLogistic">
                         Already Received
-                    </md-button>
+                    </md-button>*@
                     <md-button ng-click="close()">
                         Close
                     </md-button>

@@ -79,11 +79,11 @@
                     <md-subheader class="md-sticky" ng-show="isPaid">Resi No: </md-subheader>
                     <div layout-gt-sm="row" ng-show="isPaid">
                         <md-card>
-                            <md-input-container class="md-block">
+                            @*<md-input-container class="md-block">
                                 @*<input ng-model="po.receiptNumber">*@
                                 @*<label>Resi No:</label>*@
                                 {{po.receiptNumber}}
-                            </md-input-container>
+                            @*</md-input-container>*@
                         </md-card>
                     </div>
                     <md-subheader class="md-sticky">Ordered Items: </md-subheader>
@@ -119,8 +119,11 @@
                                             <td>
                                                 {{ supply.item.price | currency:"Rp." }}
                                             </td>
-                                            <td>
-                                                <input type="number" min="0" step="any" class="pull-right" ng-model="supply.priceAdjustment" style="margin-left:40px;" ng-disabled="isPaid" />
+                                            <td ng-hide="isBod && !isPayment">
+                                                {{supply.priceAdjustment}}
+                                            </td>
+                                            <td ng-show="isBod && !isPayment">
+                                                <input type="number" min="0" step="any" class="pull-right" ng-model="supply.priceAdjustment" style="margin-left:40px;width:100%;" ng-disabled="isPaid" />
                                             </td>
                                             <td>
                                                 {{ supply.priceAdjustment * supply.quantityAdjustment | currency:"Rp." }}
@@ -218,6 +221,9 @@
                 <md-button ng-click="reject()" ng-show="isBod && !isPayment">
                     Reject
                 </md-button>  
+                <md-button ng-click="changeToPaid()" ng-show="isNeedPayment">
+                    Change To Paid
+                </md-button>
                 <md-button ng-click="sendToLogistic()" ng-show="isPaid">
                     Send to Logistic
                 </md-button>

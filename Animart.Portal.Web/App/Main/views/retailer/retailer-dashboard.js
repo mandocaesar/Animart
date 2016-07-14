@@ -54,6 +54,7 @@ function dashboardController($q, $rootScope, $scope, orderService, expedition, $
         { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
         { name: 'province', displayName: 'Province', enableCellEdit: false },
         { name: 'address', displayName: 'Address', enableCellEdit: false },
+        { name: 'status', displayName: 'Status', enableCellEdit: false },
         //{ name: 'totalWeight', displayName: 'Total Weight (kg)', enableCellEdit: false },
         { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
         //{ name: 'shipmentCost', displayName: 'Shipment Cost', cellFilter: 'currency:"Rp"', enableCellEdit: false },
@@ -172,11 +173,11 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
         $mdDialog.cancel();
     };
 
-    $scope.receive = function () {
-        orderService.updatePurchaseOrderStatus(purchaseOrderId, "DONE").success(function () {
-            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
-        });
-    };
+    //$scope.receive = function () {
+    //    orderService.updatePurchaseOrderStatus(purchaseOrderId, "DONE").success(function () {
+    //        abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
+    //    });
+    //};
 
     $scope.upload = function() {
         var data = new FormData();

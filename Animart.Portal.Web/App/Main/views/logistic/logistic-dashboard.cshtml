@@ -11,7 +11,6 @@
                     </md-card-title>
                 </md-card>
             </div>
-            <a href="~/App/Main/views/logistic/logistic-dashboard.cshtml">~/App/Main/views/logistic/logistic-dashboard.cshtml</a>
             <div flex-xs="" flex-gt-xs="33" layout="column">
                 <md-card class="yellow">
                     <md-card-title style="background-color: #72d572">
@@ -73,15 +72,20 @@
                             </md-card-content>
                         </md-card>   
                     </div>
-                    <md-subheader class="md-sticky"  ng-show="isPaid">Resi No: </md-subheader>
-                    <div layout-gt-sm="row"  ng-show="isPaid">
+                    <md-subheader class="md-sticky"  ng-show="isPaid || isDone">Resi No: </md-subheader>
+                    <div layout-gt-sm="row" ng-show="isPaid && !isDone">
                         <md-card>
-                            <md-input-container class="md-block">
-                                <label>Resi No:</label>
+                            @*<md-input-container class="md-block">*@
+                                @*<label>Resi No:</label>*@
                                 <input ng-model="po.receiptNumber">
                                 @*<label>Resi No:</label> {{po.receiptNumber}}*@
-                            </md-input-container>
+                            @*</md-input-container>*@
                         </md-card>   
+                    </div>
+                    <div layout-gt-sm="row" ng-show="isDone">
+                        <md-card>
+                            <label>{{po.receiptNumber}}</label>
+                        </md-card>
                     </div>
                     
                     <md-subheader class="md-sticky">Ordered Items: </md-subheader>
@@ -109,7 +113,7 @@
                                                 {{ supply.item.weight }}
                                             </td>
                                             <td>
-                                                {{supply.item.quantity}}
+                                                {{supply.quantity}}
                                             </td>
                                             <td>
                                                 {{supply.quantityAdjustment}}
@@ -205,7 +209,10 @@
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <span flex></span>
-                <md-button ng-click="updateReceipt()" ng-show="isPaid" ng-hide="isDone">
+                <md-button ng-click="receive()" ng-show="isLogistic">
+                    Already Sent
+                </md-button>
+                <md-button ng-click="updateReceipt()" ng-show="isPaid && !isDone">
                     Update Receipt
                 </md-button>
                 <md-button ng-click="close()">

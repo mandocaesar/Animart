@@ -91,6 +91,7 @@ function expeditionController($q, $rootScope, $scope, expeditionService, $uibMod
         });
 
         modalInstance.result.then(function () {
+            $scope.selectedItem = {};
             $scope.refresh();
         });
     };
@@ -107,10 +108,11 @@ function ($scope, expeditonService, $uibModalInstance, result) {
     });
     $scope.title = "Add New";
     $scope.init = function () {
-        if ($scope.selectedItem !== null || $scope.selectedItem !== undefined) {
+        if ($scope.selectedItem !== null && $scope.selectedItem !== undefined) {
             $scope.title = "Edit";
             expeditonService.getShipment($scope.selectedItem)
                 .success(function (result) {
+                    console.log(result);
                     $scope.shipmentItem.Id = result.id;
                     $scope.shipmentItem.Expedition = result.expedition;
                     $scope.shipmentItem.Type = result.type;
