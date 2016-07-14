@@ -159,12 +159,22 @@
                                 <md-card-content>
                                     <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
                                 </md-card-content>
-                            </md-card>                           
+                            </md-card>                                          
                         </div>
-                        <div layout-gt-sm="row" ng-show="isApproved" ng-disable="isNotBOD">
+                        <md-subheader class="md-sticky" ng-show="isPaid">Resi No: </md-subheader>
+                        <div layout-gt-sm="row" ng-show="isPaid">
+                            <md-card>
+                                <md-input-container class="md-block" ng-show="isPaid">
+                                    @*<input ng-model="po.receiptNumber">*@
+                                    @*<label>Resi No:</label>*@
+                                    {{po.receiptNumber}}
+                                </md-input-container>
+                            </md-card>
+                        </div>
+                        <div layout-gt-sm="row" ng-show="isPayment" @*ng-hide="isPaid" ng-disable="isNotBOD"*@>
                             <input type="file" id="file" name="file" onchange="angular.element(this).scope().getFile(this)" />
                         </div>
-                        <md-button ng-show="isApproved" ng-disable="isNotBOD" ng-click="upload()" style="border:1px solid black;margin-right:20px;" ng-hide="error" ng-disabled="checkStatus">
+                        <md-button ng-show="isPayment" @*ng-disable="isNotBOD"*@ ng-click="upload()" style="border:1px solid black;margin-right:20px;" ng-hide="error" ng-disabled="checkStatus">
                             Upload payment receipt
                         </md-button>
 
@@ -202,10 +212,10 @@
                                                     {{ supply.item.price | currency:"Rp." }}
                                                 </td>
                                                 <td>
-                                                    {{ supply.item.priceAdjustment | currency:"Rp." }}
+                                                    {{ supply.priceAdjustment | currency:"Rp." }}
                                                 </td>
                                                 <td>
-                                                    {{ supply.item.priceAdjustment * supply.quantityAdjustment | currency:"Rp." }}
+                                                    {{ supply.priceAdjustment * supply.quantityAdjustment | currency:"Rp." }}
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -294,8 +304,11 @@
                 </md-dialog-content>
                 <md-dialog-actions layout="row">
                     <span flex></span>
-                    <md-button ng-click="cancel()">
-                        Cancel
+                    <md-button ng-click="receive()" ng-show="isLogistic">
+                        Already Received
+                    </md-button>
+                    <md-button ng-click="close()">
+                        Close
                     </md-button>
                 </md-dialog-actions>
             </form>

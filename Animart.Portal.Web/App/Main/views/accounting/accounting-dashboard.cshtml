@@ -73,10 +73,16 @@
                         <md-card>
                             <md-card-content>
                                 <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
-                            </md-card-content>
-                            <md-input-container class="md-block"  ng-show="isPaid">
+                            </md-card-content>                           
+                        </md-card>                       
+                    </div>
+                    <md-subheader class="md-sticky" ng-show="isPaid">Resi No: </md-subheader>
+                    <div layout-gt-sm="row" ng-show="isPaid">
+                        <md-card>
+                            <md-input-container class="md-block">
                                 @*<input ng-model="po.receiptNumber">*@
-                                <label>Resi No:</label> {{po.receiptNumber}}
+                                @*<label>Resi No:</label>*@
+                                {{po.receiptNumber}}
                             </md-input-container>
                         </md-card>
                     </div>
@@ -203,20 +209,20 @@
                 @*<md-button ng-click="updateReceipt()" ng-show="isPaid">
                     Finnalize
                 </md-button>*@
-                <md-button ng-click="update()" ng-hide="isPaid">
+                <md-button ng-click="update()"ng-show="isBod && !isPayment">
                     Update Price Adjustment
-                </md-button>
-                <md-button ng-click="cancel()" ng-hide="isPaid">
-                    Reject
-                </md-button>
-                <md-button ng-click="approve()" ng-hide="isPaid">
+                </md-button>              
+                <md-button ng-click="approve()" ng-show="isBod && !isPayment">
                     Approve For Payment
                 </md-button>
+                <md-button ng-click="reject()" ng-show="isBod && !isPayment">
+                    Reject
+                </md-button>  
                 <md-button ng-click="sendToLogistic()" ng-show="isPaid">
                     Send to Logistic
                 </md-button>
-                <md-button ng-click="cancel()" ng-show="isBod">
-                    Cancel
+                <md-button ng-click="close()">
+                    Close
                 </md-button>
             </md-dialog-actions>
         </form>

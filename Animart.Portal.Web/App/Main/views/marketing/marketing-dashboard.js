@@ -8,10 +8,12 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
         $scope.isBod = result.status === "MARKETING";
-        $scope.isPaid = result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC";
+        $scope.isPayment = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
+        $scope.isPaid = result.status === "PAID";
+        $scope.isDone = result.status === "LOGISTIC" || result.status === "DONE";
         $scope.supplies = result.items;
         //console.log(result);
-        if ($scope.isPaid) {
+        if ($scope.isPayment) {
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
         }
     });
@@ -23,7 +25,7 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
         });
     };
 
-    $scope.cancel = function () {
+    $scope.close = function () {
         $mdDialog.cancel();
     };
 
@@ -124,7 +126,7 @@ function marketingController($q, $rootScope, $scope, orderService, $uibModal, $m
         { name: 'province', displayName: 'Province' },
         { name: 'address', displayName: 'Address' },
         { name: 'totalWeight', displayName: 'Total Weight' },
-        { name: 'grandTotal', displayName: 'Grand Total', cellFilter: 'currency:"Rp"' },
+        { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"' },
         {
             name: 'view', displayName: 'View',
             cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'

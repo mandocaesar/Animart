@@ -37,10 +37,10 @@
                 <div class="row">
                     <div clas="col" style="margin-bottom: 5px; float: right">
                         <span class="btn btn-danger" ng-click="changeTab(0)" style="padding: 5px; width: 100px; text-align: center">Rejected</span>
-                        <span class="btn btn-default" ng-click="changeTab(2)" style="padding:5px; width:100px; text-align:center">In Accounting</span>
+                        <span class="btn btn-default" ng-click="changeTab(2)" style="padding:5px; text-align:center">In Accounting</span>
                         <span class="btn btn-success" ng-click="changeTab(1)" style="padding:5px; width:100px; text-align:center">Need Review</span>
                         <span class="btn btn-warning" ng-click="changeTab(3)" style="padding: 5px; text-align: center">Waiting For Payment</span>
-                        <span class="btn btn-success" ng-click="changeTab(6)" style="padding: 5px; text-align: center">Paid</span>
+                        <span class="btn btn-success" ng-click="changeTab(6)" style="padding: 5px; text-align: center; width:100px;">Paid</span>
                         <span class="btn btn-info" ng-click="changeTab(4)" style="padding:5px; width:100px; text-align:center">On Delivery</span>
                         <span class="btn btn-primary" ng-click="changeTab(5)" style="padding: 5px; margin-right: 10px; width: 100px; text-align: center">Done</span>
                     </div>
@@ -74,11 +74,16 @@
                         <md-card>
                             <md-card-content>
                                 <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
-                            </md-card-content>
-                            <md-input-container class="md-block" ng-show="isPaid">   
-                                @*<label>Receipt Number:</label>                           
-                                <input ng-model="po.receiptNumber" ng-show="isPaid">*@
-                                <label>Resi No:</label> {{po.receiptNumber}}
+                            </md-card-content>                          
+                        </md-card>                       
+                    </div>
+                    <md-subheader class="md-sticky" ng-show="isPaid">Resi No: </md-subheader>
+                    <div layout-gt-sm="row" ng-show="isPaid">
+                        <md-card>
+                            <md-input-container class="md-block" ng-show="isPaid">
+                                @*<input ng-model="po.receiptNumber">*@
+                                @*<label>Resi No:</label>*@
+                                {{po.receiptNumber}}
                             </md-input-container>
                         </md-card>
                     </div>
@@ -204,20 +209,20 @@
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <span flex></span>
-                <md-button ng-click="updateReceipt()" ng-show="isPaid">
+                @*<md-button ng-click="updateReceipt()" ng-show="isPaid">
                     Update Receipt
-                </md-button>
-                <md-button ng-click="update()">
+                </md-button>*@
+                <md-button ng-click="update()" ng-show="isBod && !isPayment">
                     Update Quantity Adjustment
                 </md-button>               
-                <md-button ng-click="approve()">
+                <md-button ng-click="approve()" ng-show="isBod  && !isPayment">
                     Send to Accounting
                 </md-button>
-                <md-button ng-click="reject()">
+                <md-button ng-click="reject()" ng-show="isBod  && !isPayment">
                     Reject
-                </md-button>
-                <md-button ng-click="cancel()" ng-show="isBod">
-                    Cancel
+                </md-button>               
+                <md-button ng-click="close()">
+                    Close
                 </md-button>
             </md-dialog-actions>
         </form>

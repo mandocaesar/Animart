@@ -140,22 +140,26 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
        
         $scope.isApproved = false;
         $scope.isNotBOD = false;
+        $scope.isPaid = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
+        $scope.isPayment = result.status === "PAYMENT";
+        $scope.isLogistic = result.status === "LOGISTIC";
 
-        if(result.status === "APPROVED" || result.status === "PAYMENT")
-        {
-            $scope.isApproved = true;
-            if (result.status === "APPROVED") {
-                $scope.isNotBOD = true;
-            }
-        }
-        if ($scope.po.status === "PAID") {
+
+        //if(result.status === "APPROVED" || result.status === "PAYMENT")
+        //{
+        //    $scope.isApproved = true;
+        //    if (result.status === "PAYMENT") {
+        //        $scope.isNotBOD = true;
+        //    }
+        //}
+        if ($scope.isPaid) {
 
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
-            console.log($scope.image);
+            //console.log($scope.image);
         }
         //console.log($scope.isApproved);
         $scope.supplies = result.items;
-        console.log(result.items);
+        //console.log(result.items);
     });
 
     $scope.file = {};
@@ -164,8 +168,14 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
             $scope.files = e.files;
         });
     }
-    $scope.cancel = function () {
+    $scope.close = function () {
         $mdDialog.cancel();
+    };
+
+    $scope.receive = function () {
+        orderService.updatePurchaseOrderStatus(purchaseOrderId, "DONE").success(function () {
+            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
+        });
     };
 
     $scope.upload = function() {
@@ -231,9 +241,11 @@ function DialogController($scope, $mdDialog, cities, expeditions, supplies, orde
         );
     };
 
-    $scope.cancel = function () {
+    $scope.close = function () {
         $mdDialog.cancel();
     };
+
+  
 
     $scope.place = function (answer) {
         var orders = [];

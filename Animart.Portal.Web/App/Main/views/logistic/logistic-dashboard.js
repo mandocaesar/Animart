@@ -9,6 +9,7 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, pur
         $scope.po = result;
         $scope.isBod = result.status === "LOGISTIC";
         $scope.isPaid = result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC";
+        $scope.isDone = result.status === "DONE";
         $scope.supplies = result.items;
         //console.log(result);
         if ($scope.isPaid) {
@@ -23,7 +24,7 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, pur
         });
     };
 
-    $scope.cancel = function () {
+    $scope.close = function () {
         $mdDialog.cancel();
     };
 
@@ -93,7 +94,7 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal,$md
         { name: 'province', displayName: 'Province' },
         { name: 'address', displayName: 'Address' },
         { name: 'totalWeight', displayName: 'Total Weight' },
-        { name: 'grandTotal', displayName: 'Grand Total', cellFilter: 'currency:"Rp"' },
+        { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"' },
         {
             name: 'view', displayName: 'View',
             cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'

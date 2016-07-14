@@ -8,11 +8,14 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         console.log(result);
         $scope.po = result;
-        $scope.isPaid = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
+        $scope.isPayment = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
+        $scope.isPaid = result.status === "PAID";
+        $scope.isDone = result.status === "LOGISTIC" || result.status === "DONE";
         $scope.supplies = result.items;
+        $scope.isBod = result.status === "ACCOUNTING";
         //console.log($scope.supplies);
         $scope.image = "";
-        if ($scope.isPaid) {
+        if ($scope.isPayment) {
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
         }
     });
@@ -47,13 +50,19 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
             $scope.files = e.files;
         });
     }
-    $scope.cancel = function () {
+    $scope.close = function () {
         $mdDialog.cancel();
     };
 
     $scope.approve = function () {
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "PAYMENT").success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
+        });
+    };
+
+    $scope.reject = function () {
+        orderService.updatePurchaseOrderStatus(purchaseOrderId, "REJECT").success(function () {
+            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Rejected");
         });
     };
 
@@ -133,7 +142,7 @@ function accountingController($http,$q, $rootScope, $scope, orderService, $uibMo
         { name: 'province', displayName: 'Province', enableCellEdit: false },
         { name: 'address', displayName: 'Address', enableCellEdit: false },
         { name: 'totalWeight', displayName: 'Total Weight', enableCellEdit: false },
-        { name: 'grandTotal', displayName: 'Grand Total', cellFilter: 'currency:"Rp"' },
+        { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"' },
         {
             name: 'view', displayName: 'View',
             cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'

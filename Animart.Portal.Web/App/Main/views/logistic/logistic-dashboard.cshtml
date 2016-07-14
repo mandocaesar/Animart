@@ -71,12 +71,17 @@
                             <md-card-content>
                                 <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
                             </md-card-content>
-                            <md-input-container class="md-block" ng-show="isPaid">
+                        </md-card>   
+                    </div>
+                    <md-subheader class="md-sticky"  ng-show="isPaid">Resi No: </md-subheader>
+                    <div layout-gt-sm="row"  ng-show="isPaid">
+                        <md-card>
+                            <md-input-container class="md-block">
                                 <label>Resi No:</label>
                                 <input ng-model="po.receiptNumber">
                                 @*<label>Resi No:</label> {{po.receiptNumber}}*@
                             </md-input-container>
-                        </md-card>                       
+                        </md-card>   
                     </div>
                     
                     <md-subheader class="md-sticky">Ordered Items: </md-subheader>
@@ -200,11 +205,11 @@
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <span flex></span>
-                <md-button ng-click="updateReceipt()" ng-show="isPaid">
+                <md-button ng-click="updateReceipt()" ng-show="isPaid" ng-hide="isDone">
                     Update Receipt
                 </md-button>
-                <md-button ng-click="cancel()">
-                    Cancel
+                <md-button ng-click="close()">
+                    Close
                 </md-button>
             </md-dialog-actions>
         </form>
