@@ -1,7 +1,7 @@
 ﻿<div ng-controller="app.views.logisticDashboard" layout="column">
     <md-content flex layout-padding>
         <div layout="row">
-            <div flex-xs="" flex-gt-xs="33" layout="column">
+            @*<div flex-xs="" flex-gt-xs="33" layout="column">
                 <md-card style="background-color: #0288d1">
                     <md-card-title>
                         <md-card-title-text style="color: white">
@@ -10,22 +10,22 @@
                         </md-card-title-text>
                     </md-card-title>
                 </md-card>
-            </div>
-            <div flex-xs="" flex-gt-xs="33" layout="column">
+            </div>*@
+            <div flex-xs="" flex-gt-xs="50" layout="column">
                 <md-card class="yellow">
                     <md-card-title style="background-color: #72d572">
                         <md-card-title-text style="color: white">
-                            <span class="md-headline">{{dashboard.waiting}} Order(s)</span>
-                            <span class="md-subhead">Waiting For Payment</span>
+                            <span class="md-headline">{{dashboard.delivery}} Order(s)</span>
+                            <span class="md-subhead">Waiting For Packing</span>
                         </md-card-title-text>
                     </md-card-title>
                 </md-card>
             </div>
-            <div flex-xs="" flex-gt-xs="33" layout="column">
+            <div flex-xs="" flex-gt-xs="50" layout="column">
                 <md-card class="md-theme-green">
                     <md-card-title style="background-color: #284e28">
                         <md-card-title-text style="color: white">
-                            <span class="md-headline">{{dashboard.delivered}} Order(s)</span>
+                            <span class="md-headline">{{dashboard.done}} Order(s)</span>
                             <span class="md-subhead">Has been Delivered</span>
                         </md-card-title-text>
                     </md-card-title>
@@ -35,10 +35,15 @@
         <div class="row">
             <div class="col">
                 <div class="row">
+                    <div clas="col" style="margin-bottom: 5px; float: right" ng-repeat="tab in orderType">
+                        <span class="btn btn-default" ng-click="changeType(tab.no)" ng-class="{'btn-primary': tab.no == statusType }" style="padding: 5px; margin-right: 10px; min-width: 100px; text-align: center;">{{tab.name}}</span>
+                    </div>
+                </div>
+                <div class="row">
                     <div clas="col" style="margin-bottom: 5px; float: right" ng-repeat="tab in tabOrders">
                         @*<span class="btn btn-info" ng-click="changeTab(4)" style="padding:5px; text-align:center">Need To Deliver</span>
                         <span class="btn btn-primary" ng-click="changeTab(5)" style="padding: 5px; margin-right: 10px; width: 100px; text-align: center">Done</span>*@
-                        <span class="btn btn-default" ng-click="changeTab(tab.no)" ng-class="{'btn-primary': tab.no == statusGrid }" style="padding: 5px;margin-right:10px; min-width:100px; text-align: center">{{tab.name}}</span>
+                        <span class="btn btn-default" ng-click="changeTab(tab.no)" ng-class="{'btn-primary': tab.no == statusGrid }" style="padding: 5px; margin-right: 10px; min-width: 100px; text-align: center">{{tab.name}}</span>
                     </div>
                 </div>
             </div>
@@ -55,7 +60,7 @@
         <form name="poForm">
             <md-toolbar>
                 <div class="md-toolbar-tools">
-                    <h2>Order Details</h2>
+                    <h2>Order Details - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
                     <span flex></span>
                     <md-button class="md-icon-button" ng-click="cancel()">
                         <md-icon md-svg-src="" aria-label="Close dialog"></md-icon>
@@ -74,20 +79,20 @@
                         </md-card>   
                     </div>
                     <md-subheader class="md-sticky"  ng-show="isPaid || isDone">Resi No: </md-subheader>
-                    <div layout-gt-sm="row" ng-show="isPaid && !isDone">
+                    <div layout-gt-sm="row" >
                         <md-card>
-                            @*<md-input-container class="md-block">*@
+                            @*<md-input-container class="md-block"> ng-show="isPaid && !isDone"*@
                                 @*<label>Resi No:</label>*@
                                 <input ng-model="po.receiptNumber">
                                 @*<label>Resi No:</label> {{po.receiptNumber}}*@
                             @*</md-input-container>*@
                         </md-card>   
                     </div>
-                    <div layout-gt-sm="row" ng-show="isDone">
+                    @*<div layout-gt-sm="row" ng-show="isDone">
                         <md-card>
                             <label>{{po.receiptNumber}}</label>
                         </md-card>
-                    </div>
+                    </div>*@
                     
                     <md-subheader class="md-sticky">Ordered Items: </md-subheader>
                     <div layout-gt-sm="row">
@@ -97,7 +102,7 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Weight (kg)</th>
+                                            <th>Weight (gramm)</th>
                                             <th>Quantity</th>
                                             <th>Quantity Adjustment</th>
                                             <th>Price</th>
@@ -140,8 +145,12 @@
                                             <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
+                                            <td colspan="6" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
+                                            <td>{{ po.shipmentAdjustmentCost * po.totalWeight | currency:"Rp." }}</td>
+                                        </tr>
+                                        <tr>
                                             <td colspan="6" align="right"><strong>Total:</strong></td>
-                                            <td><strong>{{ po.grandTotal + po.totalShipmentCost | currency:"Rp." }}</strong></td>
+                                            <td><strong>{{ po.grandTotal +(po.shipmentAdjustmentCost * po.totalWeight) | currency:"Rp." }}</strong></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -185,15 +194,37 @@
                                             <md-input-container class="md-block" flex-gt-sm>
                                                 <label>Expedition</label>
                                                 <input ng-model="po.expedition" disabled>
-                                            </md-input-container>
+                                            </md-input-container>      
+                                            <md-input-container class="md-block" flex-gt-sm>
+                                                <label>Expedition Adjustment</label>
+                                                <input style="text-align:left;"ng-model="po.expeditionAdjustment" disabled>
+                                            </md-input-container>                
                                         </div>
                                     </td>
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr>
+                                    <td colspan="5">
+                                        <div layout-gt-sm="row">
+                                            <md-input-container class="md-block" flex-gt-sm>
+                                                <label><strong>Expedition Adjustment</strong></label>
+                                                <md-select ng-model="po.expeditionAdjustment" ng-change="updateShippingPrice()">
+                                                    <md-option ng-repeat="expedition in expeditions">
+                                                        {{expedition.expedition}}-{{expedition.type}}
+                                                    </md-option>
+                                                </md-select>
+                                            </md-input-container>
+                                         </div>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td colspan="4" align="right" width="70%"><strong>Shipping per(kg):</strong></td>
                                     <td>{{ po.shipmentCost | currency:"Rp." }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" align="right" width="80%"><strong>Shipping Adjustment per(kg):</strong></td>
+                                    <td>{{ po.shipmentAdjustmentCost | currency:"Rp." }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="4" align="right"><strong>Total Weight:</strong></td>
@@ -201,7 +232,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="4" align="right"><strong>Total Shipping:</strong></td>
-                                    <td><strong>{{ po.totalShipmentCost| currency:"Rp." }}</strong></td>
+                                    <td><strong>{{ po.shipmentAdjustmentCost * po.totalWeight| currency:"Rp." }}</strong></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -213,9 +244,13 @@
                 <md-button ng-click="receive()" ng-show="isLogistic">
                     Already Sent
                 </md-button>
-                <md-button ng-click="updateReceipt()" ng-show="isPaid && !isDone">
-                    Update Receipt
+                <md-button ng-click="updateReceipt()" >@*ng-show="isPaid && !isDone"*@
+                    Update Resi
                 </md-button>
+
+                <md-button ng-click="insertExpedition()"> @*ng-show="isPaid && !isDone"*@
+                Update Expedition
+            </md-button>
                 <md-button ng-click="close()">
                     Close
                 </md-button>

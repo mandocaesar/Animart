@@ -15,7 +15,7 @@ namespace Animart.Portal.Order
 
         bool Delete(string id);
 
-        List<PurchaseOrderDto> GetAllPurchaseOrderByUserId(int num);
+        List<PurchaseOrderDto> GetAllPurchaseOrderByUserId(int type,int num);
 
         OrderDashboardDto GetDashboard();
 
@@ -35,12 +35,14 @@ namespace Animart.Portal.Order
 
         bool UpdatePurchaseOrderStatus(string id, string status);
 
-        List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing(int num);
+        List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing(int type,int num);
 
-        List<PurchaseOrderDto> GetAllPurchaseOrderForAccounting(int num);
+        List<PurchaseOrderDto> GetAllPurchaseOrderForAccounting(int type,int num);
 
-        List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic(int num);
+        List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic(int type,int num);
 
         bool InsertReceiptNumber(string id, string receipt);
+
+        bool InsertExpeditionAdjustment(string id, string name);
     }
 }

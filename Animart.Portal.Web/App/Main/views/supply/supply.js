@@ -18,10 +18,20 @@
             $scope.refresh = function () {
                 $scope.gridOptions.data = null;
                 supplyService.getSupplies().success(function (result) {
+                 
                     //console.log(result);
+
                     $scope.gridOptions.data = result;
                 });
             };
+
+            //$scope.$watch('mydateOfBirth', function (newValue) {
+            //    $scope.workerDetail.dateOfBirth = $filter('date')(newValue, 'yyyy/MM/dd');
+            //});
+
+            //$scope.$watch('workerDetail.dateOfBirth', function (newValue) {
+            //    $scope.mydateOfBirth = $filter('date')(newValue, 'yyyy/MM/dd');
+            //});
 
             $scope.storeFile = function (gridRow, gridCol, files) {
                 console.log(gridRow.entity);
@@ -61,12 +71,12 @@
                 { name: 'code', displayName: 'Code' },
                 { name: 'name', displayName: 'Name' },
                 { name: 'price', displayName: 'Price', cellFilter: 'currency:"Rp."' },
-                { name: 'weight', displayName: 'Weight', type: 'number' },
+                { name: 'weight', displayName: 'Weight (gr)', type: 'number' },
                 { name: 'inStock', displayName: 'Stock', type: 'number' },
                 { name: 'available', displayName: 'Active', type: 'boolean' },
                 { name: 'description', displayName: 'Description' },
                 { name: 'ispo', displayName: "Is PO ?", type: 'boolean' },
-                { name: 'availableUntil', displayName: "Available Until", type: 'date' },
+                { name: 'availableUntil', displayName: "Available Until", type: 'datetime' },
                 { name: 'hasImage', displayName: "Image", type: 'boolean', enableCellEdit: false },
                 { name: 'filename', displayName: 'File', width: '20%', editableCellTemplate: 'ui-grid/fileChooserEditor', editFileChooserCallback: $scope.storeFile }
                 , {
@@ -173,6 +183,7 @@
         $scope.title = "Edit";
 
         supplyService.supply(param.data).success(function (rs) {
+            rs.availableUntil = new Date(rs.availableUntil);
             $scope.supply = rs;
         }).error(function (er) {
             abp.notify.error('Error Load Supply');

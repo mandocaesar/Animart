@@ -21,6 +21,9 @@ namespace Animart.Portal.Order
         public  Guid Id { get; set; }
 
         public  string Expedition { get; set; }
+        public string ExpeditionAdjustment { get; set; }
+
+        public bool IsPreOrder { get; set; }
 
         public  string Province { get; set; }
 

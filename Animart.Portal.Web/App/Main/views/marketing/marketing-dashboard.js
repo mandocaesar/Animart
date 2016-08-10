@@ -5,6 +5,22 @@
 
 function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId) {
 
+    $scope.po = {
+        address: '',
+        province: '',
+        city: '',
+        isPreOrder: false,
+        postalCode: '',
+        expedition: '',
+        expeditionAdjustment: '',
+        grandTotal: 0,
+        totalWeight: 0,
+        totalGram: 0,
+        status: 'MARKETING',
+        shipping: 0,
+        showExpedition: false
+    };
+
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
         $scope.isBod = result.status === "MARKETING";
@@ -12,6 +28,7 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
         $scope.isPaid = result.status === "PAID";
         $scope.isDone = result.status === "LOGISTIC" || result.status === "DONE";
         $scope.supplies = result.items;
+        $scope.status = (result.isPreOrder) ? "Pre-Order" : "Ready Stock";
         //console.log(result);
         if ($scope.isPayment) {
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
@@ -29,22 +46,34 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
         $mdDialog.cancel();
     };
 
+    $scope.getSubTotal = function () {
+        var total = 0;
+        if($scope.supplies!=null)
+            for (var i = 0; i < $scope.supplies.length; i++) {
+                var product = $scope.supplies[i];
+                total += (product.priceAdjustment * product.quantityAdjustment);
+            }
+        $scope.po.grandTotal = total;
+        return total;
+    }
+
     $scope.update = function () {
         var hasError = false;
-        for (var i = 0; i < $scope.supplies.length; i++) {
-            orderService.update($scope.po.id,$scope.supplies[i]).error(function(r) {
-                hasError = true;
-            });
+        if ($scope.supplies != null)
+            for (var i = 0; i < $scope.supplies.length; i++) {
+                orderService.update($scope.po.id,$scope.supplies[i]).error(function(r) {
+                    hasError = true;
+                });
 
-            if (i === $scope.supplies.length - 1) {
-                if (hasError) {
-                    abp.message.error('error occured');
-                } else {
-                    $scope.$emit('updateDashboard', "ok");
-                    abp.message.info('Update Success');
+                if (i === $scope.supplies.length - 1) {
+                    if (hasError) {
+                        abp.message.error('error occured');
+                    } else {
+                        $scope.$emit('updateDashboard', "ok");
+                        abp.message.info('Update Success');
+                    }
                 }
             }
-        }
     };
 
     $scope.approve = function () {
@@ -79,6 +108,18 @@ function marketingController($q, $rootScope, $scope, orderService, $uibModal, $m
     };
     $scope.animationsEnabled = true;
 
+
+    $scope.statusType = 0;
+    $scope.changeType = function (num) {
+        $scope.statusType = num;
+        $scope.refresh();
+    };
+    $scope.orderType = [
+      { no: 1, name: "Pre-Order" },
+      { no: 0, name: "Ready Stock" }
+    ];
+
+
     $scope.statusGrid = 1;
     $scope.changeTab = function (num) {
         $scope.statusGrid = num;
@@ -95,13 +136,13 @@ function marketingController($q, $rootScope, $scope, orderService, $uibModal, $m
     ];
     $scope.refresh = function () {
         orderService.getDashboardAdmin().success(function (result) {
-            console.log(result);
+            //console.log(result);
             $scope.dashboard = result;
         });
 
         $scope.gridOptions.data = null;
-        orderService.getAllPurchaseOrderForMarketing($scope.statusGrid).success(function (result) {
-            console.log(result);
+        orderService.getAllPurchaseOrderForMarketing($scope.statusType,$scope.statusGrid).success(function (result) {
+            //console.log(result);
             $scope.gridOptions.data = result;
         });
     };
@@ -130,6 +171,7 @@ function marketingController($q, $rootScope, $scope, orderService, $uibModal, $m
 
     $scope.gridOptions.columnDefs = [
         { name: 'id', enableCellEdit: false },
+        { name: 'creatorUser.name',displayName: 'Name', enableCellEdit: false },
         { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
         { name: 'province', displayName: 'Province', enableCellEdit: false },
         { name: 'address', displayName: 'Address', enableCellEdit: false },

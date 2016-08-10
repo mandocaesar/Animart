@@ -3,11 +3,11 @@
         <h2>PO Item</h2><hr/>
     </div>
     <md-content class="md-padding" layout-xs="column" layout="row">
-        <div ng-repeat="posupply in poSupplies" flex-xs flex-gt-xs="25" layout="row">
+        <div ng-repeat="posupply in poSupplies" flex-xs flex-gt-xs="16" layout="row">
             <md-card>
                 <md-card-title>
                     <md-card-title-text>
-                        <span class="md-headline">{{posupply.name}}</span>
+                        <span class="md-head" style="font-weight: bold;word-wrap: break-word;width:160px;">{{posupply.name | limitTo:100}}</span>
                         <span class="md-subhead">{{posupply.price | currency:"Rp."}}</span>
                     </md-card-title-text>
                 </md-card-title>
@@ -15,7 +15,7 @@
                     <img src="{{posupply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(posupply.id)" />
                 </md-card-content>
                 <md-card-actions layout="row" layout-align="middle center" ng-if="vm.getShownUserName().currentRole == '5'">
-                    <ngcart-addtocart id="{{ posupply.id }}" name="{{ posupply.name }}" price="{{ posupply.price }}" quantity="1" quantity-max="9999" data=posupply.weight>Add To Cart</ngcart-addtocart>
+                    <ngcart-addtocart id="{{ posupply.id }}" name="{{ posupply.name }}" price="{{ posupply.price }}" quantity="1" quantity-max="100" data=posupply>Add To Cart</ngcart-addtocart>
                 </md-card-actions>
             </md-card>
         </div>
@@ -25,11 +25,11 @@
         <h2>Ready Stock Item</h2><hr />
     </div>
     <md-content class="md-padding" layout-xs="column" layout="row">
-        <div ng-repeat="supply in supplies" flex-xs flex-gt-xs="25" layout="column">
+        <div ng-repeat="supply in supplies" flex-xs flex-gt-xs="16" layout="column">
             <md-card ng-if="supply.inStock>0">
                 <md-card-title>
                     <md-card-title-text>
-                        <span class="md-headline">{{supply.name}}</span>
+                        <span class="md-head"  style="font-weight: bold;word-wrap: break-word; width:160px;">{{supply.name | limitTo:100}}</span>
                         <span class="md-subhead">{{supply.price | currency:"Rp."}}</span>
                     </md-card-title-text>
                 </md-card-title>
@@ -37,7 +37,7 @@
                     <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(supply.id)" />
                 </md-card-content>
                 <md-card-actions layout="row" layout-align="middle center"  ng-if="vm.getShownUserName().currentRole == '5'">
-                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1"  quantity-max="{{supply.inStock}}" data=supply.weight>Add To Cart</ngcart-addtocart>
+                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1"  quantity-max="{{supply.inStock}}" data=supply>Add To Cart</ngcart-addtocart>
                 </md-card-actions>
             </md-card>
         </div>

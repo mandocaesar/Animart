@@ -7,6 +7,8 @@
 
             var user = null;
             $scope.loggedUser = {};
+            $scope.isCombined = false;
+            $scope.isPO = false;
           
             appSession.getCurrentLoginInformations({ async: false }).success(function (result) {
                 user = result.user;
@@ -18,12 +20,16 @@
                  }
              );
             $scope.po = {
-                address:'',
+                address: '',
                 province: '',
                 city: '',
+                isPreOrder: false,
                 postalCode: '',
                 expedition: '',
+                expeditionAdjustment:'',
                 grandTotal: 0,
+                totalWeight: 0,
+                totalGram:0,
                 status: 'MARKETING',
                 shipping: 0,
                 showExpedition:false
@@ -49,7 +55,7 @@
                         //console.log(rs);
                         //alert(rs[0].nextKilo);
 
-                        if (rs == null || rs.length==0) {
+                        if (rs == null || rs.length===0) {
                             alert("Sorry your city is not available for shipment at the moment. Please contact marketing@animart.co.id for inquries.");
                             $scope.po.showExpedition = false;
                         } else {
@@ -97,23 +103,45 @@
 
             $scope.checkItemQuantity = function() {
                 var items = ngCart.getItems();
+                var data = null;
                 for (var i = 0; i < items.length; i++) {
-                    //totalWeight = items[i].getQuantity();
+                    data = items[i].getData();
+                    if (!data.ispo) {
+                        if (items[i].getQuantity() < 1)
+                            items[i]._quantity = 1;
+                        else if (items[i].getQuantity() > data.inStock)
+                            items[i]._quantity = data.inStock;
+                    } else {
+                        if (items[i].getQuantity() >100)
+                            items[i]._quantity = 100;
+                    }
+
                 }
             };
 
             $scope.calculateShip = function () {
                 var items = ngCart.getItems();
                 var totalWeight = 0;
+                var totalGram = 0;
                 var subTotal = 0;
-
+                console.log(items);
+               
+                $scope.isCombined = false;
                 for (var i = 0; i < items.length; i++) {
-                    totalWeight += items[i].getData() * items[i].getQuantity();
+                    totalGram += items[i].getData().weight * items[i].getQuantity();
                     subTotal += items[i].getPrice() * items[i].getQuantity();
+                    if (i === 0)
+                        $scope.isPO = items[i].getData().ispo;
+                    else {
+                        if ($scope.isPO !== items[i].getData().ispo)
+                            $scope.isCombined = true;
+                    }
                     //alert(subTotal);
                     //alert(items[i].getData());
                 }
                 $scope.po.subTotal = subTotal;
+                totalWeight = convertToKg(totalGram);
+                $scope.po.totalGram = totalGram;
                 $scope.po.totalWeight = totalWeight;
                 //console.log($scope.po);
                 //alert($scope.po.expedition.nextKilo);
@@ -145,6 +173,10 @@
                 return true;
             }
 
+            function convertToKg(data) {
+                return parseInt(((data+999)/1000));
+            }
+
             $scope.placeOrder = function () {
                 if (validate() === false) {
                     return;
@@ -152,6 +184,7 @@
                 $scope.translateCart();
                 //console.log($scope.orderItems);
                 $scope.po.hideOrderBtn = true;
+                $scope.po.isPreOrder = $scope.isPO;
                 $scope.po.grandTotal = ngCart.totalCost();
                 //alert($scope.po.grandTotal);
 

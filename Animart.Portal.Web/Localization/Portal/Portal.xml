@@ -22,6 +22,7 @@
     <text name="HowToOrder" value="How To Order"/>
     <text name="LogisticDashboard" value="Logistic Dashboard"/>
     <text name="Profile" value="User Profile"/>
+    <text name="ChangePassword" value="Change Password"/>
 
     <text name="AllCategories" value="All Categories"/>
     <text name="AllSubCategories" value="All Sub-Categories"/>

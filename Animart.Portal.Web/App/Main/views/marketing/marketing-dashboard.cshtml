@@ -5,7 +5,7 @@
                 <md-card style="background-color: #0288d1">
                     <md-card-title>
                         <md-card-title-text style="color: white">
-                            <span class="md-headline">{{dashboard.bdo}} Order(s)</span>
+                            <span class="md-headline">{{dashboard.marketing}} Order(s)</span>
                             <span class="md-subhead">In Review</span>
                         </md-card-title-text>
                     </md-card-title>
@@ -35,15 +35,13 @@
         <div class="row">
             <div class="col">
                 <div class="row">
+                    <div clas="col" style="margin-bottom: 5px; float: right" ng-repeat="tab in orderType">
+                        <span class="btn btn-default" ng-click="changeType(tab.no)" ng-class="{'btn-primary': tab.no == statusType }" style="padding: 5px; margin-right: 10px; min-width: 100px; text-align: center;">{{tab.name}}</span>
+                    </div>
+                </div>
+                <div class="row">
                     <div clas="col" style="margin-bottom: 5px; float: right;" ng-repeat="tab in tabOrders">
-                        @*<span class="btn btn-danger" ng-click="changeTab(0)" style="padding: 5px; width: 100px; text-align: center">Rejected</span>
-                        <span class="btn btn-default" ng-click="changeTab(2)" style="padding:5px; text-align:center">In Accounting</span>
-                        <span class="btn btn-success" ng-click="changeTab(1)" style="padding:5px; width:100px; text-align:center">Need Review</span>
-                        <span class="btn btn-warning" ng-click="changeTab(3)" style="padding: 5px; text-align: center">Waiting For Payment</span>
-                        <span class="btn btn-success" ng-click="changeTab(6)" style="padding: 5px; text-align: center; width:100px;">Paid</span>
-                        <span class="btn btn-info" ng-click="changeTab(4)" style="padding:5px; width:100px; text-align:center">On Delivery</span>
-                        <span class="btn btn-primary" ng-click="changeTab(5)" style="padding: 5px; margin-right: 10px; width: 100px; text-align: center">Done</span>*@
-                        <span class="btn btn-default" ng-click="changeTab(tab.no)" ng-class="{'btn-primary': tab.no == statusGrid }" style="padding: 5px;margin-right:10px; min-width:100px; text-align: center;">{{tab.name}}</span>
+                        <span class="btn btn-default" ng-click="changeTab(tab.no)" ng-class="{'btn-primary': tab.no == statusGrid }" style="padding: 5px; margin-right: 10px; min-width: 100px; text-align: center;">{{tab.name}}</span>
                     </div>
                 </div>
             </div>
@@ -60,7 +58,7 @@
         <form name="poForm">
             <md-toolbar>
                 <div class="md-toolbar-tools">
-                    <h2>Order Details</h2>
+                    <h2>Order Details - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
                     <span flex></span>
                     <md-button class="md-icon-button" ng-click="cancel()">
                         <md-icon md-svg-src="" aria-label="Close dialog"></md-icon>
@@ -91,13 +89,13 @@
                     
                     <md-subheader class="md-sticky">Ordered Items: </md-subheader>
                     <div layout-gt-sm="row">
-                        <md-input-container class="table-responsive col-lg-12">
+                        <div class="table-responsive col-lg-12">
                             <div>
                                 <table class="table table-striped ngCart cart table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Weight (kg)</th>
+                                            <th>Weight (gramm)</th>
                                             <th>Quantity</th>
                                             <th>Quantity Adjustment</th>
                                             <th>Price</th>
@@ -136,20 +134,24 @@
                                     <tfoot>
                                         <tr>
                                             <td colspan="6" align="right" width="80%"><strong>SubTotal:</strong></td>
-                                            <td>{{ po.grandTotal | currency:"Rp." }}</td>
+                                            <td>{{ getSubTotal() | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
                                             <td colspan="6" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
+                                            <td colspan="6" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
+                                            <td>{{ po.totalAdjustmentShipmentCost | currency:"Rp." }}</td>
+                                        </tr>
+                                        <tr>
                                             <td colspan="6" align="right"><strong>Total:</strong></td>
-                                            <td><strong>{{ po.grandTotal + po.totalShipmentCost | currency:"Rp." }}</strong></td>
+                                            <td><strong>{{ po.grandTotal + po.totalAdjustmentShipmentCost | currency:"Rp." }}</strong></td>
                                         </tr>
                                     </tfoot>
                                 </table>
                             </div>
-                        </md-input-container>
+                        </div>
                     </div>
 
                     <md-subheader class="md-sticky">Shipping Address Information: </md-subheader>
@@ -189,6 +191,10 @@
                                                 <label>Expedition</label>
                                                 <input ng-model="po.expedition" disabled>
                                             </md-input-container>
+                                            <md-input-container class="md-block" flex-gt-sm>
+                                                <label>Expedition Adjustment</label>
+                                                <input ng-model="po.expeditionAdjustment" disabled>
+                                            </md-input-container>
                                         </div>
                                     </td>
                                 </tr>
@@ -199,12 +205,16 @@
                                     <td>{{ po.shipmentCost | currency:"Rp." }}</td>
                                 </tr>
                                 <tr>
+                                    <td colspan="4" align="right" width="80%"><strong>Shipping Adjustment per(kg):</strong></td>
+                                    <td>{{ po.shipmentAdjustmentCost | currency:"Rp." }}</td>
+                                </tr>
+                                <tr>
                                     <td colspan="4" align="right"><strong>Total Weight:</strong></td>
                                     <td>{{ po.totalWeight }} kg</td>
                                 </tr>
                                 <tr>
                                     <td colspan="4" align="right"><strong>Total Shipping:</strong></td>
-                                    <td><strong>{{ po.totalShipmentCost| currency:"Rp." }}</strong></td>
+                                    <td><strong>{{ po.totalAdjustmentShipmentCost| currency:"Rp." }}</strong></td>
                                 </tr>
                             </tfoot>
                         </table>

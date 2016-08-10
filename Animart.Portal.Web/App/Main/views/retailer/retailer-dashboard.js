@@ -21,13 +21,39 @@ function dashboardController($q, $rootScope, $scope, orderService, expedition, $
     };
     $scope.animationsEnabled = true;
 
-    $scope.refresh = function (isLogistic) {
+    $scope.refresh = function () {
         $scope.gridOptions.data = null;
-        orderService.getAllPurchaseOrderByUserId(isLogistic).success(function (result) {
+        orderService.getAllPurchaseOrderByUserId($scope.statusType,$scope.statusGrid).success(function (result) {
           //  console.log(result);
             $scope.gridOptions.data = result;
         });
     };
+
+    $scope.statusType = 0;
+    $scope.changeType = function (num) {
+        $scope.statusType = num;
+        $scope.refresh();
+    };
+    $scope.orderType = [
+      { no: 1, name: "Pre-Order" },
+      { no: 0, name: "Ready Stock" }
+    ];
+
+    $scope.statusGrid = 1;
+   
+    $scope.changeTab = function (num) {
+        $scope.statusGrid = num;
+        $scope.refresh();
+    };
+   
+    $scope.tabOrders = [
+      { no: 5, name: "Done" },
+      { no: 4, name: "On Delivery" },
+      { no: 6, name: "Paid" },
+      { no: 3, name: "Waiting For Payment" },
+      { no: 1, name: "In Review" },
+      { no: 0, name: "Rejected" }
+    ];
 
     $scope.showMe = function (id) {
         var ev = this.ev;
@@ -75,7 +101,7 @@ function dashboardController($q, $rootScope, $scope, orderService, expedition, $
     };
 
     $scope.$on('updateDashboard', function (event, data) { $scope.LoadDashboard(); });
-    $scope.refresh(1);
+    $scope.refresh();
     $scope.LoadDashboard();
 };
 
@@ -139,6 +165,7 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
         //}
         console.log(result);
        
+        $scope.status = (result.isPreOrder)?"Pre-Order":"Ready Stock";
         $scope.isApproved = false;
         $scope.isNotBOD = false;
         $scope.isPaid = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";

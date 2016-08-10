@@ -74,10 +74,11 @@ namespace Animart.Portal.Supply
                 Price = e.Price,
                 Weight = e.Weight,
                 Description = e.Description,
-                HasImage = e.HasImage
+                HasImage = e.HasImage,
+                IsPO = e.IsPo
             }).ToList();
 
-            result.PoSupply = supplies.Where(e => e.IsPo && e.AvailableUntil.Date >= DateTime.Now.Date).Select(e => new SupplyItemDto
+            result.PoSupply = supplies.Where(e => e.IsPo && e.AvailableUntil.Date >= DateTime.Now).Select(e => new SupplyItemDto
             {
                 Available = e.Available,
                 Code = e.Code,
@@ -90,7 +91,8 @@ namespace Animart.Portal.Supply
                 Weight = e.Weight,
                 Description = e.Description,
                 HasImage = e.HasImage,
-                AvailableUntil = e.AvailableUntil
+                AvailableUntil = e.AvailableUntil,
+                IsPO = e.IsPo
             }).ToList();
 
             return result;
@@ -136,7 +138,7 @@ namespace Animart.Portal.Supply
                     Weight = supplyItem.Weight,
                     Description = supplyItem.Description,
                     IsPo = supplyItem.IsPO,
-                    AvailableUntil = supplyItem.AvailableUntil == DateTime.MinValue ? DateTime.Now : supplyItem.AvailableUntil
+                    AvailableUntil = supplyItem.AvailableUntil <= DateTime.MinValue ? DateTime.Now : supplyItem.AvailableUntil
                 });
             }
             catch (Exception ex)
@@ -162,7 +164,7 @@ namespace Animart.Portal.Supply
                 item.Description = supplyItem.Description ?? item.Description;
                 item.HasImage = supplyItem.HasImage;
                 item.IsPo = supplyItem.IsPO;
-                item.AvailableUntil = supplyItem.AvailableUntil == DateTime.MinValue ? DateTime.Now.Date : item.AvailableUntil;
+                item.AvailableUntil = supplyItem.AvailableUntil <= DateTime.MinValue ? DateTime.Now.Date : supplyItem.AvailableUntil;
 
                 _supplyItemRepository.Update(item);
                 return true;
@@ -255,7 +257,8 @@ namespace Animart.Portal.Supply
                     IsPO = a.IsPo,
                     Name = a.Name,
                     Price = a.Price,
-                    Weight = a.Weight
+                    Weight = a.Weight,
+                    AvailableUntil = a.AvailableUntil
                 };
             }
             catch (Exception ex)

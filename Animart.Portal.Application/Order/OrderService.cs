@@ -15,6 +15,7 @@ using Animart.Portal.Shipment;
 using Animart.Portal.Supply;
 using Animart.Portal.Supply.Dto;
 using AutoMapper;
+using Animart.Portal.Users.Dto;
 
 namespace Animart.Portal.Order
 {
@@ -41,6 +42,13 @@ namespace Animart.Portal.Order
             PAID = 6,
         }
 
+        private enum TYPE
+        {
+            READYSTOCK = 0,
+            PREORDER=1
+        }
+
+
         public OrderService(IRepository<OrderItem, Guid> orderItemRepository, IRepository<Users.User, long> userRepository, OrderDomainService orderDomainService,
             IUnitOfWorkManager unitOfWorkManager, IRepository<PurchaseOrder, Guid> purchaseOrderRepository, IRepository<SupplyItem, Guid> suppluRepository, 
             IRepository<ShipmentCost, Guid> shipmentCostRepository, IRepository<City, Guid> cityRepository)
@@ -64,7 +72,6 @@ namespace Animart.Portal.Order
             result.BDO = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "MARKETING");
             result.Delivered = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "LOGISTIC");
             result.Waiting = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "ACCOUNTING");
-
             return result;
         }
 
@@ -76,6 +83,10 @@ namespace Animart.Portal.Order
             result.BDO = _purchaseOrderRepository.Count(e => e.Status == "MARKETING" || e.Status=="ACCOUNTING");
             result.Delivered = _purchaseOrderRepository.Count(e => e.Status == "LOGISTIC" || e.Status == "DONE");
             result.Waiting = _purchaseOrderRepository.Count(e => e.Status == "PAYMENT");
+            result.Marketing = _purchaseOrderRepository.Count(e => e.Status == "MARKETING" );
+            result.Accounting = _purchaseOrderRepository.Count(e =>e.Status == "ACCOUNTING");
+            result.Done = _purchaseOrderRepository.Count(e => e.Status == "DONE");
+            result.Delivery = _purchaseOrderRepository.Count(e => e.Status == "LOGISTIC");
 
             return result;
         }
@@ -91,21 +102,35 @@ namespace Animart.Portal.Order
                     
                     var result = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == _id).MapTo<PurchaseOrderDto>();
                     //  result.OrderItems = new List<OrderItem>();
+                    var user = _userRepository.Get(result.CreatorUserId.Value).MapTo<UserDto>(); ;
                     
                     var _expedition = result.Expedition.Split('-')[0];
+                    var _expeditionAdjustment = result.ExpeditionAdjustment.Split('-')[0];
+
                     var _city = result.City;
                     var _type = result.Expedition.Split('-')[1];
+                    var _typeAdjustment = result.ExpeditionAdjustment.Split('-')[1];
                     var cityId = _cityRepository.Single(e => e.Name.ToLower() == _city.ToLower());
                     var shipment =
                         _shipmentCostRepository.GetAllList()
                             .FirstOrDefault(e => e.Expedition == _expedition && e.City == cityId && e.Type == _type);
+                    var shipmentAdjustment =
+                       _shipmentCostRepository.GetAllList()
+                           .FirstOrDefault(e => e.Expedition == _expeditionAdjustment && e.City == cityId && e.Type == _typeAdjustment);
+
                     var cost = (shipment != null) ? (shipment.NextKilo) : 0;
+                    var costAdjustment =  (shipmentAdjustment != null) ? (shipmentAdjustment.NextKilo) : 0;
+
                     var orderItems = _orderItemRepository.GetAll().Where(e => e.PurchaseOrder.Id == result.Id).ToList();
                     result.Items = orderItems.Select(e=>e.MapTo<OrderItemDto>()).ToList();
-                    result.TotalWeight = result.Items.Sum(e=>e.Item.Weight * e.QuantityAdjustment);
+                    var totalGram = result.Items.Sum(e => e.Item.Weight*e.QuantityAdjustment);
+                    result.TotalWeight = (int)((totalGram + 999) / 1000);
                     result.ShipmentCost = cost;
+                    result.ShipmentAdjustmentCost = costAdjustment;
                     
                     result.TotalShipmentCost = cost * result.TotalWeight;
+                    result.TotalAdjustmentShipmentCost = costAdjustment*result.TotalWeight;
+                    result.CreatorUser = user;
                     return result;
                 }
                 return null;
@@ -162,7 +187,7 @@ namespace Animart.Portal.Order
                     var _id = _orderItemRepository.InsertOrUpdateAndGetId(item);
                     var po = _purchaseOrderRepository.GetAll().First(e => e.Id == poId);
 
-                    //po.GrandTotal = po.OrderItems.Sum(e => e.Item.Price * e.Quantity);
+                    po.GrandTotal = po.OrderItems.Sum(e => e.Item.Price * e.Quantity);
                     po.TotalWeight = po.OrderItems.Sum(e => e.Item.Weight * e.Quantity);
                     _purchaseOrderRepository.Update(po);
 
@@ -227,6 +252,8 @@ namespace Animart.Portal.Order
                 Address = purchaseOrderItem.Address,
                 City = purchaseOrderItem.City.Trim(),
                 Expedition = purchaseOrderItem.Expedition.Trim(),
+                ExpeditionAdjustment = purchaseOrderItem.Expedition.Trim(),
+                IsPreOrder = purchaseOrderItem.IsPreOrder,
                 GrandTotal = purchaseOrderItem.GrandTotal,
                 Province = purchaseOrderItem.Province,
                 Status = purchaseOrderItem.Status,
@@ -246,7 +273,6 @@ namespace Animart.Portal.Order
                 item.Item = _supplyItemRepository.GetAll().FirstOrDefault(e=>e.Id == orderItem.SupplyItem);
                 item.PriceAdjustment = orderItem.PriceAdjustment;
                 item.QuantityAdjustment = orderItem.QuantityAdjustment;
-                //item.Quantity = orderItem.Quantity;
 
                 var poid = Guid.Parse(id);
                 item.PurchaseOrder = _purchaseOrderRepository.GetAll().FirstOrDefault(e=>e.Id == poid);
@@ -255,8 +281,9 @@ namespace Animart.Portal.Order
                 item.PurchaseOrder.ModifiedOn = DateTime.Now;
 
                 var total = 0;
-                var totalWeight = 0;
-                var items = item.PurchaseOrder.OrderItems.ToList();
+               // var totalWeight = 0;
+                var totalGram = 0;
+                var items = _orderItemRepository.GetAll().Where(e => e.PurchaseOrder.Id == poid).ToList();
 
                 var expedition = item.PurchaseOrder.Expedition.Split('-');
                 var expeditionName = expedition[0].Trim();
@@ -266,11 +293,11 @@ namespace Animart.Portal.Order
 
                 for (int i = 0; i < items.Count; i++)
                 {
-                    totalWeight += (int)(items[i].QuantityAdjustment*items[i].Item.Weight);
+                    totalGram += (int)(items[i].QuantityAdjustment*items[i].Item.Weight);
                     var price = items[i].PriceAdjustment;// == 0 ? items[i].Item.Price : items[i].PriceAdjustment;
                     total += (price*items[i].QuantityAdjustment);// + (cost.First5Kilo * items[i].Quantity);
                 }
-                item.PurchaseOrder.TotalWeight = totalWeight;
+                item.PurchaseOrder.TotalWeight = totalGram;
 
                 item.PurchaseOrder.GrandTotal = total ;
 
@@ -307,12 +334,24 @@ namespace Animart.Portal.Order
             }
         }
 
-        public List<PurchaseOrderDto> GetAllPurchaseOrderByUserId(int num)
+        public List<PurchaseOrderDto> GetAllPurchaseOrderByUserId(int type,int num)
         {
             try
             {
                 var uid = AbpSession.GetUserId();
-                var list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid).ToList();
+                var list = new List<PurchaseOrder>();
+                switch (type)
+                {
+                    case (int)TYPE.PREORDER:
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && e.IsPreOrder).ToList();
+                        break;
+                    case (int)TYPE.READYSTOCK:
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && !e.IsPreOrder).ToList();
+                        break;
+                    default:
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && !e.IsPreOrder).ToList();
+                        break;
+                }
                 switch (num)
                 {
 
@@ -382,11 +421,25 @@ namespace Animart.Portal.Order
 
         }
 
-        public List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing(int num)
+        public List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing(int type,int num)
         {
             try
             {
-                var list = _purchaseOrderRepository.GetAll().ToList(); //.Where(e => e.Status == "MARKETING")
+                var list = new List<PurchaseOrder>();
+                switch (type)
+                {
+                    case (int)TYPE.PREORDER:
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).ToList();
+                        break;
+                    case (int)TYPE.READYSTOCK:
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        break;
+                    default:
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        break;
+                }
+                
+               
                 switch (num)
                 {
                     case (int)STATUS.REJECT:
@@ -413,11 +466,23 @@ namespace Animart.Portal.Order
             }
         }
 
-        public List<PurchaseOrderDto> GetAllPurchaseOrderForAccounting(int num)
+        public List<PurchaseOrderDto> GetAllPurchaseOrderForAccounting(int type,int num)
         {
             try
             {
-                var list = _purchaseOrderRepository.GetAll().ToList(); //Where(e => e.Status == "ACCOUNTING").
+                var list = new List<PurchaseOrder>();
+                switch (type)
+                {
+                    case (int)TYPE.PREORDER:
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).ToList();
+                        break;
+                    case (int)TYPE.READYSTOCK:
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        break;
+                    default:
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        break;
+                }
                 switch (num)
                 {
                     case (int)STATUS.REJECT:
@@ -444,11 +509,23 @@ namespace Animart.Portal.Order
             }
         }
 
-        public List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic(int num)
+        public List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic(int type,int num)
         {
             try
             {
-                var list = _purchaseOrderRepository.GetAll().ToList(); //.Where(e => e.Status == "LOGISTIC")
+                var list = new List<PurchaseOrder>();
+                switch (type)
+                {
+                    case (int)TYPE.PREORDER:
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).ToList();
+                        break;
+                    case (int)TYPE.READYSTOCK:
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        break;
+                    default:
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        break;
+                }
                 switch (num)
                 {
                     //case (int)STATUS.REJECT:
@@ -484,6 +561,25 @@ namespace Animart.Portal.Order
                 _purchaseOrderRepository.Update(po);
                 GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
                 gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", " Hello, your purchase order with id " + po.Id.ToString() + "has been updated to " + po.Status + " with receipt number" + po.ReceiptNumber + " please login to have look on it ",
+                    po.CreatorUser.EmailAddress);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool InsertExpeditionAdjustment(string id, string name)
+        {
+            try
+            {
+                var poid = Guid.Parse(id);
+                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poid);
+                po.ExpeditionAdjustment = name.Trim();
+                _purchaseOrderRepository.Update(po);
+                GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", " Hello, your purchase order with id " + po.Id.ToString() + " expedition has been updated to " + name  + " please login to have look on it ",
                     po.CreatorUser.EmailAddress);
                 return true;
             }

@@ -1,6 +1,8 @@
 ﻿using System;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Animart.Portal.Supply.Dto
 {
@@ -26,7 +28,14 @@ namespace Animart.Portal.Supply.Dto
         public decimal Weight { get; set; }
 
         public bool IsPO { get; set; }
-
+        [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime AvailableUntil { get; set; }
+    }
+    class CustomDateTimeConverter : IsoDateTimeConverter
+    {
+        public CustomDateTimeConverter()
+        {
+            base.DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
+        }
     }
 }

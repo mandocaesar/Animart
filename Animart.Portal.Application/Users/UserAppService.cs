@@ -101,15 +101,41 @@ namespace Animart.Portal.Users
             try
             {
                 var _user = _userRepository.Get(user.Id);
+                //var roleId = _userRepository.Get(user.Id).Roles.First().RoleId;
+                //var currentRole = _roleManager.FindById(roleId).DisplayName;
+                //var checkPassword = new PasswordHasher().VerifyHashedPassword(_user.Password, user.Password);
+                //if (checkPassword == PasswordVerificationResult.Success)
+                //{
+                    //_user.IsActive = user.IsActive;
+                    _user.Name = user.FirstName;
+                    _user.Address = user.Address;
+                    _user.Surname = user.LastName;
+                    //_user.Password = new PasswordHasher().HashPassword(user.NewPassword);
+                    _userRepository.Update(_user);
+                    return true;
+                //}
+                //return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdatePassword(UserProfileDto user)
+        {
+            try
+            {
+                var _user = _userRepository.Get(user.Id);
                 var roleId = _userRepository.Get(user.Id).Roles.First().RoleId;
                 var currentRole = _roleManager.FindById(roleId).DisplayName;
                 var checkPassword = new PasswordHasher().VerifyHashedPassword(_user.Password, user.Password);
                 if (checkPassword == PasswordVerificationResult.Success)
                 {
-                    _user.IsActive = user.IsActive;
-                    _user.Name = user.FirstName;
-                    _user.Address = user.Address;
-                    _user.Surname = user.LastName;
+                    //_user.IsActive = user.IsActive;
+                    //_user.Name = user.FirstName;
+                    //_user.Address = user.Address;
+                    //_user.Surname = user.LastName;
                     _user.Password = new PasswordHasher().HashPassword(user.NewPassword);
                     _userRepository.Update(_user);
                     return true;

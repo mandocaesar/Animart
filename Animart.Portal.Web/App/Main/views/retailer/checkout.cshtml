@@ -10,6 +10,7 @@
                 <tr>
                     <th></th>
                     <th>Name</th>
+                    <th>Is Pre-Order</th>
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Total</th>
@@ -19,23 +20,25 @@
                 <tr ng-repeat="item in ngCart.getCart().items track by $index">
                     <td><span ng-click="ngCart.removeItemById(item.getId())" class="glyphicon glyphicon-remove"></span></td>
                     <td>{{ item.getName() }}</td>
+                    <td>{{ item.getData().ispo }}</td>
                     <td>{{ item.getPrice() | currency:"Rp."}}</td>
                     <td>
-                        <span class="fa fa-minus-circle" ng-class="{'disabled':item.getQuantity()==1}"
-                              ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;
+                        <span class="fa fa-minus-circle" ng-class="{'disabled':item.getQuantity()<=1}"
+                                ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;
                         {{ item.getQuantity() | number }}&nbsp;&nbsp;
-                        @*<span class="fa fa-plus-circle" ng-click="item.setQuantity(1, true)"></span>*@
+                        <span class="fa fa-plus-circle" ng-class="{'disabled':item.getQuantity()>=item.getData().inStock && !item.getData().ispo ||(item.getData().ispo && item.getQuantity()>=100)}"
+                              ng-click="item.setQuantity(1, true)"></span>
                     </td>
-                    <td>{{ item.getTotal() | currency:"Rp."}}</td>
+                    <td>{{ item.getQuantity() *  item.getPrice() | currency:"Rp." }}</td>
                 </tr>
             </tbody>     
             <tfoot>
                 <tr>
-                    <td colspan="4" align="right" width="70%"><strong>Weight:</strong></td>
+                    <td colspan="5" align="right" width="70%"><strong>Weight ({{po.totalGram}} gr):</strong></td>
                     <td>{{ po.totalWeight}} kg</td>
                 </tr>
                 <tr>
-                    <td colspan="4" align="right"><strong>SubTotal:</strong></td>
+                    <td colspan="5" align="right"><strong>SubTotal:</strong></td>
                     <td><strong>{{ po.subTotal | currency:"Rp." }}</strong></td>
                 </tr>
             </tfoot>
@@ -103,7 +106,7 @@
                         <td>{{ po.shipping | currency:"Rp." }}</td>
                     </tr>
                     <tr>
-                        <td colspan="4" align="right"><strong>Weight:</strong></td>
+                        <td colspan="4" align="right"><strong>Weight ({{po.totalGram}} gr):</strong></td>
                         <td>{{ po.totalWeight }} kg</td>
                     </tr>
                     <tr>
@@ -135,7 +138,8 @@
                 </tr>           
             </table>   
         <div class="col-lg-12" style="text-align:right;">
-            <a href="" class="btn btn-primary" ng-hide="po.hideOrderBtn" ng-click="placeOrder()">Order Now</a>
+            <label style="color:red;" ng-show="isCombined">CANNOT PURCHASE PRE-ORDER AND READY STOCK ITEM TOGETHER, PLEASE REMOVE SOME ITEMS FROM YOUR CART</label>
+            <a href="" class="btn btn-primary" ng-hide="po.hideOrderBtn || isCombined" ng-click="placeOrder()">Order Now</a>
             <a href="./#/hwto"><h2><u>How to Pay</u></h2></a>
         </div>    
     </div>

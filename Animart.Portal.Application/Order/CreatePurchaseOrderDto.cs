@@ -8,6 +8,9 @@ namespace Animart.Portal.Order.Dto
     public class CreatePurchaseOrderDto :IInputDto
     {
         public string Expedition { get; set; }
+        public string ExpeditionAdjustment { get; set; }
+
+        public bool IsPreOrder { get; set; }
 
         public string Province { get; set; }
 

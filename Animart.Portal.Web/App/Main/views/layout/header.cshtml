@@ -40,6 +40,7 @@
                     <a href="" data-toggle="dropdown"><i class="fa fa-user"></i> <span>{{vm.getShownUserName().userName}}</span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="#" ng-click="editProfile()"><i class="fa fa-user"></i> @L("Profile")</a></li>
+                        <li><a href="#" ng-click="changePassword()"><i class="fa fa-key"></i> ChangePassword</a></li>
                         <li><a href="@Url.Action("Logout", "Account")"><i class="fa fa-sign-out"></i> @L("Logout")</a></li>
                     </ul>
                 </li>
@@ -101,12 +102,13 @@
                 <tr ng-repeat="item in ngCart.getCart().items track by $index">
                     <td><span ng-click="ngCart.removeItemById(item.getId())" class="glyphicon glyphicon-remove"></span></td>
 
-                    <td>{{ item.getName() }}</td>
+                    <td>{{ item.getName() | limitTo:20}}</td>
                     <td>
-                        <span class="fa fa-minus-circle" ng-class="{'disabled':item.getQuantity()==1}"
-                              ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;
+                        <span class="fa fa-minus-circle" style="visibility:hidden;" ng-class="{'disabled':item.getQuantity()<=1}"
+                                  ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;
                         {{ item.getQuantity() | number }}&nbsp;&nbsp;
-                        @*<span class="fa fa-plus-circle" ng-click="item.setQuantity(1, true)"></span>*@
+                        <span class="fa fa-plus-circle" style="visibility:hidden;" ng-class="{'disabled':item.getQuantity()>=item.getData().inStock && !item.getData().ispo ||(item.getData().ispo && item.getQuantity()>=100)}"
+                              ng-click="item.setQuantity(1, true)"></span>
                     </td>
                     <td>{{ item.getPrice() | currency:"Rp."}}</td>
                     <td>{{ item.getTotal() | currency:"Rp." }}</td>
@@ -169,6 +171,31 @@
             <label>Last Name:</label>
             <input type="text" ng-model="user.LastName" class="form-control">
         </div>
+        @*<div class="form-group">
+            <label>Old Password:</label>
+            <input type="password" min="0" ng-model="user.Password" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>New Password:</label>
+            <input type="password" min="0" ng-model="user.NewPassword" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Confirm Password:</label>
+            <input type="password" min="0" ng-model="ConfirmPassword" class="form-control">
+        </div>*@
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">Save</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="changePassword.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Change Password</h3>
+    </div>
+    <div class="modal-body">       
         <div class="form-group">
             <label>Old Password:</label>
             <input type="password" min="0" ng-model="user.Password" class="form-control">

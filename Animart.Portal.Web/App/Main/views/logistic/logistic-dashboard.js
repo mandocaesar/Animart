@@ -1,9 +1,9 @@
 ﻿angular.module('app').controller('app.views.logisticDashboard', [
-    '$q', '$rootScope', '$scope', 'abp.services.app.order', '$uibModal','$mdDialog',
+    '$q', '$rootScope', '$scope', 'abp.services.app.order', 'abp.services.app.shipment', '$uibModal', '$mdDialog',
     dashboardController
 ]);
 
-function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId) {
+function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, expeditionService, purchaseOrderId) {
 
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
@@ -13,10 +13,12 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, pur
         $scope.supplies = result.items;
         //console.log(result.items);
         $scope.isLogistic = result.status === "LOGISTIC";
+        $scope.status = (result.isPreOrder) ? "Pre-Order" : "Ready Stock";
         //console.log(result);
         if ($scope.isPaid) {
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
         }
+        $scope.updateExpedition();
     });
 
     $scope.file = {};
@@ -26,6 +28,37 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, pur
         });
     };
 
+    $scope.updateShippingPrice = function () {
+        //console.log(ngCart);
+        $scope.po.expeditionAdjustment = $scope.po.expeditionAdjustment.trim();
+        if ($scope.po.expeditionAdjustment !== '' && $scope.po.city !== '') {
+            var name = $scope.po.expeditionAdjustment.split('-')[0];
+            var type = $scope.po.expeditionAdjustment.split('-')[1];
+            //alert(name);
+            //alert(type);
+            expeditionService.getShipmentCostFilterByExpeditionAndCity(name, $scope.po.city, type).success(function (rs) {
+                //console.log(rs);
+                //alert(rs[0].nextKilo);
+                $scope.po.shipmentAdjustmentCost = rs[0].nextKilo;
+            });
+        }
+    };
+    $scope.updateExpedition = function () {
+        if ($scope.po.city !== '') {
+            expeditionService.getShipmentCostFilterByCity($scope.po.city).success(function (rs) {
+                //console.log(rs);
+                //alert(rs[0].nextKilo);
+
+                if (rs == null || rs.length === 0) {
+                    alert("Sorry your city is not available for shipment at the moment. Please contact marketing@animart.co.id for inquries.");
+                    $scope.po.showExpedition = false;
+                } else {
+                    $scope.expeditions = rs;
+                    $scope.po.showExpedition = true;
+                }
+            });
+        }
+    };
     $scope.receive = function () {
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "DONE").success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
@@ -40,9 +73,14 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, pur
             abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
         });
     }
+    $scope.insertExpedition = function () {
+        orderService.insertExpeditionAdjustment(purchaseOrderId, $scope.po.expeditionAdjustment).success(function () {
+            abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
+        });
+    }
 }
 
-function dashboardController($q, $rootScope, $scope, orderService, $uibModal,$mdDialog) {
+function dashboardController($q, $rootScope, $scope, orderService,expeditionService, $uibModal,$mdDialog) {
 
     $scope.gridOptions = {
         enableRowSelection: true,
@@ -53,6 +91,16 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal,$md
         showGridFooter: true
     };
     $scope.animationsEnabled = true;
+
+    $scope.statusType = 0;
+    $scope.changeType = function (num) {
+        $scope.statusType = num;
+        $scope.refresh();
+    };
+    $scope.orderType = [
+      { no: 1, name: "Pre-Order" },
+      { no: 0, name: "Ready Stock" }
+    ];
 
     $scope.statusGrid = 4;
     $scope.changeTab = function (num) {
@@ -66,13 +114,13 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal,$md
 
     $scope.refresh = function () {
         orderService.getDashboardAdmin().success(function (result) {
-            console.log(result);
+            //console.log(result);
             $scope.dashboard = result;
         });
 
         $scope.gridOptions.data = null;
-        orderService.getAllPurchaseOrderForLogistic($scope.statusGrid).success(function (result) {
-            console.log(result);
+        orderService.getAllPurchaseOrderForLogistic($scope.statusType,$scope.statusGrid).success(function (result) {
+            //console.log(result);
             $scope.gridOptions.data = result;
         });
     };
@@ -87,7 +135,8 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal,$md
             clickOutsideToClose: true,
             locals: {
                 purchaseOrderId: id,
-                orderService: orderService
+                orderService: orderService,
+                expeditionService: expeditionService
             }
         }).then(function (rs) {
             $scope.refresh();
@@ -101,6 +150,7 @@ function dashboardController($q, $rootScope, $scope, orderService, $uibModal,$md
 
     $scope.gridOptions.columnDefs = [
         { name: 'id', enableCellEdit: false },
+         { name: 'creatorUser.name', displayName: 'Name', enableCellEdit: false },
         { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
         { name: 'province', displayName: 'Province', enableCellEdit: false },
         { name: 'address', displayName: 'Address', enableCellEdit: false },
