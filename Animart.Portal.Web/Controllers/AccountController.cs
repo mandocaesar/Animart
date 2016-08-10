@@ -19,9 +19,11 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Animart.Portal.Authorization;
+using Animart.Portal.Extension;
 using Animart.Portal.MultiTenancy;
 using Animart.Portal.Users;
 using Animart.Portal.Web.Models;
+using Microsoft.Owin.Security.DataProtection;
 
 namespace Animart.Portal.Web.Controllers
 {
@@ -297,6 +299,150 @@ namespace Animart.Portal.Web.Controllers
                 ViewBag.ErrorMessage = ex.Message;
 
                 return View("Register", model);
+            }
+        }
+
+        #endregion
+
+
+        #region ForgotPassword
+
+        public ActionResult ForgotPassword()
+        {
+            return ForgotPasswordView(new ForgotPasswordViewModel());
+        }
+
+        private ActionResult ForgotPasswordView(ForgotPasswordViewModel model)
+        {
+            ViewBag.IsMultiTenancyEnabled = _multiTenancyConfig.IsEnabled;
+
+            return View("ForgotPassword", model);
+        }
+
+
+        public ActionResult ResetPassword(long userId, string code)
+        {
+            if (userId > 0 && !code.IsNullOrEmpty())
+            {
+                var user = _userManager.FindById(userId);
+                return View("ResetPassword", new ResetPasswordViewModel
+                {
+                    ResetCode = code,
+                    UserId = userId,
+                    EmailAddress = user.EmailAddress
+                });
+            }
+            else
+                return RedirectToAction("Login", "Account");
+        }
+
+        [HttpPost]
+        [UnitOfWork]
+        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            try {
+                CheckModelState();
+                bool isSuccess = false;
+                var user = await _userManager.FindByEmailAsync(model.EmailAddress);
+                if (user == null)
+                {
+                    // Don't reveal that the user does not exist
+                    return RedirectToAction("Login", "Account");
+                }
+
+                // var result = await _userManager.ResetPasswordAsync(user.Id, model.ResetCode, model.Password);
+                if (model.ResetCode == user.PasswordResetCode && model.Password == model.ConfirmPassword)
+                {
+                    user.PasswordResetCode = null;
+                    user.Password = new PasswordHasher().HashPassword(model.Password);
+
+                    //_unitOfWorkManager.Current.EnableFilter(AbpDataFilters.MayHaveTenant);
+                    //_unitOfWorkManager.Current.SetFilterParameter(AbpDataFilters.MayHaveTenant, AbpDataFilters.Parameters.TenantId, 1);
+
+                    //Save user
+                    CheckErrors(await _userManager.UpdateAsync(user));
+                    //await _unitOfWorkManager.Current.SaveChangesAsync();
+                    isSuccess = true;
+                }
+                else
+                {
+                    throw new UserFriendlyException("Your reset code is wrong.");
+                }
+
+                return View("ResetPasswordResult", new ResetPasswordResultViewModel
+                {
+                    EmailAddress = user.EmailAddress,
+                    IsSuccess = isSuccess
+                });
+            }
+            catch (UserFriendlyException ex)
+            {
+                ViewBag.IsMultiTenancyEnabled = _multiTenancyConfig.IsEnabled;
+                ViewBag.ErrorMessage = ex.Message;
+
+                return View("ForgotPassword", new ForgotPasswordViewModel
+                {
+                    EmailAddress = model.EmailAddress
+                });
+            }
+
+        }
+
+        [HttpPost]
+        [UnitOfWork]
+        public virtual async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            try
+            {
+                CheckModelState();
+
+                int tenantId = 1;
+
+                if (model.EmailAddress.IsNullOrEmpty())
+                {
+                    throw new UserFriendlyException("Please insert your email."); //L("FormIsNotValidMessage"));
+                }
+                var provider = new DpapiDataProtectionProvider("AnimartRetailer");
+                _userManager.UserTokenProvider = new DataProtectorTokenProvider<Users.User, long>(provider.Create("UserToken"));
+                var _user = _userManager.FindByEmail(model.EmailAddress);
+                if(_user != null)
+                {
+                    var ResetCode = await _userManager.GeneratePasswordResetTokenAsync(_user.Id);
+                    var TrimmedCode = ResetCode.Substring(0, Users.User.MaxPasswordResetCodeLength);
+
+                    _user.PasswordResetCode = TrimmedCode;
+                    
+                }
+                //Switch to the tenant
+                _unitOfWorkManager.Current.EnableFilter(AbpDataFilters.MayHaveTenant);
+                _unitOfWorkManager.Current.SetFilterParameter(AbpDataFilters.MayHaveTenant, AbpDataFilters.Parameters.TenantId, 1);
+
+                //Save user
+                CheckErrors(await _userManager.UpdateAsync(_user));
+                await _unitOfWorkManager.Current.SaveChangesAsync();
+
+
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = _user.Id, code = _user.PasswordResetCode }, protocol: Request.Url.Scheme);
+               
+                GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                gmail.SendMessage("Animart Portal Reset Password","Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a> <br/> If this is not you, please inform us by using email to marketing@animart.co.id.",
+                  _user.EmailAddress);
+
+                //Directly login if possible
+                //If can not login, show a register result page
+                return View("ForgotPasswordResult", new ForgotPasswordResultViewModel
+                {
+                    EmailAddress = model.EmailAddress,
+                    IsActive = _user.IsActive,
+                    IsEmailConfirmationRequired = true
+                });
+            }
+            catch (UserFriendlyException ex)
+            {
+                ViewBag.IsMultiTenancyEnabled = _multiTenancyConfig.IsEnabled;
+                ViewBag.ErrorMessage = ex.Message;
+
+                return View("ForgotPassword", model);
             }
         }
 
