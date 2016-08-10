@@ -21,6 +21,7 @@ namespace Animart.Portal.Web.Models
 
         [Required]
         [StringLength(Users.User.MaxPlainPasswordLength)]
+        [Compare("Password",ErrorMessage ="Your password is not the same")]
         public string ConfirmPassword { get; set; }
 
 

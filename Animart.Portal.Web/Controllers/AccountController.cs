@@ -402,31 +402,39 @@ namespace Animart.Portal.Web.Controllers
                 {
                     throw new UserFriendlyException("Please insert your email."); //L("FormIsNotValidMessage"));
                 }
-                var provider = new DpapiDataProtectionProvider("AnimartRetailer");
-                _userManager.UserTokenProvider = new DataProtectorTokenProvider<Users.User, long>(provider.Create("UserToken"));
+                //var provider = new DpapiDataProtectionProvider("AnimartRetailer");
+                //_userManager.UserTokenProvider = new DataProtectorTokenProvider<Users.User, long>(provider.Create("UserToken"));
+                
                 var _user = _userManager.FindByEmail(model.EmailAddress);
-                if(_user != null)
+                if (_user != null)
                 {
-                    var ResetCode = await _userManager.GeneratePasswordResetTokenAsync(_user.Id);
-                    var TrimmedCode = ResetCode.Substring(0, Users.User.MaxPasswordResetCodeLength);
+                    var ResetCode = Guid.NewGuid().ToString();
+                    ResetCode = new PasswordHasher().HashPassword(ResetCode);
+                    //await _userManager.GeneratePasswordResetTokenAsync(_user.Id);
+                    var TrimmedCode = ResetCode.Substring(0, Math.Min(Users.User.MaxPasswordResetCodeLength,ResetCode.Length));
 
                     _user.PasswordResetCode = TrimmedCode;
-                    
+
+                    //Switch to the tenant
+                    _unitOfWorkManager.Current.EnableFilter(AbpDataFilters.MayHaveTenant);
+                    _unitOfWorkManager.Current.SetFilterParameter(AbpDataFilters.MayHaveTenant,
+                        AbpDataFilters.Parameters.TenantId, 1);
+
+                    //Save user
+                    CheckErrors(await _userManager.UpdateAsync(_user));
+                    await _unitOfWorkManager.Current.SaveChangesAsync();
+
+
+                    var callbackUrl = Url.Action("ResetPassword", "Account",
+                        new {userId = _user.Id, code = _user.PasswordResetCode}, protocol: Request.Url.Scheme);
+
+                    GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                    gmail.SendMessage("Animart Portal Reset Password",
+                        "Please reset your password by clicking <a href=\"" + callbackUrl +
+                        "\">here</a> <br/> If this is not you, please inform us by using email to marketing@animart.co.id.",
+                        _user.EmailAddress);
+
                 }
-                //Switch to the tenant
-                _unitOfWorkManager.Current.EnableFilter(AbpDataFilters.MayHaveTenant);
-                _unitOfWorkManager.Current.SetFilterParameter(AbpDataFilters.MayHaveTenant, AbpDataFilters.Parameters.TenantId, 1);
-
-                //Save user
-                CheckErrors(await _userManager.UpdateAsync(_user));
-                await _unitOfWorkManager.Current.SaveChangesAsync();
-
-
-                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = _user.Id, code = _user.PasswordResetCode }, protocol: Request.Url.Scheme);
-               
-                GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
-                gmail.SendMessage("Animart Portal Reset Password","Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a> <br/> If this is not you, please inform us by using email to marketing@animart.co.id.",
-                  _user.EmailAddress);
 
                 //Directly login if possible
                 //If can not login, show a register result page
