@@ -16,6 +16,7 @@ namespace Animart.Portal.EntityFramework
         public virtual IDbSet<SupplyItem> SupplyItems { get; set; }
         public virtual IDbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public virtual IDbSet<OrderItem> OrderItems { get; set; }
+        public virtual IDbSet<Category> Categories { get; set; }
         public virtual IDbSet<City> Cities { get; set; }
         public virtual IDbSet<Expedition> Expeditions { get; set; }
         public virtual IDbSet<ShipmentCost> ShipmentCosts { get; set; }

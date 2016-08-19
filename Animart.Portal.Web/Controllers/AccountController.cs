@@ -395,8 +395,8 @@ namespace Animart.Portal.Web.Controllers
             try
             {
                 CheckModelState();
-
-                int tenantId = 1;
+                
+                bool isActive = true;
 
                 if (model.EmailAddress.IsNullOrEmpty())
                 {
@@ -411,7 +411,8 @@ namespace Animart.Portal.Web.Controllers
                     var ResetCode = Guid.NewGuid().ToString();
                     ResetCode = new PasswordHasher().HashPassword(ResetCode);
                     //await _userManager.GeneratePasswordResetTokenAsync(_user.Id);
-                    var TrimmedCode = ResetCode.Substring(0, Math.Min(Users.User.MaxPasswordResetCodeLength,ResetCode.Length));
+                    var TrimmedCode = ResetCode.Substring(0,
+                        Math.Min(Users.User.MaxPasswordResetCodeLength, ResetCode.Length));
 
                     _user.PasswordResetCode = TrimmedCode;
 
@@ -433,17 +434,16 @@ namespace Animart.Portal.Web.Controllers
                         "Please reset your password by clicking <a href=\"" + callbackUrl +
                         "\">here</a> <br/> If this is not you, please inform us by using email to marketing@animart.co.id.",
                         _user.EmailAddress);
-
+                    isActive = _user.IsActive;
                 }
 
-                //Directly login if possible
-                //If can not login, show a register result page
                 return View("ForgotPasswordResult", new ForgotPasswordResultViewModel
                 {
                     EmailAddress = model.EmailAddress,
-                    IsActive = _user.IsActive,
+                    IsActive = isActive,
                     IsEmailConfirmationRequired = true
                 });
+
             }
             catch (UserFriendlyException ex)
             {

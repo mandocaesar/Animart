@@ -1,7 +1,7 @@
 ﻿(function () {
     var controllerId = 'app.views.supply';
-    angular.module('app').controller(controllerId, ['$q', '$rootScope', '$scope', 'abp.services.app.supply', '$uibModal', '$http',
-        function ($q, $rootScope, $scope, supplyService, $uibModal, $http) {
+    angular.module('app').controller(controllerId, ['$q', '$rootScope', '$scope', 'abp.services.app.supply', 'abp.services.app.category', '$uibModal', '$http',
+        function ($q, $rootScope, $scope, supplyService,categoryService, $uibModal, $http) {
             var vm = this;
             $scope.newFile = {};
             $scope.gridOptions = {
@@ -12,18 +12,29 @@
                 rowHeight: 35,
                 showGridFooter: true
             };
+            $scope.category = {};
+            $scope.categoryId = "";
             $scope.title = "Add New";
             $scope.animationsEnabled = true;
 
             $scope.refresh = function () {
                 $scope.gridOptions.data = null;
-                supplyService.getSupplies().success(function (result) {
-                 
-                    //console.log(result);
+                var catId = $scope.categoryId + "";
 
-                    $scope.gridOptions.data = result;
-                });
+                if (catId === "00000000-0000-0000-0000-000000000000" || catId==="")
+                    supplyService.getSupplies().success(function (result) {
+                        //console.log(result);
+                        $scope.gridOptions.data = result;
+                    });
+                else
+                    supplyService.getSuppliesByCategoryId($scope.categoryId).success(function (result) {
+                        $scope.gridOptions.data = result;
+                    });
             };
+
+            categoryService.getCategoriesForFilter().success(function (result) {
+                $scope.category = result;
+            });
 
             //$scope.$watch('mydateOfBirth', function (newValue) {
             //    $scope.workerDetail.dateOfBirth = $filter('date')(newValue, 'yyyy/MM/dd');
@@ -32,6 +43,9 @@
             //$scope.$watch('workerDetail.dateOfBirth', function (newValue) {
             //    $scope.mydateOfBirth = $filter('date')(newValue, 'yyyy/MM/dd');
             //});
+            $scope.changeCategory = function () {
+                $scope.refresh();
+            };
 
             $scope.storeFile = function (gridRow, gridCol, files) {
                 console.log(gridRow.entity);
@@ -68,13 +82,12 @@
             $scope.gridOptions.columnDefs = [
                 
                 { name: 'id', enableCellEdit: false },
+                { name: 'category', displayName: 'Category' },
                 { name: 'code', displayName: 'Code' },
                 { name: 'name', displayName: 'Name' },
                 { name: 'price', displayName: 'Price', cellFilter: 'currency:"Rp."' },
                 { name: 'weight', displayName: 'Weight (gr)', type: 'number' },
-                { name: 'inStock', displayName: 'Stock', type: 'number' },
                 { name: 'available', displayName: 'Active', type: 'boolean' },
-                { name: 'description', displayName: 'Description' },
                 { name: 'ispo', displayName: "Is PO ?", type: 'boolean' },
                 { name: 'availableUntil', displayName: "Available Until", type: 'datetime' },
                 { name: 'hasImage', displayName: "Image", type: 'boolean', enableCellEdit: false },
@@ -152,12 +165,14 @@
     ]);
 
     angular.module('app').controller('supplyModalCtrl', [
-    '$scope', 'abp.services.app.supply', '$uibModalInstance',
-    function ($scope, supplyService, $uibModalInstance, result) {
+    '$scope', 'abp.services.app.supply', 'abp.services.app.category', '$uibModalInstance',
+    function ($scope, supplyService,categoryService, $uibModalInstance, result) {
         $scope.IsEdit = false;
+        $scope.category = {};
         $scope.ok = function () {
             supplyService.create($scope.supply)
               .success(function (rs) {
+                    //console.log($scope.supply);
                   $scope.result = result;
                   $uibModalInstance.close($scope.result);
                   $uibModalInstance.dismiss('cancel');
@@ -169,6 +184,11 @@
                 });
         };
 
+        categoryService.getCategoriesForFilter().success(function (result) {
+            result.shift();
+            $scope.category = result;
+        });
+
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
@@ -176,19 +196,14 @@
     ]);
 
     angular.module('app').controller('editSupplyCtrl', [
-    '$scope', 'abp.services.app.supply', '$uibModalInstance','param',
-    function ($scope, supplyService, $uibModalInstance, param) {
+    '$scope', 'abp.services.app.supply', 'abp.services.app.category', '$uibModalInstance', 'param',
+    function ($scope, supplyService,categoryService, $uibModalInstance, param) {
         $scope.supply = {};
+        $scope.category = {};
         $scope.IsEdit = true;
         $scope.title = "Edit";
 
-        supplyService.supply(param.data).success(function (rs) {
-            rs.availableUntil = new Date(rs.availableUntil);
-            $scope.supply = rs;
-        }).error(function (er) {
-            abp.notify.error('Error Load Supply');
-            $uibModalInstance.dismiss('cancel');
-        });
+       
 
         $scope.update = function () {
             supplyService.update($scope.supply)
@@ -203,6 +218,19 @@
                     $uibModalInstance.dismiss('cancel');
                 });
         };
+
+        categoryService.getCategoriesForFilter().success(function (result) {
+            result.shift();
+            $scope.category = result;
+            supplyService.supply(param.data).success(function (rs) {
+                //console.log(rs);
+                rs.availableUntil = new Date(rs.availableUntil);
+                $scope.supply = rs;
+            }).error(function (er) {
+                abp.notify.error('Error Load Supply');
+                $uibModalInstance.dismiss('cancel');
+            });
+        });
 
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');

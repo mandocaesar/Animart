@@ -189,6 +189,10 @@
     <Compile Include="Migrations\201608021452556_AddPOExpeditionAdjustmentIsPreOrder.Designer.cs">
       <DependentUpon>201608021452556_AddPOExpeditionAdjustmentIsPreOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608181733046_AddItemCategory.cs" />
+    <Compile Include="Migrations\201608181733046_AddItemCategory.Designer.cs">
+      <DependentUpon>201608181733046_AddItemCategory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -261,6 +265,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608021452556_AddPOExpeditionAdjustmentIsPreOrder.resx">
       <DependentUpon>201608021452556_AddPOExpeditionAdjustmentIsPreOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608181733046_AddItemCategory.resx">
+      <DependentUpon>201608181733046_AddItemCategory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -56,6 +56,14 @@ namespace Animart.Portal.Web
                         )
                 ).AddItem(
                     new MenuItemDefinition(
+                        "SupplyCategory",
+                        new LocalizableString("Category", PortalConsts.LocalizationSourceName),
+                        url: "#/category",
+                        icon: "fa fa-sitemap",
+                        requiredPermissionName: "CanAccessMarketing"
+                        )
+                ).AddItem(
+                    new MenuItemDefinition(
                         "Supply",
                         new LocalizableString("Supply", PortalConsts.LocalizationSourceName),
                         url: "#/supply",
@@ -100,6 +108,14 @@ namespace Animart.Portal.Web
                         new LocalizableString("Administration", PortalConsts.LocalizationSourceName),
                         requiredPermissionName: "CanAccessAdministrator",
                         icon: "fa fa-cogs"
+                        ).AddItem(
+                            new MenuItemDefinition(
+                                "SupplyCategory",
+                                new LocalizableString("Category", PortalConsts.LocalizationSourceName),
+                                url: "#/category",
+                                icon: "fa fa-sitemap",
+                                requiredPermissionName: "CanAccessAdministrator"
+                                )
                         ).AddItem(
                             new MenuItemDefinition(
                                 "Supply",

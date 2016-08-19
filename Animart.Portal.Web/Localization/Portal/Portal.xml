@@ -25,6 +25,7 @@
     <text name="ChangePassword" value="Change Password"/>
     <text name="ForgotPassword" value="Forgot Password"/>
     <text name="ResetPassword" value="Reset Password"/>
+    <text name="Category" value="Supply Category"/>
 
     <text name="AllCategories" value="All Categories"/>
     <text name="AllSubCategories" value="All Sub-Categories"/>

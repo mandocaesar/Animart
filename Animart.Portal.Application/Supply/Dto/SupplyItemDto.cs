@@ -28,6 +28,10 @@ namespace Animart.Portal.Supply.Dto
         public decimal Weight { get; set; }
 
         public bool IsPO { get; set; }
+
+        public string Category { get; set; }
+
+        public Guid? CategoryId { get; set; }
         [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime AvailableUntil { get; set; }
     }

@@ -6,6 +6,10 @@
         <div class="col-lg-2">
             <button type="button" class="btn btn-danger " ng-click="delete()"><i class="fa fa-trash"></i>Delete Supply</button>
         </div>
+        <div class="col-lg-2">
+            <label>Category:</label>
+            <select ng-model="categoryId" ng-change="changeCategory()" ng-options="item.id as item.name for item in category"></select>
+        </div>
     </div>
     <div class="row" style="margin-top: 15px">
         <div class="col-lg-12">
@@ -22,6 +26,10 @@
                 <label>Code:</label>
                 <input type="text" ng-model="supply.code" class="form-control">
             </div>
+            <div class="form-group">
+                <label>Category:</label>
+                <select ng-model="supply.categoryId" ng-options="item.id as item.name for item in category"></select>
+            </div>            
             <div class="form-group">
                 <label>Name:</label>
                 <input type="text" ng-model="supply.name" class="form-control">

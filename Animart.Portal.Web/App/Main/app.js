@@ -42,7 +42,11 @@
                       url: '/hwto',
                       templateUrl: '/App/Main/views/home/howtoorder.cshtml'
                   })
-                .state('supply', {
+                .state('category', {
+                    url: '/category',
+                    templateUrl: '/App/Main/views/supply/category.cshtml',
+                    menu: 'SupplyCategory' //Matches to name of 'Supply' menu in PortalNavigationProvider
+                }).state('supply', {
                     url: '/supply',
                     templateUrl: '/App/Main/views/supply/supply.cshtml',
                     menu: 'Supply' //Matches to name of 'Supply' menu in PortalNavigationProvider

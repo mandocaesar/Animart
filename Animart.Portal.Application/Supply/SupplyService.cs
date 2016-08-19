@@ -22,17 +22,32 @@ namespace Animart.Portal.Supply
     public class SupplyService : PortalAppServiceBase, ISupplyService
     {
         private readonly IRepository<SupplyItem, Guid> _supplyItemRepository;
+        private readonly IRepository<Category, Guid> _categoryRepository;
         private readonly IRepository<Users.User, long> _userRepository;
         private readonly SupplyDomainService _supplyDomainService;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        public SupplyService(IRepository<SupplyItem, Guid> supplyItemRepository, IRepository<Users.User, long> userRepository, SupplyDomainService supplyDomainService, IUnitOfWorkManager unitOfWorkManager)
+
+        public SupplyService(IRepository<SupplyItem, Guid> supplyItemRepository,
+            IRepository<Category, Guid> categoryRepository,
+            IRepository<Users.User, long> userRepository, SupplyDomainService supplyDomainService, IUnitOfWorkManager unitOfWorkManager)
         {
-           
+
+            _categoryRepository = categoryRepository;
             _supplyItemRepository = supplyItemRepository;
             _userRepository = userRepository;
             _supplyDomainService = supplyDomainService;
             _unitOfWorkManager = unitOfWorkManager;
 
+        }
+
+        public string CategoryToName(SupplyItem item)
+        {
+            if (item.CategoryId != null)
+            {
+                var data = _categoryRepository.FirstOrDefault(i => i.Id == item.CategoryId);
+                return data.Name;
+            }
+            return "";
         }
 
         public List<SupplyItemDto> GetSupplies()
@@ -53,7 +68,33 @@ namespace Animart.Portal.Supply
                 Description = e.Description,
                 HasImage = e.HasImage,
                 IsPO = e.IsPo,
-                AvailableUntil = e.AvailableUntil
+                AvailableUntil = e.AvailableUntil,
+                CategoryId = e.CategoryId,
+                Category = this.CategoryToName(e)
+            }).ToList();
+        }
+
+        public List<SupplyItemDto> GetSuppliesByCategoryId(Guid id)
+        {
+            var supplies = _supplyItemRepository.GetAll().Where(i=>i.CategoryId==id).ToList();
+
+            return supplies.Select(e => new SupplyItemDto
+            {
+                Available = e.Available,
+                Code = e.Code,
+                Id = e.Id,
+                CreationTime = e.CreationTime,
+                CreatorUserId = e.CreatorUserId,
+                InStock = e.InStock,
+                Name = e.Name,
+                Price = e.Price,
+                Weight = e.Weight,
+                Description = e.Description,
+                HasImage = e.HasImage,
+                IsPO = e.IsPo,
+                AvailableUntil = e.AvailableUntil,
+                CategoryId = e.CategoryId,
+                Category = this.CategoryToName(e)
             }).ToList();
         }
 
@@ -75,7 +116,9 @@ namespace Animart.Portal.Supply
                 Weight = e.Weight,
                 Description = e.Description,
                 HasImage = e.HasImage,
-                IsPO = e.IsPo
+                IsPO = e.IsPo,
+                CategoryId = e.CategoryId,
+                Category = this.CategoryToName(e)
             }).ToList();
 
             result.PoSupply = supplies.Where(e => e.IsPo && e.AvailableUntil.Date >= DateTime.Now).Select(e => new SupplyItemDto
@@ -92,7 +135,54 @@ namespace Animart.Portal.Supply
                 Description = e.Description,
                 HasImage = e.HasImage,
                 AvailableUntil = e.AvailableUntil,
-                IsPO = e.IsPo
+                IsPO = e.IsPo,
+                CategoryId = e.CategoryId,
+                Category = this.CategoryToName(e)
+            }).ToList();
+
+            return result;
+        }
+
+        public SuppliesDTO GetSuppliesRetailerByCategoryId(Guid id)
+        {
+            var result = new SuppliesDTO();
+            var supplies = _supplyItemRepository.GetAll().Where(e => e.Available && e.InStock > 0 && e.CategoryId==id).ToList();
+
+            result.Supply = supplies.Where(e => !e.IsPo).Select(e => new SupplyItemDto
+            {
+                Available = e.Available,
+                Code = e.Code,
+                Id = e.Id,
+                CreationTime = e.CreationTime,
+                CreatorUserId = e.CreatorUserId,
+                InStock = e.InStock,
+                Name = e.Name,
+                Price = e.Price,
+                Weight = e.Weight,
+                Description = e.Description,
+                HasImage = e.HasImage,
+                IsPO = e.IsPo,
+                CategoryId = e.CategoryId,
+                Category = this.CategoryToName(e)
+            }).ToList();
+
+            result.PoSupply = supplies.Where(e => e.IsPo && e.AvailableUntil.Date >= DateTime.Now).Select(e => new SupplyItemDto
+            {
+                Available = e.Available,
+                Code = e.Code,
+                Id = e.Id,
+                CreationTime = e.CreationTime,
+                CreatorUserId = e.CreatorUserId,
+                InStock = e.InStock,
+                Name = e.Name,
+                Price = e.Price,
+                Weight = e.Weight,
+                Description = e.Description,
+                HasImage = e.HasImage,
+                AvailableUntil = e.AvailableUntil,
+                IsPO = e.IsPo,
+                CategoryId = e.CategoryId,
+                Category = this.CategoryToName(e)
             }).ToList();
 
             return result;
@@ -138,6 +228,7 @@ namespace Animart.Portal.Supply
                     Weight = supplyItem.Weight,
                     Description = supplyItem.Description,
                     IsPo = supplyItem.IsPO,
+                    CategoryId = supplyItem.CategoryId,
                     AvailableUntil = supplyItem.AvailableUntil <= DateTime.MinValue ? DateTime.Now : supplyItem.AvailableUntil
                 });
             }
@@ -164,6 +255,7 @@ namespace Animart.Portal.Supply
                 item.Description = supplyItem.Description ?? item.Description;
                 item.HasImage = supplyItem.HasImage;
                 item.IsPo = supplyItem.IsPO;
+                item.CategoryId = supplyItem.CategoryId;
                 item.AvailableUntil = supplyItem.AvailableUntil <= DateTime.MinValue ? DateTime.Now.Date : supplyItem.AvailableUntil;
 
                 _supplyItemRepository.Update(item);
@@ -258,7 +350,9 @@ namespace Animart.Portal.Supply
                     Name = a.Name,
                     Price = a.Price,
                     Weight = a.Weight,
-                    AvailableUntil = a.AvailableUntil
+                    AvailableUntil = a.AvailableUntil,
+                    Category = this.CategoryToName(a),
+                    CategoryId = a.CategoryId
                 };
             }
             catch (Exception ex)
