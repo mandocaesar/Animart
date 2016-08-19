@@ -102,7 +102,7 @@ namespace Animart.Portal.Supply
         public SuppliesDTO GetSuppliesRetailer()
         {
             var result = new SuppliesDTO();
-            var supplies = _supplyItemRepository.GetAll().Where(e=>e.Available && e.InStock>0).ToList();
+            var supplies = _supplyItemRepository.GetAll().Where(e=>e.Available ).OrderByDescending(i=>i.CreationTime).ToList();
 
             result.Supply = supplies.Where(e=>!e.IsPo).Select(e=> new SupplyItemDto
             {   Available = e.Available,
@@ -121,7 +121,8 @@ namespace Animart.Portal.Supply
                 Category = this.CategoryToName(e)
             }).ToList();
 
-            result.PoSupply = supplies.Where(e => e.IsPo && e.AvailableUntil.Date >= DateTime.Now).Select(e => new SupplyItemDto
+            result.PoSupply = supplies.Where(e => e.IsPo && e.AvailableUntil.Date >= DateTime.Now)
+                .OrderByDescending(i => i.CreationTime).Select(e => new SupplyItemDto
             {
                 Available = e.Available,
                 Code = e.Code,
@@ -146,7 +147,7 @@ namespace Animart.Portal.Supply
         public SuppliesDTO GetSuppliesRetailerByCategoryId(Guid id)
         {
             var result = new SuppliesDTO();
-            var supplies = _supplyItemRepository.GetAll().Where(e => e.Available && e.InStock > 0 && e.CategoryId==id).ToList();
+            var supplies = _supplyItemRepository.GetAll().Where(e => e.Available && e.CategoryId==id).ToList();
 
             result.Supply = supplies.Where(e => !e.IsPo).Select(e => new SupplyItemDto
             {

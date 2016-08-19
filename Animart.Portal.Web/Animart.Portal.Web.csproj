@@ -774,6 +774,8 @@
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\images\animart_logo.png" />
+    <Content Include="Scripts\dirPagination.js" />
+    <Content Include="Scripts\dirPagination.spec.js" />
     <Content Include="Scripts\ngCart.js" />
     <Content Include="Scripts\ngCart.min.js" />
     <Content Include="Content\themes\base\accordion.css" />

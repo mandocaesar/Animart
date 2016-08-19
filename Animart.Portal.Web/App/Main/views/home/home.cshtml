@@ -1,65 +1,128 @@
 ﻿<div ng-controller="app.views.home as vm">
-    <div flex-xs flex-gt-xs="25" layout="column">
-        <h2>PO Item</h2><hr/>
+    <div flex-xs flex-gt-xs="25" layout="row">
+        <h2>Latest Pre-Order</h2><hr/>
     </div>
+    <label>Search:</label><input ng-model="searchPO" id="search" class="form-control" placeholder="Filter text">
+
     <md-content class="md-padding" layout-xs="column" layout="row">
-        <div ng-repeat="posupply in poSupplies" flex-xs flex-gt-xs="16" layout="row">
-            <md-card>
+        <div pagination-id="paginatePO" dir-paginate="posupply in poSupplies | filter:searchPO | itemsPerPage: pagePOSize" current-page="currentPOPage" flex-xs flex-gt-xs="16" flex="none" layout="row">
+            @*ng-repeat="posupply in filteredPOSupplies"*@
+            <md-card style="text-align: center;">
                 <md-card-title>
                     <md-card-title-text>
-                        <span class="md-head" style="font-weight: bold;word-wrap: break-word;width:160px;">{{posupply.name | limitTo:100}}</span>
-                        <span class="md-subhead">{{posupply.price | currency:"Rp."}}</span>
+                        <span class="md-head" style="font-weight: bold; word-wrap: break-word; width: 150px; height: 50px;">{{posupply.name | limitTo:30}}</span>
+                        @*<span class="md-subhead">{{posupply.price | currency:"Rp."}}</span>*@
+                        <span class="md-subhead">
+                            <b>Available Until:</b>
+                            <br/>{{posupply.availableUntil}}
+                        </span>
                     </md-card-title-text>
                 </md-card-title>
-                <md-card-content layout="row" layout-align="space-between">
-                    <img src="{{posupply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(posupply.id)" />
+                <md-card-content layout="row" layout-align="center">
+                    <img src="{{posupply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(posupply.id)"/>
                 </md-card-content>
-                <md-card-actions layout="row" layout-align="middle center" ng-if="vm.getShownUserName().currentRole == '5'">
-                    <ngcart-addtocart id="{{ posupply.id }}" name="{{ posupply.name }}" price="{{ posupply.price }}" quantity="1" quantity-max="100" data=posupply>Add To Cart</ngcart-addtocart>
+                <md-card-actions>
+                    <md-button class="md-raised md-primary" ng-click="view(posupply.id)">Details</md-button>
                 </md-card-actions>
+                @*<md-card-actions layout="row" layout-align="middle center" ng-if="vm.getShownUserName().currentRole == '5'">
+                    <ngcart-addtocart id="{{ posupply.id }}" name="{{ posupply.name }}" price="{{ posupply.price }}" quantity="1" quantity-max="100" data=posupply>Add To Cart</ngcart-addtocart>
+                </md-card-actions>*@
             </md-card>
         </div>
-        <hr />
+        <hr/>
     </md-content>
-    <div flex-xs flex-gt-xs="25" layout="row">
-        <h2>Ready Stock Item</h2><hr />
+    <div class="text-center row">
+        <div class="col-md-9">
+            <dir-pagination-controls pagination-id="paginatePO" boundary-links="true" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+        </div>
+        @*<div class="col-md-2">
+            <label>Page Size:</label>
+        </div>
+        <div class="col-md-1">
+            <input type="number" min="1" max="100" class="form-control" ng-model="pagePOSize">
+        </div>*@
     </div>
+    <div flex-xs flex-gt-xs="25" layout="row">
+        <h2>Latest In Stock</h2><hr/>
+    </div>
+    <label>Search:</label><input ng-model="search" id="search" class="form-control" placeholder="Filter text">
+    @*@ng-repeat="supply in filteredSupplies" flex-xs flex-gt-xs="16" layout="column">
+    <md-card style="text-align: center;"> ng-if="supply.inStock>0"*@
     <md-content class="md-padding" layout-xs="column" layout="row">
-        <div ng-repeat="supply in supplies" flex-xs flex-gt-xs="16" layout="column">
-            <md-card ng-if="supply.inStock>0">
+        <div pagination-id="paginateSupply" dir-paginate="supply in supplies | filter:search | itemsPerPage: pageSize" current-page="currentPage" flex-xs flex-gt-xs="16" layout="column">
+            <md-card style="text-align: center;">
+                @*ng-if="supply.inStock>0"*@
                 <md-card-title>
                     <md-card-title-text>
-                        <span class="md-head"  style="font-weight: bold;word-wrap: break-word; width:160px;">{{supply.name | limitTo:100}}</span>
-                        <span class="md-subhead">{{supply.price | currency:"Rp."}}</span>
+                        <span class="md-head" style="font-weight: bold; word-wrap: break-word; width: 150px; height: 50px;">{{supply.name | limitTo:100}}</span>
+                        @*<span class="md-subhead">{{supply.price | currency:"Rp."}}</span>*@
                     </md-card-title-text>
                 </md-card-title>
-                <md-card-content layout="row" layout-align="space-between">
+                <md-card-content layout="row" layout-align="center">
                     <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(supply.id)" />
                 </md-card-content>
-                <md-card-actions layout="row" layout-align="middle center"  ng-if="vm.getShownUserName().currentRole == '5'">
-                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1"  quantity-max="{{supply.inStock}}" data=supply>Add To Cart</ngcart-addtocart>
-                </md-card-actions>
+                <md-card-content>
+                    <md-button class="md-raised md-primary" ng-click="view(posupply.id)">Details</md-button>
+                </md-card-content>
+                @*<md-card-actions layout="row" layout-align="middle center"  ng-if="vm.getShownUserName().currentRole == '5'">
+                        <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1"  quantity-max="100" data=supply>Add To Cart</ngcart-addtocart>
+                    </md-card-actions>*@
             </md-card>
         </div>
     </md-content>
-</div>
-<script type="text/ng-template" id="template/ngCart/addtocart.html">
-    <div ng-hide="attrs.id">
-        <a class="btn btn-lg btn-primary" ng-disabled="true" ng-transclude> Add To Cart</a>
-    </div>
-    <div ng-show="attrs.id">
-        <div>
-            <span ng-show="quantityMax">
-                <select name="quantity" id="quantity" ng-model="q"
-                        ng-options=" v for v in qtyOpt"></select>
-            </span>
-            <a class="btn btn-sm btn-primary"
-               ng-click="ngCart.addItem(id, name, price, q, data)"
-               ng-transclude>Add To Cart</a>
+    <div class="text-center row">
+
+        <div class="col-md-9">
+            <dir-pagination-controls pagination-id="paginateSupply" boundary-links="true" template-url="dirPagination.tpl.html"></dir-pagination-controls>
         </div>
-        <mark ng-show="inCart()" style="background-color:transparent;">
-            This item is in your cart. <a ng-click="ngCart.removeItemById(id)" style="cursor: pointer;">Remove</a>
-        </mark>
-    </div>
+            @*<div class="col-md-2">
+                <label>Page Size:</label>
+            </div>
+            <div class="col-md-1">
+                <input type="number" min="1" max="100" class="form-control" ng-model="pageSize">
+            </div>
+        </div>*@
+ 
+</div>
+
+<script type="text/ng-template" id="dirPagination.tpl.html">
+    <ul class="pagination" ng-if="1 < pages.length || !autoHide">
+        <li ng-if="boundaryLinks" ng-class="{ disabled : pagination.current == 1 }">
+            <a href="" ng-click="setCurrent(1)">&laquo;</a>
+        </li>
+        <li ng-if="directionLinks" ng-class="{ disabled : pagination.current == 1 }">
+            <a href="" ng-click="setCurrent(pagination.current - 1)">&lsaquo;</a>
+        </li>
+        <li ng-repeat="pageNumber in pages track by tracker(pageNumber, $index)" ng-class="{ active : pagination.current == pageNumber, disabled : pageNumber == '...' }">
+            <a href="" ng-click="setCurrent(pageNumber)">{{ pageNumber }}</a>
+        </li>
+
+        <li ng-if="directionLinks" ng-class="{ disabled : pagination.current == pagination.last }">
+            <a href="" ng-click="setCurrent(pagination.current + 1)">&rsaquo;</a>
+        </li>
+        <li ng-if="boundaryLinks" ng-class="{ disabled : pagination.current == pagination.last }">
+            <a href="" ng-click="setCurrent(pagination.last)">&raquo;</a>
+        </li>
+    </ul>
+</script>
+<script type="text/ng-template" id="template/ngCart/addtocart.html">
+        <div ng-hide="attrs.id">
+            <a class="btn btn-lg btn-primary" ng-disabled="true" ng-transclude> Add To Cart</a>
+        </div>
+        <div ng-show="attrs.id">
+            <div>
+                <span ng-show="quantityMax">
+                    <select name="quantity" id="quantity" ng-model="q"
+                            ng-options=" v for v in qtyOpt"></select>
+                </span>
+                <a class="btn btn-sm btn-primary"
+                   ng-click="ngCart.addItem(id, name, price, q, data)"
+                   ng-transclude>Add To Cart</a>
+            </div>
+            <mark ng-show="inCart()" style="background-color:transparent;">
+                This item is in your cart. <a ng-click="ngCart.removeItemById(id)" style="cursor: pointer;">Remove</a>
+            </mark>
+        </div>
+    
 </script>
 

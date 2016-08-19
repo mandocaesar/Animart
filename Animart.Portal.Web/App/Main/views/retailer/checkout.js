@@ -106,15 +106,17 @@
                 var data = null;
                 for (var i = 0; i < items.length; i++) {
                     data = items[i].getData();
-                    if (!data.ispo) {
+                    //if (!data.ispo) {
+                    //    if (items[i].getQuantity() < 1)
+                    //        items[i]._quantity = 1;
+                    //    else if (items[i].getQuantity() > data.inStock)
+                    //        items[i]._quantity = data.inStock;
+                    //} else {
                         if (items[i].getQuantity() < 1)
                             items[i]._quantity = 1;
-                        else if (items[i].getQuantity() > data.inStock)
-                            items[i]._quantity = data.inStock;
-                    } else {
-                        if (items[i].getQuantity() >100)
+                       else if (items[i].getQuantity() >100)
                             items[i]._quantity = 100;
-                    }
+                    //}
 
                 }
             };

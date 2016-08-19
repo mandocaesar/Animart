@@ -16,7 +16,8 @@
          'ui.jq',
          'abp',
          'ngCart',
-         'ngRoute'
+         'ngRoute',
+         'angularUtils.directives.dirPagination'
     ]);
 
     //Configuration for Angular UI routing.

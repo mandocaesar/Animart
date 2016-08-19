@@ -26,7 +26,7 @@
                         <span class="fa fa-minus-circle" ng-class="{'disabled':item.getQuantity()<=1}"
                                 ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;
                         {{ item.getQuantity() | number }}&nbsp;&nbsp;
-                        <span class="fa fa-plus-circle" ng-class="{'disabled':item.getQuantity()>=item.getData().inStock && !item.getData().ispo ||(item.getData().ispo && item.getQuantity()>=100)}"
+                        <span class="fa fa-plus-circle" ng-class="{'disabled': item.getQuantity()>=100}" @*item.getQuantity()>=item.getData().inStock && !item.getData().ispo ||(item.getData().ispo &&*@
                               ng-click="item.setQuantity(1, true)"></span>
                     </td>
                     <td>{{ item.getQuantity() *  item.getPrice() | currency:"Rp." }}</td>

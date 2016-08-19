@@ -6,6 +6,10 @@
                     <md-card-title-text>
                         <span class="md-headline">{{supply.name}}</span>
                         <span class="md-subhead">{{supply.price | currency:"Rp."}}</span>
+                        <span class="md-subhead">
+                            <b>Available Until:</b>
+                            <br />{{supply.availableUntil}}
+                        </span>
                     </md-card-title-text>
                 </md-card-title>
                 <md-card-content layout="row" layout-align="space-between">
@@ -15,7 +19,7 @@
                     </p>
                 </md-card-content>
                 <md-card-actions layout="row" layout-align="right center" ng-if="vm.getShownUserName().currentRole == '5'">
-                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="30" data="item">Add To Cart</ngcart-addtocart>
+                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="100" data="item">Add To Cart</ngcart-addtocart>
                 </md-card-actions>
             </md-card>
         </div>
