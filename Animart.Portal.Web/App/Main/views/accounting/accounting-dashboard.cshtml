@@ -61,7 +61,7 @@
                 </div>
             </div>
             <div class="col">
-                <div ui-grid="gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
+                <div ui-grid="gridOptions" ui-grid-edit ui-grid-resize-columns ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
             </div>
         </div>
     </md-content>
@@ -72,7 +72,7 @@
         <form name="poForm">
             <md-toolbar>
                 <div class="md-toolbar-tools">
-                    <h2>Order Details - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
+                    <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
                     <span flex></span>
                     <md-button class="md-icon-button" ng-click="cancel()">
                         <md-icon md-svg-src="" aria-label="Close dialog"></md-icon>
@@ -107,6 +107,7 @@
                                 <table class="table table-striped ngCart cart table-bordered">
                                     <thead>
                                         <tr>
+                                            <th>Code</th>
                                             <th>Name</th>
                                             <th>Weight (gramm)</th>
                                             <th>Quantity</th>
@@ -119,6 +120,9 @@
                                     <tbody>
                                         <tr ng-repeat="supply in supplies">
                                             <td>
+                                                {{supply.item.code}}
+                                            </td>
+                                            <td>
                                                 {{ supply.item.name }}
                                             </td>
                                             <td>
@@ -127,17 +131,17 @@
                                             <td>
                                                 {{supply.quantity}}
                                             </td>
-                                            <td>
+                                            <td >
                                                 {{supply.quantityAdjustment}}
-                                            </td>
+                                            </td>                                           
                                             <td>
                                                 {{ supply.item.price | currency:"Rp." }}
                                             </td>
                                             <td ng-hide="isBod && !isPayment">
-                                                {{supply.priceAdjustment}}
+                                                {{ supply.priceAdjustment | currency:"Rp." }}
                                             </td>
                                             <td ng-show="isBod && !isPayment">
-                                                <input type="number" min="0" step="any" class="pull-right" ng-model="supply.priceAdjustment" style="margin-left:40px;width:100%;" ng-disabled="isPaid" />
+                                                <input type="number" min="0" class="pull-right" ng-model="supply.priceAdjustment" style="margin-left:40px;width:100%;" ng-disabled="isPaid">
                                             </td>
                                             <td>
                                                 {{ supply.priceAdjustment * supply.quantityAdjustment | currency:"Rp." }}
@@ -146,19 +150,19 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="6" align="right" width="80%"><strong>SubTotal:</strong></td>
+                                            <td colspan="7" align="right" width="80%"><strong>SubTotal:</strong></td>
                                             <td>{{ getSubTotal() | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="6" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
+                                            <td colspan="7" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
                                         </tr>
-                                        <tr>
-                                            <td colspan="6" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
+                                        <tr ng-show="po.isAdjustment">
+                                            <td colspan="7" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalAdjustmentShipmentCost | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="6" align="right"><strong>Total:</strong></td>
+                                            <td colspan="7" align="right"><strong>Total:</strong></td>
                                             <td><strong>{{ po.grandTotal + po.totalAdjustmentShipmentCost | currency:"Rp." }}</strong></td>
                                         </tr>
                                     </tfoot>
@@ -173,6 +177,10 @@
                                 <tr>
                                     <td colspan="6">
                                         <div>
+                                            <md-input-container class="md-block">
+                                                <label>Phone Number</label>
+                                                <input ng-model="po.phoneNumber" disabled>
+                                            </md-input-container>
                                             <md-input-container class="md-block">
                                                 <label>Address</label>
                                                 <input ng-model="po.address" disabled>
@@ -189,7 +197,7 @@
                                                 <md-input-container class="md-block" flex-gt-sm>
                                                     <label>Postal Code</label>
                                                     <input name="postalCode" ng-model="po.postalCode" placeholder="12345"
-                                                            required ng-pattern="/^[0-9]{5}$/" md-maxlength="5" disabled>
+                                                           required ng-pattern="/^[0-9]{5}$/" md-maxlength="5" disabled>
                                                     <div ng-messages="poForm.postalCode.$error" role="alert" multiple>
                                                         <div ng-message="required" class="my-message">You must supply a postal code.</div>
                                                         <div ng-message="pattern" class="my-message">
@@ -203,7 +211,7 @@
                                                 <label>Expedition</label>
                                                 <input ng-model="po.expedition" disabled>
                                             </md-input-container>
-                                            <md-input-container class="md-block" flex-gt-sm>
+                                            <md-input-container class="md-block" flex-gt-sm ng-show="po.isAdjustment">
                                                 <label>Expedition Adjustment</label>
                                                 <input ng-model="po.expeditionAdjustment" disabled>
                                             </md-input-container>
@@ -213,11 +221,20 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="4" align="right" width="80%"><strong>Shipping per(kg):</strong></td>
-                                    <td>{{ po.shipmentCost | currency:"Rp." }}</td>
+                                    <td colspan="4" align="right" width="80%"><strong>Shipping first({{po.kiloQuantity}}kg):</strong></td>
+                                    <td>{{ po.shipmentCostFirstKilo | currency:"Rp." }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" align="right" width="80%"><strong>Shipping Adjustment per(kg):</strong></td>
+                                    <td colspan="4" align="right" width="80%"><strong>Shipping next(kg):</strong></td>
+                                    <td>{{ po.shipmentCost | currency:"Rp." }}</td>
+                                </tr>
+
+                                <tr ng-show="po.isAdjustment">
+                                    <td colspan="4" align="right" width="80%"><strong>Shipping Adjustment first({{po.kiloAdjustmentQuantity}}kg):</strong></td>
+                                    <td>{{ po.shipmentAdjustmentCostFirstKilo | currency:"Rp." }}</td>
+                                </tr>
+                                <tr ng-show="po.isAdjustment">
+                                    <td colspan="4" align="right" width="80%"><strong>Shipping Adjustment next(kg):</strong></td>
                                     <td>{{ po.shipmentAdjustmentCost | currency:"Rp." }}</td>
                                 </tr>
                                 <tr>

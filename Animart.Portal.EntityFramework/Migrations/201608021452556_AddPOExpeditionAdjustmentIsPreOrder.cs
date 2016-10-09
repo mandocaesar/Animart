@@ -7,12 +7,14 @@ namespace Animart.Portal.Migrations
     {
         public override void Up()
         {
+            AddColumn("dbo.OrderItems", "QuantityAdjustment", c => c.Int());
             AddColumn("dbo.PurchaseOrder", "ExpeditionAdjustment", c => c.String());
             AddColumn("dbo.PurchaseOrder", "IsPreOrder", c => c.Boolean(nullable: false));
         }
         
         public override void Down()
         {
+            DropColumn("dbo.OrderItems", "QuantityAdjustment");
             DropColumn("dbo.PurchaseOrder", "IsPreOrder");
             DropColumn("dbo.PurchaseOrder", "ExpeditionAdjustment");
         }

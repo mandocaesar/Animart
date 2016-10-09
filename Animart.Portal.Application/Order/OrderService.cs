@@ -50,7 +50,7 @@ namespace Animart.Portal.Order
 
 
         public OrderService(IRepository<OrderItem, Guid> orderItemRepository, IRepository<Users.User, long> userRepository, OrderDomainService orderDomainService,
-            IUnitOfWorkManager unitOfWorkManager, IRepository<PurchaseOrder, Guid> purchaseOrderRepository, IRepository<SupplyItem, Guid> suppluRepository, 
+            IUnitOfWorkManager unitOfWorkManager, IRepository<PurchaseOrder, Guid> purchaseOrderRepository, IRepository<SupplyItem, Guid> supplyRepository, 
             IRepository<ShipmentCost, Guid> shipmentCostRepository, IRepository<City, Guid> cityRepository)
         {
             _orderItemRepository = orderItemRepository;
@@ -58,7 +58,7 @@ namespace Animart.Portal.Order
             _orderDomainService = orderDomainService;
             _unitOfWorkManager = unitOfWorkManager;
             _purchaseOrderRepository = purchaseOrderRepository;
-            _supplyItemRepository = suppluRepository;
+            _supplyItemRepository = supplyRepository;
             _shipmentCostRepository = shipmentCostRepository;
             _cityRepository = cityRepository;
 
@@ -118,18 +118,30 @@ namespace Animart.Portal.Order
                        _shipmentCostRepository.GetAllList()
                            .FirstOrDefault(e => e.Expedition == _expeditionAdjustment && e.City == cityId && e.Type == _typeAdjustment);
 
-                    var cost = (shipment != null) ? (shipment.NextKilo) : 0;
-                    var costAdjustment =  (shipmentAdjustment != null) ? (shipmentAdjustment.NextKilo) : 0;
+                    var firstKilo = (shipment != null) ? (shipment.FirstKilo) : 0;
+                    var kiloQuantity = (shipment != null) ? (shipment.KiloQuantity) : 1;
+                    var nextKilo = (shipment != null) ? (shipment.NextKilo) : 0;
+
+                    var kiloQuantityAdjustment = (shipmentAdjustment != null) ? (shipmentAdjustment.KiloQuantity) : 0;
+                    var firstKiloAdjustment = (shipmentAdjustment != null) ? (shipmentAdjustment.FirstKilo) : 0;
+                    var nextKiloAdjustment =  (shipmentAdjustment != null) ? (shipmentAdjustment.NextKilo) : 0;
 
                     var orderItems = _orderItemRepository.GetAll().Where(e => e.PurchaseOrder.Id == result.Id).ToList();
                     result.Items = orderItems.Select(e=>e.MapTo<OrderItemDto>()).ToList();
                     var totalGram = result.Items.Sum(e => e.Item.Weight*e.QuantityAdjustment);
-                    result.TotalWeight = (int)((totalGram + 999) / 1000);
-                    result.ShipmentCost = cost;
-                    result.ShipmentAdjustmentCost = costAdjustment;
+                    var totalKilo = (int) ((totalGram + 999)/1000);
+
+                    result.TotalWeight = totalKilo ;
+                    result.ShipmentCost = nextKilo;
+                    result.ShipmentCostFirstKilo = firstKilo;
+                    result.KiloQuantity = kiloQuantity;
+
+                    result.ShipmentAdjustmentCost = nextKiloAdjustment;
+                    result.ShipmentAdjustmentCostFirstKilo = firstKiloAdjustment;
+                    result.KiloAdjustmentQuantity = kiloQuantityAdjustment;
                     
-                    result.TotalShipmentCost = cost * result.TotalWeight;
-                    result.TotalAdjustmentShipmentCost = costAdjustment*result.TotalWeight;
+                    result.TotalShipmentCost = (nextKilo * Math.Max(totalKilo-kiloQuantity,0))+(firstKilo);
+                    result.TotalAdjustmentShipmentCost = (nextKiloAdjustment * Math.Max(totalKilo - kiloQuantityAdjustment, 0)) + (firstKiloAdjustment);
                     result.CreatorUser = user;
                     return result;
                 }
@@ -250,6 +262,7 @@ namespace Animart.Portal.Order
             return await _purchaseOrderRepository.InsertAndGetIdAsync(new PurchaseOrder()
             {
                 Address = purchaseOrderItem.Address,
+                PhoneNumber = purchaseOrderItem.PhoneNumber,
                 City = purchaseOrderItem.City.Trim(),
                 Expedition = purchaseOrderItem.Expedition.Trim(),
                 ExpeditionAdjustment = purchaseOrderItem.Expedition.Trim(),
@@ -265,18 +278,17 @@ namespace Animart.Portal.Order
             });
         }
 
-        public bool Update(string id , Dto.OrderItemInputDto orderItem)
+        public bool Update(string id , Dto.OrderItemDto orderItem)
         {
             try
             {
                 var item = _orderItemRepository.GetAll().FirstOrDefault(e=>e.Id == orderItem.Id);
-                item.Item = _supplyItemRepository.GetAll().FirstOrDefault(e=>e.Id == orderItem.SupplyItem);
+                //item.Item = _supplyItemRepository.GetAll().FirstOrDefault(e=>e.Id == orderItem.Item.Id);
                 item.PriceAdjustment = orderItem.PriceAdjustment;
                 item.QuantityAdjustment = orderItem.QuantityAdjustment;
 
                 var poid = Guid.Parse(id);
                 item.PurchaseOrder = _purchaseOrderRepository.GetAll().FirstOrDefault(e=>e.Id == poid);
-
                 item.PurchaseOrder.ModifiedBy = _userRepository.Get(AbpSession.GetUserId());
                 item.PurchaseOrder.ModifiedOn = DateTime.Now;
 
@@ -285,11 +297,11 @@ namespace Animart.Portal.Order
                 var totalGram = 0;
                 var items = _orderItemRepository.GetAll().Where(e => e.PurchaseOrder.Id == poid).ToList();
 
-                var expedition = item.PurchaseOrder.Expedition.Split('-');
-                var expeditionName = expedition[0].Trim();
-                var type = expedition[1].Trim();
-                var city = _cityRepository.Single(e => e.Name == item.PurchaseOrder.City);
-                var cost = _shipmentCostRepository.GetAllList().FirstOrDefault(e => e.Expedition == expeditionName && e.Type == type  && e.City == city);
+                //var expedition = item.PurchaseOrder.Expedition.Split('-');
+                //var expeditionName = expedition[0].Trim();
+                //var type = expedition[1].Trim();
+                //var city = _cityRepository.Single(e => e.Name == item.PurchaseOrder.City);
+                //var cost = _shipmentCostRepository.GetAllList().FirstOrDefault(e => e.Expedition == expeditionName && e.Type == type  && e.City == city);
 
                 for (int i = 0; i < items.Count; i++)
                 {
@@ -303,6 +315,47 @@ namespace Animart.Portal.Order
 
                 _orderItemRepository.Update(item);
 
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
+        public bool UpdatePO(string poId, List<Dto.OrderItemDto> orderItems)
+        {
+            try
+            {
+                foreach (var orderItem in orderItems)
+                {
+                    var item = _orderItemRepository.GetAll().FirstOrDefault(e => e.Id == orderItem.Id);
+                    item.PriceAdjustment = orderItem.PriceAdjustment;
+                    item.QuantityAdjustment = orderItem.QuantityAdjustment;
+
+                    var poid = Guid.Parse(poId);
+                    item.PurchaseOrder = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poid);
+                    item.PurchaseOrder.ModifiedBy = _userRepository.Get(AbpSession.GetUserId());
+                    item.PurchaseOrder.ModifiedOn = DateTime.Now;
+
+                    var total = 0;
+                    var totalGram = 0;
+                    var items = _orderItemRepository.GetAll().Where(e => e.PurchaseOrder.Id == poid).ToList();
+                    
+                    for (int i = 0; i < items.Count; i++)
+                    {
+                        totalGram += (int)(items[i].QuantityAdjustment * items[i].Item.Weight);
+                        var price = items[i].PriceAdjustment;
+                        total += (price * items[i].QuantityAdjustment);
+                    }
+                    item.PurchaseOrder.TotalWeight = totalGram;
+
+                    item.PurchaseOrder.GrandTotal = total;
+
+                    _orderItemRepository.Update(item);
+                }
+               
                 return true;
             }
             catch (Exception ex)
@@ -343,13 +396,13 @@ namespace Animart.Portal.Order
                 switch (type)
                 {
                     case (int)TYPE.PREORDER:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                     case (int)TYPE.READYSTOCK:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && !e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                     default:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && !e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                 }
                 switch (num)
@@ -409,8 +462,24 @@ namespace Animart.Portal.Order
                 
                 po.Status = status;
                 GmailExtension gmail = new GmailExtension("marketing@animart.co.id","GOSALES2015");
-                gmail.SendMessage("Purchase Order " + POid + " Has been updated"," Hello, your purchase order with id " + POid + "has been updated to " + status +" please login to have look on it ",
-                    po.CreatorUser.EmailAddress);
+                string message = "";
+                string breakLine = "<br/>";
+                switch (status.Trim().ToLower())
+                {
+                    case "payment":
+                        message = "Dear retailers,"+breakLine+breakLine
+                            +"Your purchase order with number: " +POid +" ,has been update to \"Payment\""+breakLine+breakLine
+                            +" Please kindly make a bank wire transfer to our account, and upload the bank wire transfer receipt via our system."
+                            +breakLine+breakLine+"Thank you";
+                        break;
+                    default:
+                        message = " Dear retailers,"+breakLine+breakLine+" Your purchase order with number: "
+                            + POid + "has been updated to \"" + status 
+                            +"\" Please kindly login to your account to check the status of the orders.";
+                        break;
+                }
+                gmail.SendMessage("Purchase Order " + POid + " Has been updated",
+                    message,po.CreatorUser.EmailAddress);
                 _purchaseOrderRepository.Update(po);
                 return true;
             }
@@ -429,13 +498,13 @@ namespace Animart.Portal.Order
                 switch (type)
                 {
                     case (int)TYPE.PREORDER:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).OrderByDescending(i=>i.CreationTime).ToList();
                         break;
                     case (int)TYPE.READYSTOCK:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                     default:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                 }
                 
@@ -474,13 +543,13 @@ namespace Animart.Portal.Order
                 switch (type)
                 {
                     case (int)TYPE.PREORDER:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                     case (int)TYPE.READYSTOCK:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                     default:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                 }
                 switch (num)
@@ -517,13 +586,13 @@ namespace Animart.Portal.Order
                 switch (type)
                 {
                     case (int)TYPE.PREORDER:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                     case (int)TYPE.READYSTOCK:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                     default:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).ToList();
+                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                 }
                 switch (num)

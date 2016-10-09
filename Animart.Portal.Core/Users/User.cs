@@ -8,6 +8,7 @@ namespace Animart.Portal.Users
     public class User :AbpUser<Tenant, User>
     {
         public string Address { get; set; }
+        public string PhoneNumber { get; set; }
 
         public static string CreateRandomPassword()
         {

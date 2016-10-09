@@ -30,28 +30,48 @@ namespace Animart.Portal.Web
                  //        icon: "fa fa-info"
                  //        )
                  //)
+
+                .AddItem(
+                    new MenuItemDefinition(
+                        "Product",
+                        new LocalizableString("Product", PortalConsts.LocalizationSourceName),
+                        url: "#/product",
+                        icon: "fa fa-list",
+                        requiresAuthentication: true
+                        )
+                )
                 .AddItem(
                     new MenuItemDefinition(
                         "RetailerDashboard",
                         new LocalizableString("RetailerDashboard", PortalConsts.LocalizationSourceName),
                         url: "#/retailerDashboard",
-                        icon: "fa fa-info",
+                        icon: "fa fa-table",
                         requiredPermissionName: "CanAccessRetailer"
                         )
-                ).AddItem(
-                    new MenuItemDefinition(
-                        "HowToOrder",
-                        new LocalizableString("HowToOrder", PortalConsts.LocalizationSourceName),
-                        url: "/#/hwto",
-                        icon: "fa fa-info",
-                        requiredPermissionName: "CanAccessRetailer"
-                        )
-                ).AddItem(
+                )
+                //.AddItem(
+                //    new MenuItemDefinition(
+                //        "HowToOrder",
+                //        new LocalizableString("HowToOrder", PortalConsts.LocalizationSourceName),
+                //        url: "/#/hwto",
+                //        icon: "fa fa-info",
+                //        requiredPermissionName: "CanAccessRetailer"
+                //        )
+                //).AddItem(
+                //    new MenuItemDefinition(
+                //        "TermAndCondition",
+                //        new LocalizableString("TermAndCondition", PortalConsts.LocalizationSourceName),
+                //        url: "/#/terms",
+                //        icon: "fa fa-info",
+                //        requiredPermissionName: "CanAccessRetailer"
+                //        )
+                //)
+                .AddItem(
                     new MenuItemDefinition(
                         "MarketingDashboard",
                         new LocalizableString("MarketingDashboard", PortalConsts.LocalizationSourceName),
                         url: "#/marketingDashboard",
-                        icon: "fa fa-info",
+                        icon: "fa fa-user",
                         requiredPermissionName: "CanAccessMarketing"
                         )
                 ).AddItem(
@@ -75,7 +95,7 @@ namespace Animart.Portal.Web
                         "LogisticDashboard",
                         new LocalizableString("LogisticDashboard", PortalConsts.LocalizationSourceName),
                         url: "#/logisticDashboard",
-                        icon: "fa fa-info",
+                        icon: "fa fa-dropbox",
                         requiredPermissionName: "CanAccessLogistic"
                         )
                 ).AddItem(
@@ -99,7 +119,7 @@ namespace Animart.Portal.Web
                         "AccountingDashboard",
                         new LocalizableString("AccountingDashboard", PortalConsts.LocalizationSourceName),
                         url: "#/accountingDashboard",
-                        icon: "fa fa-info",
+                        icon: "fa fa-money",
                         requiredPermissionName: "CanAccessAccounting"
                         )
                 ).AddItem(
@@ -146,6 +166,37 @@ namespace Animart.Portal.Web
                                 new LocalizableString("Cities", PortalConsts.LocalizationSourceName),
                                 url: "#/cities",
                                 icon: "fa fa-building-o",
+                                requiredPermissionName: "CanAccessAdministrator"
+                                )
+                        )
+                ).AddItem(
+                    new MenuItemDefinition(
+                        "AdministrationDashboard",
+                        new LocalizableString("AdministrationDashboard", PortalConsts.LocalizationSourceName),
+                        requiredPermissionName: "CanAccessAdministrator",
+                        icon: "fa fa-cogs"
+                        ).AddItem(
+                            new MenuItemDefinition(
+                                "MarketingDashboard",
+                                new LocalizableString("MarketingDashboard", PortalConsts.LocalizationSourceName),
+                                url: "#/marketingDashboard",
+                                icon: "fa fa-user",
+                                requiredPermissionName: "CanAccessAdministrator"
+                                )
+                        ).AddItem(
+                             new MenuItemDefinition(
+                                "AccountingDashboard",
+                                new LocalizableString("AccountingDashboard", PortalConsts.LocalizationSourceName),
+                                url: "#/accountingDashboard",
+                                icon: "fa fa-money",
+                                requiredPermissionName: "CanAccessAdministrator"
+                                )
+                        ).AddItem(
+                            new MenuItemDefinition(
+                               "LogisticDashboard",
+                                new LocalizableString("LogisticDashboard", PortalConsts.LocalizationSourceName),
+                                url: "#/logisticDashboard",
+                                icon: "fa fa-dropbox",
                                 requiredPermissionName: "CanAccessAdministrator"
                                 )
                         )

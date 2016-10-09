@@ -7,102 +7,108 @@
 ]);
 
 function dashboardController($q, $rootScope, $scope, orderService, expedition, $uibModal, $mdSidenav, $mdDialog) {
-    $scope.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    $scope.series = ['Order Made'];
-    $scope.data = [];
+    if (!abp.auth.isGranted('CanAccessRetailer'))
+        window.location.href = "#";
+    else {
+        $scope.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        $scope.series = ['Order Made'];
+        $scope.data = [];
 
-    $scope.gridOptions = {
-        enableRowSelection: true,
-        enableSelectAll: false,
-        multiselect: false,
-        selectionRowHeaderWidth: 35,
-        rowHeight: 35,
-        showGridFooter: true
-    };
-    $scope.animationsEnabled = true;
+        $scope.gridOptions = {
+            enableRowSelection: true,
+            enableSelectAll: false,
+            multiselect: false,
+            selectionRowHeaderWidth: 35,
+            rowHeight: 35,
+            showGridFooter: true
+        };
+        $scope.animationsEnabled = true;
 
-    $scope.refresh = function () {
-        $scope.gridOptions.data = null;
-        orderService.getAllPurchaseOrderByUserId($scope.statusType,$scope.statusGrid).success(function (result) {
-          //  console.log(result);
-            $scope.gridOptions.data = result;
-        });
-    };
+        $scope.refresh = function() {
+            $scope.gridOptions.data = null;
+            orderService.getAllPurchaseOrderByUserId($scope.statusType, $scope.statusGrid).success(function(result) {
+                //  console.log(result);
+                $scope.gridOptions.data = result;
+            });
+        };
 
-    $scope.statusType = 0;
-    $scope.changeType = function (num) {
-        $scope.statusType = num;
-        $scope.refresh();
-    };
-    $scope.orderType = [
-      { no: 1, name: "Pre-Order" },
-      { no: 0, name: "Ready Stock" }
-    ];
+        $scope.statusType = 0;
+        $scope.changeType = function(num) {
+            $scope.statusType = num;
+            $scope.refresh();
+        };
+        $scope.orderType = [
+            { no: 1, name: "Pre-Order" },
+            { no: 0, name: "Ready Stock" }
+        ];
 
-    $scope.statusGrid = 1;
-   
-    $scope.changeTab = function (num) {
-        $scope.statusGrid = num;
-        $scope.refresh();
-    };
-   
-    $scope.tabOrders = [
-      { no: 5, name: "Done" },
-      { no: 4, name: "On Delivery" },
-      { no: 6, name: "Paid" },
-      { no: 3, name: "Waiting For Payment" },
-      { no: 1, name: "In Review" },
-      { no: 0, name: "Rejected" }
-    ];
+        $scope.statusGrid = 1;
 
-    $scope.showMe = function (id) {
-        var ev = this.ev;
-        $mdDialog.show({
-            templateUrl: 'view-order.tmpl.html',
-            controller: ViewOrderController,
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            clickOutsideToClose: true,
-            locals: {
-                purchaseOrderId: id,
-                orderService: orderService,
-                expeditionService: expedition
-    }
-            }).then(function (rs) {
-                    $scope.$emit('updateDashboard', "ok");
-            }, function () {
+        $scope.changeTab = function(num) {
+            $scope.statusGrid = num;
+            $scope.refresh();
+        };
+
+        $scope.tabOrders = [
+            { no: 5, name: "Done" },
+            { no: 4, name: "On Delivery" },
+            { no: 6, name: "Paid" },
+            { no: 3, name: "Waiting For Payment" },
+            { no: 1, name: "In Review" },
+            { no: 0, name: "Rejected" }
+        ];
+
+        $scope.showMe = function(id) {
+            var ev = this.ev;
+            $mdDialog.show({
+                templateUrl: 'view-order.tmpl.html',
+                controller: ViewOrderController,
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                locals: {
+                    purchaseOrderId: id,
+                    orderService: orderService,
+                    expeditionService: expedition
+                }
+            }).then(function(rs) {
+                $scope.$emit('updateDashboard', "ok");
+            }, function() {
                 $scope.status = 'You cancelled the dialog.';
             });
-    };
+        };
 
-    $scope.gridOptions.columnDefs = [
-        { name: 'id', enableCellEdit: false },
-        { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
-        { name: 'province', displayName: 'Province', enableCellEdit: false },
-        { name: 'address', displayName: 'Address', enableCellEdit: false },
-        { name: 'status', displayName: 'Status', enableCellEdit: false },
-        //{ name: 'totalWeight', displayName: 'Total Weight (kg)', enableCellEdit: false },
-        { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
-        //{ name: 'shipmentCost', displayName: 'Shipment Cost', cellFilter: 'currency:"Rp"', enableCellEdit: false },
-        {
-            name: 'view',displayName:'View',
-            cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'
-        }
-    ];
+        $scope.gridOptions.columnDefs = [
+            { name: 'id', enableCellEdit: false },
+            { name: 'creationTime', displayName: 'Date', cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"', enableCellEdit: false },
+            { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
+            { name: 'province', displayName: 'Province', enableCellEdit: false },
+            { name: 'address', displayName: 'Address', enableCellEdit: false },
+            { name: 'status', displayName: 'Status', enableCellEdit: false },
+            //{ name: 'totalWeight', displayName: 'Total Weight (kg)', enableCellEdit: false },
+            { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
+            //{ name: 'shipmentCost', displayName: 'Shipment Cost', cellFilter: 'currency:"Rp"', enableCellEdit: false },
+            {
+                name: 'view',
+                displayName: 'View',
+                cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'
+            }
+        ];
 
-    $scope.LoadDashboard = function () {
-        orderService.getDashboard().success(function (result) {
-            $scope.dashboard = result;
-        });
-        orderService.updateChart().success(function (result) {
-            $scope.data.push(result);
-        });
+        $scope.LoadDashboard = function() {
+            orderService.getDashboard().success(function(result) {
+                $scope.dashboard = result;
+            });
+            orderService.updateChart().success(function(result) {
+                $scope.data.push(result);
+            });
 
-    };
+        };
 
-    $scope.$on('updateDashboard', function (event, data) { $scope.LoadDashboard(); });
-    $scope.refresh();
-    $scope.LoadDashboard();
+        $scope.$on('updateDashboard', function(event, data) { $scope.LoadDashboard(); });
+        $scope.refresh();
+        $scope.LoadDashboard();
+    }
 };
 
 function leftController($q, $rootScope, $scope, supplyService, expeditonService, orderService, $mdDialog) {
@@ -153,6 +159,8 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
 
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function(result) {
         $scope.po = result;
+        if ($scope.po.expedition != $scope.po.expeditionAdjustment)
+            $scope.po.isAdjustment = true;
         //if ($scope.po.expedition !== '' && $scope.po.city !== '') {
         //    var name = $scope.po.expedition.split('-')[0];
         //    var type = $scope.po.expedition.split('-')[1];
@@ -171,6 +179,7 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
         $scope.isPaid = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
         $scope.isPayment = result.status === "PAYMENT";
         $scope.isLogistic = result.status === "LOGISTIC";
+        $scope.status = (result.isPreOrder) ? "Pre-Order" : "Ready Stock";
 
 
         //if(result.status === "APPROVED" || result.status === "PAYMENT")

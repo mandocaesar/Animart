@@ -13,7 +13,7 @@
     </div>
     <div class="row" style="margin-top: 15px">
         <div class="col-lg-12">
-            <div ui-grid="gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
+            <div ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
         </div>
     </div>
 
@@ -21,15 +21,15 @@
         <div class="modal-header">
             <h3 class="modal-title">{{title}} Supply Item</h3>
         </div>
-        <div class="modal-body">
-            <div class="form-group">
-                <label>Code:</label>
-                <input type="text" ng-model="supply.code" class="form-control">
-            </div>
+        <div class="modal-body">          
             <div class="form-group">
                 <label>Category:</label>
                 <select ng-model="supply.categoryId" ng-options="item.id as item.name for item in category"></select>
-            </div>            
+            </div>          
+            <div class="form-group">
+                <label>Code:</label>
+                <input type="text" ng-model="supply.code" class="form-control">
+            </div>  
             <div class="form-group">
                 <label>Name:</label>
                 <input type="text" ng-model="supply.name" class="form-control">
@@ -38,13 +38,13 @@
                 <label>Price:</label>
                 <input type="text" ng-model="supply.price" value="supply.price| currency:Rp." class="form-control">
             </div>
-           @*<div class="form-group">
+           <div class="form-group">
                 <label>Stock:</label>
                 <input type="number" min="0" ng-model="supply.inStock" class="form-control">
-            </div>*@
+            </div>
             <div class="form-group">
                 <label>Description:</label>
-                <textarea ng-model="supply.description" class="form-control" ></textarea>
+                <textarea ui-tinymce ng-model="supply.description" class="form-control" ></textarea>
             </div>
             <div class="form-group">
                 <label>Weight (grams):</label>

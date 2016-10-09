@@ -6,20 +6,20 @@
                     <md-card-title-text>
                         <span class="md-headline">{{supply.name}}</span>
                         <span class="md-subhead">{{supply.price | currency:"Rp."}}</span>
-                        <span class="md-subhead">
+                        <span class="md-subhead" ng-show="supply.ispo">
                             <b>Available Until:</b>
-                            <br />{{supply.availableUntil}}
+                            <br />{{supply.availableUntil | date: "dd-MMMM-yyyy, HH:mma"}}
                         </span>
                     </md-card-title-text>
                 </md-card-title>
-                <md-card-content layout="row" layout-align="space-between">
+                <md-card-content layout="row" class="layout-row">
                     <img src="{{supply.image}}" class="md-media-lg" width="400" height="400"/>
                     <p layout="column">
-                        {{supply.description}}
+                        <div style="padding-left:25px;" ng-bind-html="renderHtml(supply.description)"></div> 
                     </p>
                 </md-card-content>
                 <md-card-actions layout="row" layout-align="right center" ng-if="vm.getShownUserName().currentRole == '5'">
-                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="100" data="item">Add To Cart</ngcart-addtocart>
+                    <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="500" data=supply>Add To Cart</ngcart-addtocart>
                 </md-card-actions>
             </md-card>
         </div>

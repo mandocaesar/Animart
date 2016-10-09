@@ -2,105 +2,107 @@
     var controllerId = 'app.views.category';
     angular.module('app').controller(controllerId, ['$q', '$rootScope', '$scope', 'abp.services.app.category', '$uibModal', '$http',
         function ($q, $rootScope, $scope, categoryService, $uibModal, $http) {
-            var vm = this;
-            $scope.newFile = {};
-            $scope.gridOptions = {
-                enableRowSelection: true,
-                enableSelectAll: false,
-                multiselect: false,
-                selectionRowHeaderWidth: 35,
-                rowHeight: 35,
-                showGridFooter: true
-            };
-            $scope.title = "Add New";
-            $scope.animationsEnabled = true;
+            if (!(abp.auth.isGranted('CanAccessMarketing') || abp.auth.isGranted('CanAccessAdministrator')))
+                window.location.href = "#";
+            else {
+                var vm = this;
+                $scope.newFile = {};
+                $scope.gridOptions = {
+                    enableRowSelection: true,
+                    enableSelectAll: false,
+                    multiselect: false,
+                    selectionRowHeaderWidth: 35,
+                    rowHeight: 35,
+                    showGridFooter: true
+                };
+                $scope.title = "Add New";
+                $scope.animationsEnabled = true;
 
-            $scope.refresh = function () {
-                $scope.gridOptions.data = null;
-                categoryService.getCategories().success(function (result) {
-                 
-                    //console.log(result);
+                $scope.refresh = function() {
+                    $scope.gridOptions.data = null;
+                    categoryService.getCategories().success(function(result) {
 
-                    $scope.gridOptions.data = result;
-                });
-            };
+                        //console.log(result);
 
-     
-
-            $scope.gridOptions.columnDefs = [
-                
-                { name: 'id', enableCellEdit: false },
-                { name: 'parentName', displayName: 'Parent Category', enableCellEdit: false },
-                { name: 'name', displayName: 'Name', enableCellEdit: false }
-                , {
-                    name: 'view', displayName: 'Edit',
-                    cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> Edit</button>'
-                }
-            ];
-
-            $scope.saveRow = function (rowEntity) {
-                var promise = $q.defer();
-                categoryService.update(rowEntity)
-                    .success(function (result) {
-                        promise.resolve();
-                        $scope.gridApi.rowEdit.setSavePromise(rowEntity, promise.promise);
-                        $scope.refresh();
-                        abp.notify.info('Updated');
-                    })
-                    .error(function (result) {
-                        promise.resolve();
-                        $scope.gridApi.rowEdit.setSavePromise(rowEntity, promise.promise);
-                        $scope.refresh();
-                        abp.notify.error('Error Occured');
+                        $scope.gridOptions.data = result;
                     });
-            };
+                };
 
-            $scope.gridOptions.onRegisterApi = function (gridApi) {
-                $rootScope.gridApi = gridApi;
-                gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
-            };
 
-            $scope.open = function () {
-                var modalInstance = $uibModal.open({
-                    animation: $scope.animationsEnabled,
-                    templateUrl: 'addNewCategory.html',
-                    controller: 'categoryModalCtrl',
-                    size: 'm'
-                });
+                $scope.gridOptions.columnDefs = [
+                    { name: 'id', enableCellEdit: false },
+                    { name: 'parentName', displayName: 'Parent Category', enableCellEdit: false },
+                    { name: 'name', displayName: 'Name', enableCellEdit: false }, {
+                        name: 'view',
+                        displayName: 'Edit',
+                        cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> Edit</button>'
+                    }
+                ];
 
-                modalInstance.result.then(function (result) {
-                    $scope.refresh();
-                });
-            };
+                $scope.saveRow = function(rowEntity) {
+                    var promise = $q.defer();
+                    categoryService.update(rowEntity)
+                        .success(function(result) {
+                            promise.resolve();
+                            $scope.gridApi.rowEdit.setSavePromise(rowEntity, promise.promise);
+                            $scope.refresh();
+                            abp.notify.info('Updated');
+                        })
+                        .error(function(result) {
+                            promise.resolve();
+                            $scope.gridApi.rowEdit.setSavePromise(rowEntity, promise.promise);
+                            $scope.refresh();
+                            abp.notify.error('Error Occured');
+                        });
+                };
 
-            $scope.showMe = function (id) {
-                var modalInstance = $uibModal.open({
-                    animation: $scope.animationsEnabled,
-                    templateUrl: 'addNewCategory.html',
-                    controller: 'categoryCtrl',
-                    resolve: {
-                        param: function () {
-                            return {'data':id};
-                        }
-                    },
-                    size: 'm'
-                });
+                $scope.gridOptions.onRegisterApi = function(gridApi) {
+                    $rootScope.gridApi = gridApi;
+                    gridApi.rowEdit.on.saveRow($scope, $scope.saveRow);
+                };
 
-                modalInstance.result.then(function (result) {
-                    $scope.refresh();
-                });
-            };
+                $scope.open = function() {
+                    var modalInstance = $uibModal.open({
+                        animation: $scope.animationsEnabled,
+                        templateUrl: 'addNewCategory.html',
+                        controller: 'categoryModalCtrl',
+                        size: 'm'
+                    });
 
-            $scope.delete = function () {
-                var rows = $scope.gridApi.selection.getSelectedRows();
-                angular.forEach(rows, function (value, key) {
-                    categoryService.delete(value.id).success(function () {
+                    modalInstance.result.then(function(result) {
                         $scope.refresh();
                     });
-                });
-            };
+                };
 
-            $scope.refresh();
+                $scope.showMe = function(id) {
+                    var modalInstance = $uibModal.open({
+                        animation: $scope.animationsEnabled,
+                        templateUrl: 'addNewCategory.html',
+                        controller: 'categoryCtrl',
+                        resolve: {
+                            param: function() {
+                                return { 'data': id };
+                            }
+                        },
+                        size: 'm'
+                    });
+
+                    modalInstance.result.then(function(result) {
+                        $scope.refresh();
+                    });
+                };
+
+                $scope.delete = function() {
+                    var rows = $scope.gridApi.selection.getSelectedRows();
+                    angular.forEach(rows, function(value, key) {
+                        categoryService.delete(value.id).success(function() {
+                            $scope.refresh();
+                        });
+                    });
+                };
+
+                $scope.refresh();
+            }
         }
     ]);
 

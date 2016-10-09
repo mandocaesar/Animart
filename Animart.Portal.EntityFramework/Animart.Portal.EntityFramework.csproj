@@ -181,10 +181,6 @@
     <Compile Include="Migrations\201607030828162_UserAddress.Designer.cs">
       <DependentUpon>201607030828162_UserAddress.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201607130539528_AddQuantityAdjustmentOrder.cs" />
-    <Compile Include="Migrations\201607130539528_AddQuantityAdjustmentOrder.Designer.cs">
-      <DependentUpon>201607130539528_AddQuantityAdjustmentOrder.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\201608021452556_AddPOExpeditionAdjustmentIsPreOrder.cs" />
     <Compile Include="Migrations\201608021452556_AddPOExpeditionAdjustmentIsPreOrder.Designer.cs">
       <DependentUpon>201608021452556_AddPOExpeditionAdjustmentIsPreOrder.cs</DependentUpon>
@@ -192,6 +188,18 @@
     <Compile Include="Migrations\201608181733046_AddItemCategory.cs" />
     <Compile Include="Migrations\201608181733046_AddItemCategory.Designer.cs">
       <DependentUpon>201608181733046_AddItemCategory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608240736322_ChangeCodeLength.cs" />
+    <Compile Include="Migrations\201608240736322_ChangeCodeLength.Designer.cs">
+      <DependentUpon>201608240736322_ChangeCodeLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609090924264_AddPhoneNumber.cs" />
+    <Compile Include="Migrations\201609090924264_AddPhoneNumber.Designer.cs">
+      <DependentUpon>201609090924264_AddPhoneNumber.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610041112107_AddShipmentKiloQuantity.cs" />
+    <Compile Include="Migrations\201610041112107_AddShipmentKiloQuantity.Designer.cs">
+      <DependentUpon>201610041112107_AddShipmentKiloQuantity.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
@@ -260,14 +268,20 @@
     <EmbeddedResource Include="Migrations\201607030828162_UserAddress.resx">
       <DependentUpon>201607030828162_UserAddress.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201607130539528_AddQuantityAdjustmentOrder.resx">
-      <DependentUpon>201607130539528_AddQuantityAdjustmentOrder.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608021452556_AddPOExpeditionAdjustmentIsPreOrder.resx">
       <DependentUpon>201608021452556_AddPOExpeditionAdjustmentIsPreOrder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608181733046_AddItemCategory.resx">
       <DependentUpon>201608181733046_AddItemCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608240736322_ChangeCodeLength.resx">
+      <DependentUpon>201608240736322_ChangeCodeLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609090924264_AddPhoneNumber.resx">
+      <DependentUpon>201609090924264_AddPhoneNumber.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610041112107_AddShipmentKiloQuantity.resx">
+      <DependentUpon>201610041112107_AddShipmentKiloQuantity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

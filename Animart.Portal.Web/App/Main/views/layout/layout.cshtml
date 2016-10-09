@@ -41,6 +41,8 @@
     @Scripts.Render("~/Bundles/App/Main/js")
 
     <script src="~/Scripts/dirPagination.js" type="text/javascript"></script>
+    <script type="text/javascript" src="~/bower_components/tinymce-dist/tinymce.js"></script>
+    <script type="text/javascript" src="~/bower_components/angular-ui-tinymce/src/tinymce.js"></script>
     <style>
         .fullscreen-dialog {
            height:85%;
@@ -63,18 +65,23 @@
             -khtml-opacity: 0.2;
             opacity:0.2;
         }
+        dd {
+            margin-left:25px;
+        }
+        .nav>li>a:hover, .nav>li>a:focus {
+            background-color: #0066cc;
+        }
     </style>
 </head>
 <body>
-<div ng-app="app">
-    <div ng-controller="app.views.layout as vm">
-        <div ng-include="'/App/Main/views/layout/header.cshtml'"></div>
-        <div class="container">
-            <div class="angular-animation-container row">
-                <div ui-view class="shuffle-animation col-xs-12"></div>
-            </div>
+<div ng-app="app" ng-controller="app.views.layout as vm" layout="column" layout-fill>
+    <header flex ng-include="'/App/Main/views/layout/header.cshtml'"></header>
+    <main class="container" layout="row" flex>
+        <div class="angular-animation-container row" flex>
+            <div ui-view class="shuffle-animation col-xs-12"></div>
         </div>
-    </div>
+    </main>
+    <footer flex="1" layout="row" ng-include="'/App/Main/views/layout/footer.cshtml'"></footer>
 </div>
 </body>
 </html>

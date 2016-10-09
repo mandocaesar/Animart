@@ -16,6 +16,5 @@ namespace Animart.Portal.Shipment
         public Guid Id { get; set; }
 
         public virtual string Name { get; set; }
-
     }
 }

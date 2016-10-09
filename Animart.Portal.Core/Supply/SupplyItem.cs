@@ -17,7 +17,7 @@ namespace Animart.Portal.Supply
         public virtual Guid Id { get; set; }
 
         [Required]
-        [StringLength(10)]
+        [StringLength(30)]
         public virtual string Code { get; set; }
 
         [Required]

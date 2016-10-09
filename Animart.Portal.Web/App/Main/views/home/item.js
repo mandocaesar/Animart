@@ -1,10 +1,10 @@
 ﻿(function () {
     var controllerId = 'app.views.item';
     angular.module('app').controller(controllerId, [
-        '$scope', 'abp.services.app.supply', 'abp.services.app.user', 'ngCart', '$stateParams', function ($scope, supplyService, appSession, ngCart, stateParams) {
-
-            ngCart.setTaxRate(7.5);
-            ngCart.setShipping(2.99);
+        '$scope', 'abp.services.app.supply', 'abp.services.app.user', 'ngCart', '$stateParams','$sce',
+        function ($scope, supplyService, appSession, ngCart, stateParams,$sce) {
+            ngCart.setTaxRate(0);
+            ngCart.setShipping(0);
 
             var itemID = stateParams.id;
 
@@ -16,10 +16,13 @@
             $scope.supplies = [];
             supplyService.supply(itemID).success(function (result) {
                 $scope.supply = result;
+                $scope.supply.availableUntil = new Date( $scope.supply.availableUntil);
                 $scope.supply.image = '../SupplyImage/' + result.id + ".jpg";
-               
             });
 
+            $scope.renderHtml = function (htmlCode) {
+                return $sce.trustAsHtml(htmlCode);
+            };
 
             appSession.getCurrentLoginInformations({ async: false }).success(function (result) {
                 user = result.user;

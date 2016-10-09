@@ -28,6 +28,7 @@
                     } else {
                         $scope.supplies[i].image = "";
                     }
+                    $scope.supplies[i].availableUntil = new Date($scope.supplies[i].availableUntil);
                 }
 
                 $scope.poSupplies = result.poSupply;
@@ -38,6 +39,8 @@
                     } else {
                         $scope.poSupplies[i].image = "";
                     }
+                    $scope.poSupplies[i].availableUntil = new Date($scope.poSupplies[i].availableUntil);
+
                 }
                 //console.log($scope.supplies);
             });

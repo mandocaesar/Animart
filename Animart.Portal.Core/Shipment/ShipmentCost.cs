@@ -16,7 +16,8 @@ namespace Animart.Portal.Shipment
         public virtual City City { get; set; }
         public virtual string Expedition { get; set; }
         public virtual string Type { get; set; }
-        public int First5Kilo { get; set; }
+        public int KiloQuantity { get; set; }
+        public int FirstKilo { get; set; }
         public int NextKilo { get; set; }
     }
 }

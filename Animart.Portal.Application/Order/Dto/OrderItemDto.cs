@@ -18,7 +18,7 @@ namespace Animart.Portal.Order.Dto
         public SupplyItemDto Item { get; set; }
 
         public int Quantity { get; set; }
-        public virtual int PriceAdjustment { get; set; }
-        public virtual int QuantityAdjustment { get; set;}
+        public int PriceAdjustment { get; set; }
+        public int QuantityAdjustment { get; set;}
     }
 }

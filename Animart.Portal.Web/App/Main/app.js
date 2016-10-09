@@ -2,18 +2,20 @@
     'use strict';
 
     var app = angular.module('app', [
-         'ngAnimate',
-         'ngSanitize',
-         'ui.grid',
-         'ui.grid.edit',
-         'ui.grid.rowEdit',
-         'ui.grid.cellNav',
-         'ui.grid.selection',
-         'ngMaterial',
-         'chart.js',
-         'ui.router',
-         'ui.bootstrap',
-         'ui.jq',
+        'ngAnimate',
+        'ngSanitize',
+        'ui.grid',
+        'ui.grid.edit',
+        'ui.grid.rowEdit',
+        'ui.grid.cellNav',
+        'ui.grid.selection',
+        'ui.grid.resizeColumns',
+        'ngMaterial',
+        'chart.js',
+        'ui.router',
+        'ui.bootstrap',
+        'ui.jq',
+         'ui.tinymce',
          'abp',
          'ngCart',
          'ngRoute',
@@ -35,6 +37,20 @@
                     url: '/item/:id',
                     templateUrl: '/App/Main/views/home/item.cshtml'
                 })
+                .state('product', {
+                    url: '/product',
+                    params: {
+                        id: null,
+                        name: null,
+                        type:0
+                    },
+                    templateUrl: '/App/Main/views/home/product.cshtml',
+                    menu: 'Product',
+                    controller: function ($scope, $stateParams) {
+                        $scope.catId = $stateParams.id;
+                        $scope.catName = $stateParams.name;
+                    }
+                })
                 .state('checkout', {
                      url: '/checkout',
                      templateUrl: '/App/Main/views/retailer/checkout.cshtml'
@@ -42,6 +58,10 @@
                   .state('hwto', {
                       url: '/hwto',
                       templateUrl: '/App/Main/views/home/howtoorder.cshtml'
+                  })
+                  .state('terms', {
+                      url: '/terms',
+                      templateUrl: '/App/Main/views/home/termAndCondition.cshtml'
                   })
                 .state('category', {
                     url: '/category',

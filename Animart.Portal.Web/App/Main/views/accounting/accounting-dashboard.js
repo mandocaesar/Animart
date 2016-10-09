@@ -13,6 +13,7 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
         postalCode: '',
         expedition: '',
         expeditionAdjustment: '',
+        isAdjustment: false,
         grandTotal: 0,
         totalWeight: 0,
         totalGram: 0,
@@ -24,6 +25,8 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         //console.log(result);
         $scope.po = result;
+        if ($scope.po.expedition != $scope.po.expeditionAdjustment)
+            $scope.po.isAdjustment = true;
         $scope.isPayment = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
         $scope.isPaid = result.status === "PAID";
         $scope.isNeedPayment = result.status === "PAYMENT";
@@ -42,24 +45,21 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
 
     $scope.update = function () {
         var hasError = false;
-        for (var i = 0; i < $scope.supplies.length; i++) {
-            orderService.update($scope.po.id, $scope.supplies[i]).success(function(r) {
-                $scope.$emit('updateDashboard', "ok");
-                abp.message.info('Update Success');
-            }).error(function (r) {
+        //for (var i = 0; i < $scope.supplies.length; i++) {
+        //    console.log(i);
+        //    console.log($scope.po.id);
+        //    console.log($scope.supplies[i]);
+            orderService.updatePO($scope.po.id, $scope.supplies).error(function (r) {
                 hasError = true;
-                if (i === $scope.supplies.length - 1) {
-                    if (hasError) {
-                        abp.message.error('error occured');
-                    } else {
-                        $scope.$emit('updateDashboard', "ok");
-                        abp.message.info('Update Success');
-                    }
-                }
             });
-
-            
+        //}
+        if (hasError) {
+            abp.message.error('error occured');
+        } else {
+            $scope.$emit('updateDashboard', "ok");
+            abp.message.info('Update Success');
         }
+        $mdDialog.cancel();
 
     };
     $scope.getSubTotal = function () {
@@ -87,128 +87,143 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "PAID").success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
         });
+        $mdDialog.cancel();
+
     };
 
     $scope.approve = function () {
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "PAYMENT").success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
         });
+        $mdDialog.cancel();
+
     };
 
     $scope.reject = function () {
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "REJECT").success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Rejected");
         });
+        $mdDialog.cancel();
+
     };
 
     $scope.sendToLogistic = function () {
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "LOGISTIC").success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Sent to Logistic");
         });
+        $mdDialog.cancel();
+
     };
 
     $scope.updateReceipt = function() {
         orderService.insertReceiptNumber(purchaseOrderId, $scope.po.receiptNumber).success(function () {
             abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
         });
+        $mdDialog.cancel();
+
     }
 
 }
 
 function accountingController($http,$q, $rootScope, $scope, orderService, $uibModal, $mdDialog) {
-    orderService.getDashboardAdmin().success(function (result) {
-        $scope.dashboard = result;
-    });
 
-    $scope.gridOptions = {
-        enableRowSelection: true,
-        enableSelectAll: false,
-        multiselect: false,
-        selectionRowHeaderWidth: 35,
-        rowHeight: 35,
-        showGridFooter: true
-    };
-    $scope.animationsEnabled = true;
-
-
-
-    $scope.statusType = 0;
-    $scope.changeType = function (num) {
-        $scope.statusType = num;
-        $scope.refresh();
-    };
-    $scope.orderType = [
-      { no: 1, name: "Pre-Order" },
-      { no: 0, name: "Ready Stock" }
-    ];
-
-    $scope.statusGrid = 2;
-    $scope.changeTab = function(num) {
-        $scope.statusGrid = num;
-        $scope.refresh();
-    };
-    $scope.tabOrders = [
-        { no: 5, name: "Done" },
-        { no: 4, name: "On Delivery" },
-        { no: 6, name: "Paid" },
-        {no:3,name:"Waiting For Payment"},
-        { no: 2, name: "Need Review" },
-        { no: 1, name: "In Marketing" },
-        {no:0,name:"Rejected"}
-    ];
-
-   
-
-    $scope.refresh = function () {
-        orderService.getDashboardAdmin().success(function (result) {
-            //console.log(result);
+    if (!(abp.auth.isGranted('CanAccessAccounting') || abp.auth.isGranted('CanAccessAdministrator')))
+        window.location.href = "#";
+    else {
+        orderService.getDashboardAdmin().success(function(result) {
             $scope.dashboard = result;
         });
 
-        $scope.gridOptions.data = null;
-        orderService.getAllPurchaseOrderForAccounting($scope.statusType, $scope.statusGrid).success(function (result) {
-            //console.log(result);
-            $scope.gridOptions.data = result;
-        });
-    };
 
-    $scope.showMe = function (id) {
-        var ev = this.ev;
-        $mdDialog.show({
-            templateUrl: 'view-order-accounting.tmpl.html',
-            controller: ViewAccountingOrderController,
-            parent: angular.element(document.body),
-            targetEvent: ev,
-            clickOutsideToClose: true,
-            locals: {
-                purchaseOrderId: id,
-                orderService: orderService
-            }
-        }).then(function (rs) {
-            $scope.$emit('updateDashboard', "ok");
-        }, function () {
-            $scope.status = 'You cancelled the dialog.';
-        }).finally(function (rs) {
+        $scope.gridOptions = {
+            enableRowSelection: true,
+            enableSelectAll: false,
+            multiselect: false,
+            selectionRowHeaderWidth: 35,
+            rowHeight: 35,
+            showGridFooter: true
+        };
+        $scope.animationsEnabled = true;
+
+
+        $scope.statusType = 0;
+        $scope.changeType = function(num) {
+            $scope.statusType = num;
             $scope.refresh();
-            $scope.$emit('updateDashboard', "ok");
-        });
-    };
+        };
+        $scope.orderType = [
+            { no: 1, name: "Pre-Order" },
+            { no: 0, name: "Ready Stock" }
+        ];
 
-    $scope.gridOptions.columnDefs = [
-        { name: 'id', enableCellEdit: false },
-         { name: 'creatorUser.name', displayName: 'Name', enableCellEdit: false },
-        { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
-        { name: 'province', displayName: 'Province', enableCellEdit: false },
-        { name: 'address', displayName: 'Address', enableCellEdit: false },
-        { name: 'status', displayName: 'Status', enabledCellEdit:false },
-        { name: 'totalWeight', displayName: 'Total Weight', enableCellEdit: false },
-        { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
-        {
-            name: 'view', displayName: 'View',
-            cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'
-        }
-    ];
-    $scope.$on('updateDashboard', function (event, data) { $scope.refresh(); });
-    $scope.refresh();
+        $scope.statusGrid = 2;
+        $scope.changeTab = function(num) {
+            $scope.statusGrid = num;
+            $scope.refresh();
+        };
+        $scope.tabOrders = [
+            { no: 5, name: "Done" },
+            { no: 4, name: "On Delivery" },
+            { no: 6, name: "Paid" },
+            { no: 3, name: "Waiting For Payment" },
+            { no: 2, name: "Need Review" },
+            { no: 1, name: "In Marketing" },
+            { no: 0, name: "Rejected" }
+        ];
 
+
+        $scope.refresh = function() {
+            orderService.getDashboardAdmin().success(function(result) {
+                //console.log(result);
+                $scope.dashboard = result;
+            });
+
+            $scope.gridOptions.data = null;
+            orderService.getAllPurchaseOrderForAccounting($scope.statusType, $scope.statusGrid).success(function(result) {
+                //console.log(result);
+                $scope.gridOptions.data = result;
+            });
+        };
+
+        $scope.showMe = function(id) {
+            var ev = this.ev;
+            $mdDialog.show({
+                templateUrl: 'view-order-accounting.tmpl.html',
+                controller: ViewAccountingOrderController,
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                locals: {
+                    purchaseOrderId: id,
+                    orderService: orderService
+                }
+            }).then(function(rs) {
+                $scope.$emit('updateDashboard', "ok");
+            }, function() {
+                $scope.status = 'You cancelled the dialog.';
+            }).finally(function(rs) {
+                $scope.refresh();
+                $scope.$emit('updateDashboard', "ok");
+            });
+        };
+
+        $scope.gridOptions.columnDefs = [
+            { name: 'id', enableCellEdit: false },
+            { name: 'creationTime', displayName: 'Date', cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"', enableCellEdit: false },
+            { name: 'creatorUser.name', displayName: 'Name', enableCellEdit: false },
+            { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
+            { name: 'province', displayName: 'Province', enableCellEdit: false },
+            { name: 'address', displayName: 'Address', enableCellEdit: false },
+            { name: 'status', displayName: 'Status', enabledCellEdit: false },
+            { name: 'totalWeight', displayName: 'Total Weight', enableCellEdit: false },
+            { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
+            {
+                name: 'view',
+                displayName: 'View',
+                cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'
+            }
+        ];
+        $scope.$on('updateDashboard', function(event, data) { $scope.refresh(); });
+        $scope.refresh();
+    }
 }

@@ -23,6 +23,7 @@
                     //console.log(result);
                     user = result.user;
                     $rootScope.Address = user.Address;
+                    $rootScope.PhoneNumber = user.PhoneNumber;
                     $scope.luser = user;
                 }).error(
                   function (result) {
@@ -102,6 +103,7 @@
            $scope.user.Id = $scope.luser.id;
            $scope.user.UserName = $scope.luser.userName;
            $scope.user.Address = $scope.luser.address;
+           $scope.user.PhoneNumber = $scope.luser.phoneNumber;
            $scope.user.FirstName = $scope.luser.name;
            $scope.user.LastName = $scope.luser.surname;
            $scope.user.Email = $scope.luser.emailAddress;
@@ -145,10 +147,12 @@
     angular.module('app').controller('changePasswordCtrl', [
        '$scope', 'abp.services.app.user', '$uibModalInstance',
        function ($scope, userService, $uibModalInstance, result) {
+           //console.log($scope.luser);
            $scope.user = {};
            $scope.user.Id = $scope.luser.id;
            $scope.user.UserName = $scope.luser.userName;
            $scope.user.Address = $scope.luser.address;
+           $scope.user.PhoneNumber = $scope.luser.phoneNumber;
            $scope.user.FirstName = $scope.luser.name;
            $scope.user.LastName = $scope.luser.surname;
            $scope.user.Email = $scope.luser.emailAddress;

@@ -37,8 +37,9 @@ namespace Animart.Portal.Shipment
                 CreatorUserId = AbpSession.GetUserId(),
                 Expedition = shipmentItem.Expedition,
                 Type = shipmentItem.Type,
-                First5Kilo = shipmentItem.NextKilo,
-                NextKilo = shipmentItem.NextKilo
+                FirstKilo = shipmentItem.FirstKilo,
+                NextKilo = shipmentItem.NextKilo,
+                KiloQuantity = shipmentItem.KiloQuantity
             };
 
             await _shipmentRepository.InsertAsync(item);
@@ -52,8 +53,10 @@ namespace Animart.Portal.Shipment
                 var cityId = Guid.Parse(shipmentItem.City);
                 editItem.City = _cityRepository.FirstOrDefault(e => e.Id == cityId);
                 editItem.NextKilo = shipmentItem.NextKilo;
+                editItem.FirstKilo = shipmentItem.FirstKilo;
                 editItem.Expedition = shipmentItem.Expedition;
                 editItem.Type = shipmentItem.Type;
+                editItem.KiloQuantity = shipmentItem.KiloQuantity;
                 await _shipmentRepository.UpdateAsync(editItem);
             }
             catch (Exception ex)
@@ -77,8 +80,9 @@ namespace Animart.Portal.Shipment
                 CreationTime = e.CreationTime,
                 CreatorUserId = e.CreatorUserId,
                 Expedition = e.Expedition,
-                First5Kilo = e.NextKilo,
+                FirstKilo = e.FirstKilo,
                 NextKilo = e.NextKilo,
+                KiloQuantity = e.KiloQuantity,
                 Type = e.Type,
                 Id = e.Id
             }).ToList();
@@ -92,7 +96,8 @@ namespace Animart.Portal.Shipment
                 CreationTime = e.CreationTime,
                 CreatorUserId = e.CreatorUserId,
                 Expedition = e.Expedition,
-                First5Kilo = e.NextKilo,
+                FirstKilo = e.FirstKilo,
+                KiloQuantity = e.KiloQuantity,
                 NextKilo = e.NextKilo,
                 Type = e.Type,
                 Id = e.Id
@@ -110,7 +115,8 @@ namespace Animart.Portal.Shipment
                 CreationTime = e.CreationTime,
                 CreatorUserId = e.CreatorUserId,
                 Expedition = e.Expedition,
-                First5Kilo = e.NextKilo,
+                FirstKilo = e.FirstKilo,
+                KiloQuantity = e.KiloQuantity,
                 NextKilo = e.NextKilo,
                 Type = e.Type,
                 Id = e.Id
@@ -130,7 +136,8 @@ namespace Animart.Portal.Shipment
                 CreationTime = e.CreationTime,
                 CreatorUserId = e.CreatorUserId,
                 Expedition = e.Expedition,
-                First5Kilo = e.NextKilo,
+                KiloQuantity = e.KiloQuantity,
+                FirstKilo = e.FirstKilo,
                 NextKilo = e.NextKilo,
                 Type = e.Type,
                 Id = e.Id
@@ -202,7 +209,8 @@ namespace Animart.Portal.Shipment
                 City = item.City.Id.ToString(),
                 CreationTime = item.CreationTime,
                 CreatorUserId = item.CreatorUserId,
-                First5Kilo = item.First5Kilo,
+                KiloQuantity = item.KiloQuantity,
+                FirstKilo = item.FirstKilo,
                 Expedition = item.Expedition,
                 NextKilo = item.NextKilo,
                 Id = item.Id,

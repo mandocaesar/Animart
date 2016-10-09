@@ -13,8 +13,9 @@ namespace Animart.Portal.Shipment.Dto
         public string City { get; set; }
         public string Expedition { get; set; }
         public string Type { get; set; }
-        public int First5Kilo { get; set; }
+        public int FirstKilo { get; set; }
         public int NextKilo { get; set; }
+        public int KiloQuantity { get; set; }
 
     }
 }

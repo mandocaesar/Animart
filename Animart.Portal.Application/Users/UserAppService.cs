@@ -27,7 +27,8 @@ namespace Animart.Portal.Users
         private readonly UserStore _userStore;
 
 
-        public UserAppService(UserManager userManager, RoleManager roleManager, IRepository<Users.User, long> userRepository, UserStore userStore)
+        public UserAppService(UserManager userManager, RoleManager roleManager, 
+            IRepository<Users.User, long> userRepository, UserStore userStore)
         {
             _userManager = userManager;
             _userRepository = userRepository;
@@ -56,9 +57,9 @@ namespace Animart.Portal.Users
             GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
             gmail.SendMessage(
                 "Welcome Aboard !", 
-                string.Format("<p> Welcome,</p><br/> <p> Your Animart registration has now been approved and your account is ready to use.You may now log on to the system. </p>" +
-                "<br/><p> Your user - id is: {0} and your password: ZXasqw12 </p><p> If you have any queries, please contact the Animart on + 62(22) 612 - 6824 </p>" +
-                "<br/><p> Sincerely, </p><br/><p > PT.Animart Hobi Kreatif Tel: (+62) 22 - 612 - 6824 </p>", _user.UserName),
+                string.Format("<p> Welcome,</p><br/><br/><br/> <p> Your Animart registration has now been approved and your account is ready to use.<br/><br/>You may now log on to the system on http://shop.animart.co.id </p>" +
+                "<br/><br/><p> Your user - id is: {0} and your password: ZXasqw12 </p><br/><br/><p> If you have any queries, please contact the Animart on + 62(22) 612 - 6824 </p>" +
+                "<br/><br/><br/><p> Sincerely, </p><br/><br/><br/><p> PT.Animart Hobi Kreatif <br/>Tel: (+62) 22 - 612 - 6824 </p>", _user.UserName),
                 _user.EmailAddress);
 
         }
@@ -84,6 +85,7 @@ namespace Animart.Portal.Users
                 _user.Address = user.Address;
                 _user.Surname = user.LastName;
                 _user.EmailAddress = user.Email;
+                _user.PhoneNumber = user.PhoneNumber;
 
                 _userRepository.Update(_user);
               
@@ -109,6 +111,7 @@ namespace Animart.Portal.Users
                     //_user.IsActive = user.IsActive;
                     _user.Name = user.FirstName;
                     _user.Address = user.Address;
+                    _user.PhoneNumber = user.PhoneNumber;
                     _user.Surname = user.LastName;
                     //_user.Password = new PasswordHasher().HashPassword(user.NewPassword);
                     _userRepository.Update(_user);
@@ -167,6 +170,7 @@ namespace Animart.Portal.Users
                 FirstName = e.Name,
                 LastName = e.Surname,
                 Address = e.Address,
+                PhoneNumber = e.PhoneNumber,
                 IsActive = e.IsActive,
                 Email = e.EmailAddress,
                 UserName = e.UserName,
@@ -195,6 +199,7 @@ namespace Animart.Portal.Users
                 FirstName = user.Name,
                 LastName = user.Surname,
                 Address = user.Address,
+                PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive,
                 Email = user.EmailAddress,
                 UserName = user.UserName,

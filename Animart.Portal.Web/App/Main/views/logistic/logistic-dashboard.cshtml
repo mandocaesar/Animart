@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="col">
-                <div ui-grid="gridOptions" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
+                <div ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
             </div>
         </div>
     </md-content>
@@ -60,7 +60,7 @@
         <form name="poForm">
             <md-toolbar>
                 <div class="md-toolbar-tools">
-                    <h2>Order Details - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
+                    <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
                     <span flex></span>
                     <md-button class="md-icon-button" ng-click="cancel()">
                         <md-icon md-svg-src="" aria-label="Close dialog"></md-icon>
@@ -101,6 +101,7 @@
                                 <table class="table table-striped ngCart cart table-bordered">
                                     <thead>
                                         <tr>
+                                            <th>Code</th>
                                             <th>Name</th>
                                             <th>Weight (gramm)</th>
                                             <th>Quantity</th>
@@ -112,6 +113,9 @@
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="supply in supplies">
+                                            <td>
+                                                {{supply.item.code}}
+                                            </td>
                                             <td>
                                                 {{ supply.item.name }}
                                             </td>
@@ -137,20 +141,20 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="6" align="right" width="70%"><strong>SubTotal:</strong></td>
+                                            <td colspan="7" align="right" width="70%"><strong>SubTotal:</strong></td>
                                             <td>{{ po.grandTotal | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="6" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
+                                            <td colspan="7" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
                                         </tr>
-                                        <tr>
-                                            <td colspan="6" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
-                                            <td>{{ po.shipmentAdjustmentCost * po.totalWeight | currency:"Rp." }}</td>
+                                        <tr ng-show="po.isAdjustment">
+                                            <td colspan="7" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
+                                            <td>{{ po.totalAdjustmentShipmentCost | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="6" align="right"><strong>Total:</strong></td>
-                                            <td><strong>{{ po.grandTotal +(po.shipmentAdjustmentCost * po.totalWeight) | currency:"Rp." }}</strong></td>
+                                            <td colspan="7" align="right"><strong>Total:</strong></td>
+                                            <td><strong>{{ po.grandTotal + po.totalAdjustmentShipmentCost | currency:"Rp." }}</strong></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -165,6 +169,10 @@
                                 <tr>
                                     <td colspan="5">
                                         <div>
+                                            <md-input-container class="md-block">
+                                                <label>Phone Number</label>
+                                                <input ng-model="po.phoneNumber" disabled>
+                                            </md-input-container>
                                             <md-input-container class="md-block">
                                                 <label>Address</label>
                                                 <input ng-model="po.address" disabled>
@@ -219,11 +227,20 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" align="right" width="70%"><strong>Shipping per(kg):</strong></td>
-                                    <td>{{ po.shipmentCost | currency:"Rp." }}</td>
+                                    <td colspan="4" align="right" width="80%"><strong>Shipping first({{po.kiloQuantity}}kg):</strong></td>
+                                    <td>{{ po.shipmentCostFirstKilo | currency:"Rp." }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" align="right" width="80%"><strong>Shipping Adjustment per(kg):</strong></td>
+                                    <td colspan="4" align="right" width="80%"><strong>Shipping next(kg):</strong></td>
+                                    <td>{{ po.shipmentCost | currency:"Rp." }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="4" align="right" width="80%"><strong>Shipping Adjustment first({{po.kiloAdjustmentQuantity}}kg):</strong></td>
+                                    <td>{{ po.shipmentAdjustmentCostFirstKilo | currency:"Rp." }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" align="right" width="80%"><strong>Shipping Adjustment next(kg):</strong></td>
                                     <td>{{ po.shipmentAdjustmentCost | currency:"Rp." }}</td>
                                 </tr>
                                 <tr>
@@ -232,7 +249,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="4" align="right"><strong>Total Shipping:</strong></td>
-                                    <td><strong>{{ po.shipmentAdjustmentCost * po.totalWeight| currency:"Rp." }}</strong></td>
+                                    <td><strong>{{ po.totalAdjustmentShipmentCost| currency:"Rp." }}</strong></td>
                                 </tr>
                             </tfoot>
                         </table>

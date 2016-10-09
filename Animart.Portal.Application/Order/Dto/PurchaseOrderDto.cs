@@ -21,14 +21,21 @@ namespace Animart.Portal.Order.Dto
         public string City { get; set; }
 
         public string Address { get; set; }
+        public string PhoneNumber { get; set; }
 
         public string PostalCode { get; set; }
 
         public string Status { get; set; }
 
-        public decimal TotalWeight { get; set; }
+        public int TotalWeight { get; set; }
+        public int KiloQuantity { get; set; }
+        public int KiloAdjustmentQuantity { get; set; }
 
         public decimal GrandTotal { get; set; }
+
+        public decimal ShipmentCostFirstKilo { get; set; }
+        public decimal ShipmentAdjustmentCostFirstKilo { get; set; }
+
         public decimal ShipmentCost { get; set; }
         public decimal ShipmentAdjustmentCost { get; set; }
 

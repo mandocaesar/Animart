@@ -39,7 +39,7 @@ namespace Animart.Portal.Supply.Dto
     {
         public CustomDateTimeConverter()
         {
-            base.DateTimeFormat = "dd-MMMM-yyyy, HH:mm:ss";
+            base.DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
         }
     }
 }

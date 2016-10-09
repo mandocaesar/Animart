@@ -17,7 +17,7 @@ namespace Animart.Portal.Migrations.Data
         public void Build(PortalDbContext context)
         {
             context.DisableAllFilters();
-           CreateUserAndRoles(context);
+           //CreateUserAndRoles(context);
         }
 
         public void CreateDummySupplyItem(PortalDbContext context)

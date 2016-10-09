@@ -13,27 +13,32 @@
             appSession.getCurrentLoginInformations({ async: false }).success(function (result) {
                 user = result.user;
                 $scope.po.address = user.address;
+                $scope.po.phoneNumber = user.phoneNumber;
                
             }).error(
                  function (result) {
                      console.log(result);
                  }
              );
-            $scope.po = {
-                address: '',
-                province: '',
-                city: '',
-                isPreOrder: false,
-                postalCode: '',
-                expedition: '',
-                expeditionAdjustment:'',
-                grandTotal: 0,
-                totalWeight: 0,
-                totalGram:0,
-                status: 'MARKETING',
-                shipping: 0,
-                showExpedition:false
-            };
+            if($scope.po==null)
+                $scope.po = {
+                    address: '',
+                    phoneNumber:'',
+                    province: '',
+                    city: '',
+                    isPreOrder: false,
+                    postalCode: '',
+                    expedition: '',
+                    expeditionAdjustment:'',
+                    grandTotal: 0,
+                    totalWeight: 0,
+                    totalGram:0,
+                    status: 'MARKETING',
+                    shipping: 0,
+                    firstKilo: 0,
+                    kiloQuantity:1,
+                    showExpedition:false
+                };
 
             $scope.orderItems = [];
 
@@ -78,7 +83,9 @@
                         //console.log(rs);
                         //alert(rs[0].nextKilo);
                         $scope.po.shipping = rs[0].nextKilo;
-                        ngCart.setShipping($scope.po.totalWeight * rs[0].nextKilo);
+                        $scope.po.firstKilo = rs[0].firstKilo;
+                        $scope.po.kiloQuantity = rs[0].kiloQuantity;
+                        ngCart.setShipping((Math.max($scope.po.totalWeight - rs[0].kiloQuantity, 0) * rs[0].nextKilo) + rs[0].firstKilo);
                     });
                 }
             };
@@ -114,8 +121,8 @@
                     //} else {
                         if (items[i].getQuantity() < 1)
                             items[i]._quantity = 1;
-                       else if (items[i].getQuantity() >100)
-                            items[i]._quantity = 100;
+                       else if (items[i].getQuantity() >500)
+                            items[i]._quantity = 500;
                     //}
 
                 }
@@ -148,7 +155,7 @@
                 //console.log($scope.po);
                 //alert($scope.po.expedition.nextKilo);
 
-                ngCart.setShipping(totalWeight * $scope.po.expedition.nextKilo);
+                ngCart.setShipping( Math.max(totalWeight-$scope.po.expedition.kiloQuantity,0) * $scope.po.expedition.nextKilo +$scope.po.expedition.firstKilo);
             };
 
             $scope.translateCart = function() {
@@ -168,7 +175,7 @@
             };
 
             function validate() {
-                if ($scope.po.address === '' || $scope.po.province === '' || $scope.po.city === '' || $scope.po.postalCode === '' || $scope.po.expedition === '' || ngCart.getTotalItems() === 0) {
+                if ($scope.po.address === '' || $scope.po.phoneNumber === '' || $scope.po.province === '' || $scope.po.city === '' || $scope.po.postalCode === '' || $scope.po.expedition === '' || ngCart.getTotalItems() === 0) {
                     abp.message.error('One of required fields empty!');
                     return false;
                 }

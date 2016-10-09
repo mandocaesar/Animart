@@ -11,7 +11,8 @@ namespace Animart.Portal.Order
     {
         Task<Guid> Create(Dto.CreatePurchaseOrderDto purchaseOrderrderItem);
 
-        bool Update(string id ,Dto.OrderItemInputDto orderItem);
+        bool Update(string id, Dto.OrderItemDto orderItem);
+        bool UpdatePO(string poId, List<Dto.OrderItemDto> orderItems);
 
         bool Delete(string id);
 

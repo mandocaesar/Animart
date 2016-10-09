@@ -1,7 +1,5 @@
 ﻿<div ng-controller="app.views.home as vm">
-    <div flex-xs flex-gt-xs="25" layout="row">
-        <h2>Latest Pre-Order</h2><hr/>
-    </div>
+    <h2>Latest Pre-Order</h2><hr/>
     <label>Search:</label><input ng-model="searchPO" id="search" class="form-control" placeholder="Filter text">
 
     <md-content class="md-padding" layout-xs="column" layout="row">
@@ -14,7 +12,7 @@
                         @*<span class="md-subhead">{{posupply.price | currency:"Rp."}}</span>*@
                         <span class="md-subhead">
                             <b>Available Until:</b>
-                            <br/>{{posupply.availableUntil}}
+                            <br/>{{posupply.availableUntil| date: "dd-MMMM-yyyy, HH:mma"}}
                         </span>
                     </md-card-title-text>
                 </md-card-title>
@@ -42,9 +40,7 @@
             <input type="number" min="1" max="100" class="form-control" ng-model="pagePOSize">
         </div>*@
     </div>
-    <div flex-xs flex-gt-xs="25" layout="row">
-        <h2>Latest In Stock</h2><hr/>
-    </div>
+    <h2>Latest In Stock</h2><hr/>
     <label>Search:</label><input ng-model="search" id="search" class="form-control" placeholder="Filter text">
     @*@ng-repeat="supply in filteredSupplies" flex-xs flex-gt-xs="16" layout="column">
     <md-card style="text-align: center;"> ng-if="supply.inStock>0"*@
@@ -58,11 +54,11 @@
                         @*<span class="md-subhead">{{supply.price | currency:"Rp."}}</span>*@
                     </md-card-title-text>
                 </md-card-title>
-                <md-card-content layout="row" layout-align="center">
-                    <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(supply.id)" />
+                <md-card-content layout="row" layout-align="center" style="margin-top:50px;">
+                    <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(supply.id)"/>
                 </md-card-content>
                 <md-card-content>
-                    <md-button class="md-raised md-primary" ng-click="view(posupply.id)">Details</md-button>
+                    <md-button class="md-raised md-primary" ng-click="view(supply.id)">Details</md-button>
                 </md-card-content>
                 @*<md-card-actions layout="row" layout-align="middle center"  ng-if="vm.getShownUserName().currentRole == '5'">
                         <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1"  quantity-max="100" data=supply>Add To Cart</ngcart-addtocart>
@@ -75,14 +71,13 @@
         <div class="col-md-9">
             <dir-pagination-controls pagination-id="paginateSupply" boundary-links="true" template-url="dirPagination.tpl.html"></dir-pagination-controls>
         </div>
-            @*<div class="col-md-2">
+        @*<div class="col-md-2">
                 <label>Page Size:</label>
             </div>
             <div class="col-md-1">
                 <input type="number" min="1" max="100" class="form-control" ng-model="pageSize">
-            </div>
-        </div>*@
- 
+            </div>*@
+    </div>
 </div>
 
 <script type="text/ng-template" id="dirPagination.tpl.html">

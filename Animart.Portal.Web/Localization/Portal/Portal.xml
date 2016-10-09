@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <localizationDictionary culture="en">
   <texts>
-    <text name="HomePage" value="Home page" />
+    <text name="HomePage" value="Home" />
     <text name="About" value="About" />
     <text name="WellcomeMessage" value="Welcome to Portal!" />
     <text name="Home_ThisIsATemplate" value="This project template is a starting point to develop web applicatins using..." />
@@ -16,12 +16,15 @@
     <text name="BecomeATenant" value="Become A Tenant"/>
     <text name="BecomeATenantHint" value="Contact admin@animart.co.id to become a tenant"/>
     <text name="Dashboard" value="Dashboard"/>
+    <text name="AdministrationDashboard" value="Administration Dashboard"/>
     <text name="AccountingDashboard" value="Accounting Dashboard"/>
     <text name="MarketingDashboard" value="Marketing Dashboard"/>
     <text name="RetailerDashboard" value="Order History"/>
     <text name="HowToOrder" value="How To Order"/>
+    <text name="TermAndCondition" value="Terms And Conditions"/>
     <text name="LogisticDashboard" value="Logistic Dashboard"/>
     <text name="Profile" value="User Profile"/>
+    <text name="Product" value="Product List"/>
     <text name="ChangePassword" value="Change Password"/>
     <text name="ForgotPassword" value="Forgot Password"/>
     <text name="ResetPassword" value="Reset Password"/>

@@ -42,6 +42,8 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
                 $scope.po.shipmentAdjustmentCost = rs[0].nextKilo;
             });
         }
+        $mdDialog.cancel();
+
     };
     $scope.updateExpedition = function () {
         if ($scope.po.city !== '') {
@@ -63,6 +65,8 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "DONE").success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
         });
+        $mdDialog.cancel();
+
     };
     $scope.close = function () {
         $mdDialog.cancel();
@@ -72,16 +76,22 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
         orderService.insertReceiptNumber(purchaseOrderId, $scope.po.receiptNumber).success(function () {
             abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
         });
+        $mdDialog.cancel();
+
     }
     $scope.insertExpedition = function () {
         orderService.insertExpeditionAdjustment(purchaseOrderId, $scope.po.expeditionAdjustment).success(function () {
             abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
         });
+        $mdDialog.cancel();
+
     }
 }
 
 function dashboardController($q, $rootScope, $scope, orderService,expeditionService, $uibModal,$mdDialog) {
-
+    if (!(abp.auth.isGranted('CanAccessLogistic') || abp.auth.isGranted('CanAccessAdministrator')))
+        window.location.href = "#";
+    else {
     $scope.gridOptions = {
         enableRowSelection: true,
         enableSelectAll: false,
@@ -150,6 +160,7 @@ function dashboardController($q, $rootScope, $scope, orderService,expeditionServ
 
     $scope.gridOptions.columnDefs = [
         { name: 'id', enableCellEdit: false },
+        { name: 'creationTime', displayName: 'Date', cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"', enableCellEdit: false },
          { name: 'creatorUser.name', displayName: 'Name', enableCellEdit: false },
         { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
         { name: 'province', displayName: 'Province', enableCellEdit: false },
@@ -164,4 +175,5 @@ function dashboardController($q, $rootScope, $scope, orderService,expeditionServ
     ];
     $scope.$on('updateDashboard', function (event, data) { $scope.refresh(); });
     $scope.refresh();
+    }
 }

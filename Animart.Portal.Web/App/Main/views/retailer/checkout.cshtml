@@ -1,11 +1,14 @@
 ﻿<ngcart-cart></ngcart-cart>
 <script type="text/ng-template" id="template/ngCart/cart.html">
-    <div class="alert alert-warning" role="alert" ng-show="ngCart.getTotalItems() === 0">
+    <div class="col-md-12 alert alert-warning" role="alert" ng-show="ngCart.getTotalItems() === 0">
         Your cart is empty
     </div>
-    <div class="table-responsive col-lg-12" ng-show="ngCart.getTotalItems() > 0" ng-controller="app.views.retailer.checkout">
+    <div class="table-responsive col-md-12" ng-show="ngCart.getTotalItems() > 0" ng-controller="app.views.retailer.checkout">
+
+        <label style="color:red;">*Item quantities will changed depends on Reviews and Quota</label>
+        <br/>
         <label>Review Order</label>
-        <table class="table table-striped ngCart cart table-bordered">
+        @*<table class="col-md-12 table table-striped ngCart cart table-bordered">
             <thead>
                 <tr>
                     <th></th>
@@ -26,7 +29,7 @@
                         <span class="fa fa-minus-circle" ng-class="{'disabled':item.getQuantity()<=1}"
                                 ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;
                         {{ item.getQuantity() | number }}&nbsp;&nbsp;
-                        <span class="fa fa-plus-circle" ng-class="{'disabled': item.getQuantity()>=100}" @*item.getQuantity()>=item.getData().inStock && !item.getData().ispo ||(item.getData().ispo &&*@
+                        <span class="fa fa-plus-circle" ng-class="{'disabled': item.getQuantity()>=500}" 
                               ng-click="item.setQuantity(1, true)"></span>
                     </td>
                     <td>{{ item.getQuantity() *  item.getPrice() | currency:"Rp." }}</td>
@@ -42,81 +45,127 @@
                     <td><strong>{{ po.subTotal | currency:"Rp." }}</strong></td>
                 </tr>
             </tfoot>
-            </table>
-          
+            </table>*@
+            <div class="container table-bordered">
+                <div class="col-sm-6 col-lg-4" ng-repeat="item in ngCart.getCart().items track by $index">
+                    <div class="row" style="border:1px solid blue;padding:25px;">
+                        <div class="col-xs-6 col-lg-4" style="height:100px;"><label>Name:</label></div>
+                        <div class="col-xs-6 col-lg-8" align="right" style="height:100px;"> {{ item.getName() }}</div>
+                        <div class="col-xs-6 col-lg-4" style="height:50px;"><label>Is Pre-Order:</label></div>
+                        <div class="col-xs-6 col-lg-8" align="right" style="height:50px;">{{ item.getData().ispo }}</div>
+                        <div class="col-xs-4" style="height:50px;"><label>Price:</label></div>
+                        <div class="col-xs-8" align="right" style="height:50px;">{{ item.getPrice() | currency:"Rp."}}</div>
+                        <div class="col-xs-4" style="height:50px;"><label>Quantity:</label></div>
+                        <div class="col-xs-8" align="right" style="height:50px;">
+                            <span class="fa fa-minus-circle" ng-class="{'disabled':item.getQuantity()<=1}"
+                                ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;
+                                {{ item.getQuantity() | number }}&nbsp;&nbsp;
+                                <span class="fa fa-plus-circle" ng-class="{'disabled': item.getQuantity()>=500}" @*item.getQuantity()>=item.getData().inStock && !item.getData().ispo ||(item.getData().ispo &&*@
+                                ng-click="item.setQuantity(1, true)"></span>
+                        </div>
+                        <div class="col-xs-4"><label>Subtotal:</label></div>
+                        <div class="col-xs-8" align="right">{{ item.getQuantity() *  item.getPrice() | currency:"Rp." }}</div>
+                        <div class="col-xs-12"><h4><a ng-click="ngCart.removeItemById(item.getId())" class="col-xs-12 btn btn-danger glyphicon glyphicon-remove">Remove</a></h4></div>
+                    </div>
+                </div>
+            </div>
+        <br />
+        <br />
+        <label>Items Summary</label>
+        <div class="row table-bordered">
+            <div class="col-xs-6 col-lg-9" align="right" style="height:50px"><strong>Total Weight ({{po.totalGram}} gr):</strong></div>
+            <div class="col-xs-6 col-lg-3" align="right" style="height:50px">{{ po.totalWeight}} kg</div>
+
+            <div class="col-xs-6 col-lg-9" align="right" style="height:50px"><strong>SubTotal:</strong></div>
+            <div class="col-xs-6 col-lg-3" align="right" style="height:50px"><strong>{{ po.subTotal | currency:"Rp." }}</strong></div>
+        </div>
+            <br />
+            <br />
             <label>Shipping Address and Expedition Information</label>
             <label style="color:red;">*Please fill your shipping address information</label>
-            <table class="table table-striped ngCart cart table-bordered">
-                <tbody>
-                    <tr>
-                        <td colspan="5">
-                            <div>
-                                <md-input-container class="md-block">
-                                </md-input-container>
-                                <md-input-container class="md-block">
-                                    <label><strong>Address</strong></label>
-                                    <input ng-model="po.address">
-                                </md-input-container>
-                                <div layout-gt-sm="row">
-                                    <md-input-container class="md-block" flex-gt-sm>
-                                        <label><strong>Province</strong></label>
-                                        <input ng-model="po.province">
-                                    </md-input-container>
-                                    <md-input-container class="md-block" flex-gt-sm>
-                                        <label><strong>City</strong></label>
-                                        <md-select ng-model="po.city"  ng-change="updateExpedition()">
-                                            <md-option ng-repeat="city in cities">
-                                                {{city.name}}
-                                            </md-option>
-                                        </md-select>
-                                    </md-input-container>
-                                    <md-input-container class="md-block" flex-gt-sm>
-                                        <label><strong>Postal Code</strong></label>
-                                        <input name="postalCode" ng-model="po.postalCode" placeholder="12345"
-                                               required ng-pattern="/^[0-9]{5}$/" md-maxlength="5">
-                                        <div ng-messages="poForm.postalCode.$error" role="alert" multiple>
-                                            <div ng-message="required" class="my-message">You must supply a postal code.</div>
-                                            <div ng-message="pattern" class="my-message">
-                                                That doesn't look like a valid postal
-                                                code.
-                                            </div>
-                                        </div>
-                                    </md-input-container>
-                                </div>
-                                <div layout-gt-sm="row" ng-hide="po.showExpedition">
-                                   <label style="color:red;">*Please select your city first, to choose an expedition</label>
-                                </div>
-                                <div layout-gt-sm="row" ng-show="po.showExpedition">
-                                    <md-input-container class="md-block" flex-gt-sm>
-                                        <label><strong>Expedition</strong></label>
-                                        <md-select ng-model="po.expedition" ng-change="updateShippingPrice()">
-                                            <md-option ng-repeat="expedition in expeditions">
-                                                {{expedition.expedition}}-{{expedition.type}}
-                                            </md-option>
-                                        </md-select>
-                                    </md-input-container>
+            <div class="row table-bordered">
+                @*<tbody>
+                <tr>
+                    <td colspan="5">*@
+                <div>
+                    <md-input-container class="md-block">
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label><strong>Phone Number</strong></label>
+                        <input ng-model="po.phoneNumber">
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label><strong>Address</strong></label>
+                        <input ng-model="po.address">
+                    </md-input-container>
+                    <div layout-gt-sm="row">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label><strong>Province</strong></label>
+                            <input ng-model="po.province">
+                        </md-input-container>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label><strong>City</strong></label>
+                            <md-select ng-model="po.city" ng-change="updateExpedition()">
+                                <md-option ng-repeat="city in cities">
+                                    {{city.name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label><strong>Postal Code</strong></label>
+                            <input name="postalCode" ng-model="po.postalCode" placeholder="12345"
+                                   required ng-pattern="/^[0-9]{5}$/" md-maxlength="5">
+                            <div ng-messages="poForm.postalCode.$error" role="alert" multiple>
+                                <div ng-message="required" class="my-message">You must supply a postal code.</div>
+                                <div ng-message="pattern" class="my-message">
+                                    That doesn't look like a valid postal
+                                    code.
                                 </div>
                             </div>
-                        </td>
+                        </md-input-container>
+                    </div>
+                    <div layout-gt-sm="row" ng-hide="po.showExpedition">
+                        <label style="color:red;">*Please select your city first, to choose an expedition</label>
+                    </div>
+                    <div layout-gt-sm="row" ng-show="po.showExpedition">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label><strong>Expedition</strong></label>
+                            <md-select ng-model="po.expedition" ng-change="updateShippingPrice()">
+                                <md-option ng-repeat="expedition in expeditions">
+                                    {{expedition.expedition}}-{{expedition.type}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </div>
+                @*</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="4" align="right" width="70%"><strong>Shipping per(kg):</strong></td>
-                        <td>{{ po.shipping | currency:"Rp." }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4" align="right"><strong>Weight ({{po.totalGram}} gr):</strong></td>
-                        <td>{{ po.totalWeight }} kg</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4" align="right"><strong>Total Shipping:</strong></td>
-                        <td><strong>{{ ngCart.getShipping() | currency:"Rp." }}</strong></td>
-                    </tr>
-                </tfoot>
-            </table>
+                        <td>*@
+                <div class="row">
+                    <div class="col-xs-6 col-lg-9" align="right" style="height:50px"><strong>Shipping (first {{po.kiloQuantity}}kg):</strong></div>
+                    <div class="col-xs-6 col-lg-3" align="right" style="height:50px">{{ po.firstKilo | currency:"Rp." }}</div>
+
+                    <div class="col-xs-6 col-lg-9" style="height:50px" align="right"><strong>Shipping next(kg):</strong></div>
+                    <div class="col-xs-6 col-lg-3" align="right" style="height:50px">{{ po.shipping | currency:"Rp." }}</div>
+
+                    <div class="col-xs-6 col-lg-9" style="height:50px" align="right"><strong>Weight ({{po.totalGram}} gr):</strong></div>
+                    <div class="col-xs-6 col-lg-3" align="right" style="height:50px">{{ po.totalWeight }} kg</div>
+
+                    <div class="col-xs-6 col-lg-9" style="height:50px" align="right"><strong>Total Shipping:</strong></div>
+                    <div class="col-xs-6 col-lg-3" align="right" style="height:50px"><strong>{{ ngCart.getShipping() | currency:"Rp." }}</strong></div>
+                    @*</td>
+                        </tr>
+                    </tfoot>*@
+                </div>
+            </div>
+            <br />
+            <br />
+            <br />
             <label>Total Payment</label>
-            <table class="table table-striped ngCart cart table-bordered">
+            <div class="row table-bordered">
                 @*<tr ng-show="ngCart.getTax()">
                     <td></td>
                     <td></td>
@@ -124,24 +173,25 @@
                     <td>Tax ({{ ngCart.getTaxRate() }}%):</td>
                     <td>{{ ngCart.getTax() | currency:"Rp." }}</td>
                 </tr>*@
-                <tr>
-                    <td colspan="4" align="right" width="70%"><strong>Item(s) SubTotal:</strong></td>
-                    <td>{{ po.subTotal | currency:"Rp." }}</td>
-                </tr>
-                <tr>
-                    <td colspan="4" align="right"><strong>Total Shipping:</strong></td>
-                    <td>{{ ngCart.getShipping() | currency:"Rp. "}}</td>
-                </tr>
-                <tr>
-                    <td colspan="4" align="right"><strong>Total:</strong></td>
-                    <td><strong>{{ ngCart.totalCost() | currency:"Rp." }}</strong></td>
-                </tr>           
-            </table>   
-        <div class="col-lg-12" style="text-align:right;">
-            <label style="color:red;" ng-show="isCombined">CANNOT PURCHASE PRE-ORDER AND READY STOCK ITEM TOGETHER, PLEASE REMOVE SOME ITEMS FROM YOUR CART</label>
-            <a href="" class="btn btn-primary" ng-hide="po.hideOrderBtn || isCombined" ng-click="placeOrder()">Order Now</a>
-            <a href="./#/hwto"><h2><u>How to Pay</u></h2></a>
-        </div>    
-    </div>
+                @*<tr>
+                <td>*@
+                <div class="col-xs-6 col-lg-9" style="height:50px" align="right"><strong>Item(s) SubTotal:</strong></div>
+                <div class="col-xs-6 col-lg-3" align="right" style="height:50px">{{ po.subTotal | currency:"Rp." }}</div>
+
+                <div class="col-xs-6 col-lg-9" style="height:50px" align="right"><strong>Total Shipping:</strong></div>
+                <div class="col-xs-6 col-lg-3" align="right" style="height:50px">{{ ngCart.getShipping() | currency:"Rp. "}}</div>
+
+                <div class="col-xs-6 col-lg-9" style="height:50px" align="right"><strong>Total:</strong></div>
+                <div class="col-xs-6 col-lg-3" align="right" style="height:50px"><strong>{{ ngCart.totalCost() | currency:"Rp." }}</strong></div>
+                @*</td>
+                </tr>*@
+            </div>
+            <div class="col-lg-12" style="text-align:right;">
+                <label style="color:red;" ng-show="isCombined">CANNOT PURCHASE PRE-ORDER AND READY STOCK ITEM TOGETHER, PLEASE REMOVE SOME ITEMS FROM YOUR CART</label>
+                <label style="color:red;">*By order using this website, you are agree with all of <a href="#/terms" target="#home">Terms and Conditions</a> which Animart give.</label>
+                <a href="" class="btn btn-primary" ng-hide="po.hideOrderBtn || isCombined" ng-click="placeOrder()">Order Now</a>
+                <a href="./#/hwto"><h2><u>How to Pay</u></h2></a>
+            </div>
+</div>
    
 </script>
