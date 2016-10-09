@@ -32,6 +32,9 @@ namespace Animart.Portal.Supply
         bool UpdateInStock(Guid id, int stock);
 
         [DontWrapResult]
+        ItemAvailableDto IsAvailable(Guid id,int idx);
+
+        [DontWrapResult]
         SupplyItemDto Supply(Guid id);
         [DontWrapResult]
         SupplyItem GetSingleByName(string name);

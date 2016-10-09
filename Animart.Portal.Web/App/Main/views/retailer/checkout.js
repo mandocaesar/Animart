@@ -1,14 +1,15 @@
 ﻿(function () {
     var controllerId = 'app.views.retailer.checkout';
     angular.module('app').controller(controllerId, [
-        '$rootScope', '$scope', '$state', 'abp.services.app.user', 'abp.services.app.order', 'abp.services.app.shipment', 'ngCart', 
-        function ($rootScope, $scope, $state, appSession, orderService, expeditonService, ngCart) {
+        '$rootScope', '$scope', '$state', 'abp.services.app.user', 'abp.services.app.order', 'abp.services.app.supply', 'abp.services.app.shipment', 'ngCart',
+        function ($rootScope, $scope, $state, appSession, orderService,supplyService, expeditonService, ngCart) {
             var vm = this;
 
             var user = null;
             $scope.loggedUser = {};
             $scope.isCombined = false;
             $scope.isPO = false;
+            $scope.isAvailable = true;
           
             appSession.getCurrentLoginInformations({ async: false }).success(function (result) {
                 user = result.user;
@@ -128,17 +129,30 @@
                 }
             };
 
+            $scope.validateAvailability = function() {
+                var items = ngCart.getItems();
+                for (var i = 0; i < items.length; i++) {
+                    supplyService.isAvailable(items[i].getData().id, i).success(function(result) {
+                        ngCart.getItems()[result.idx].getData().available = result.isAvailable;
+                        $scope.isAvailable = $scope.isAvailable && result.isAvailable;
+                        //console.log(result);
+                    }).error(function(rs) {
+                        console.log(rs);
+                    });
+                }
+            };
             $scope.calculateShip = function () {
                 var items = ngCart.getItems();
                 var totalWeight = 0;
                 var totalGram = 0;
                 var subTotal = 0;
-                console.log(items);
+                //console.log(items);
                
                 $scope.isCombined = false;
                 for (var i = 0; i < items.length; i++) {
                     totalGram += items[i].getData().weight * items[i].getQuantity();
                     subTotal += items[i].getPrice() * items[i].getQuantity();
+                    
                     if (i === 0)
                         $scope.isPO = items[i].getData().ispo;
                     else {
@@ -148,6 +162,7 @@
                     //alert(subTotal);
                     //alert(items[i].getData());
                 }
+                $scope.validateAvailability();
                 $scope.po.subTotal = subTotal;
                 totalWeight = convertToKg(totalGram);
                 $scope.po.totalGram = totalGram;
@@ -175,6 +190,10 @@
             };
 
             function validate() {
+                if ($scope.isAvailable === false) {
+                    abp.message.error('One of more items you want to buy is not available anymore, please remove it from cart.');
+                    return false;
+                }
                 if ($scope.po.address === '' || $scope.po.phoneNumber === '' || $scope.po.province === '' || $scope.po.city === '' || $scope.po.postalCode === '' || $scope.po.expedition === '' || ngCart.getTotalItems() === 0) {
                     abp.message.error('One of required fields empty!');
                     return false;
@@ -187,6 +206,7 @@
             }
 
             $scope.placeOrder = function () {
+                $scope.validateAvailability();
                 if (validate() === false) {
                     return;
                 }

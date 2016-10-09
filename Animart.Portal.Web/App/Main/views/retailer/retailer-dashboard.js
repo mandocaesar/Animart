@@ -171,7 +171,7 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
         //        $scope.po.shippingTotal = (rs[0].nextKilo*$scope.po.totalWeight);
         //    });
         //}
-        console.log(result);
+        //console.log(result);
        
         $scope.status = (result.isPreOrder)?"Pre-Order":"Ready Stock";
         $scope.isApproved = false;

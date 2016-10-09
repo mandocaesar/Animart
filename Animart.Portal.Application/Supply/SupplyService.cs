@@ -40,6 +40,17 @@ namespace Animart.Portal.Supply
 
         }
 
+        public ItemAvailableDto IsAvailable(Guid id,int idx)
+        {
+            var supplies = _supplyItemRepository.GetAll().FirstOrDefault(i=>i.Id==id);
+            if (supplies == null)
+                return new ItemAvailableDto {Idx = idx, IsAvailable = false };
+            if(supplies.IsPo)
+                return new ItemAvailableDto { Idx = idx, IsAvailable = (supplies.AvailableUntil >= DateTime.UtcNow)};
+            else
+                return new ItemAvailableDto { Idx = idx, IsAvailable = true };
+        }
+
         public string CategoryToName(SupplyItem item)
         {
             if (item.CategoryId != null)
@@ -68,7 +79,7 @@ namespace Animart.Portal.Supply
                 Description = e.Description,
                 HasImage = e.HasImage,
                 IsPO = e.IsPo,
-                AvailableUntil = e.AvailableUntil,
+                AvailableUntil = e.AvailableUntil.ToUniversalTime(),
                 CategoryId = e.CategoryId,
                 Category = this.CategoryToName(e)
             }).ToList();
@@ -92,7 +103,7 @@ namespace Animart.Portal.Supply
                 Description = e.Description,
                 HasImage = e.HasImage,
                 IsPO = e.IsPo,
-                AvailableUntil = e.AvailableUntil,
+                AvailableUntil = e.AvailableUntil.ToUniversalTime(),
                 CategoryId = e.CategoryId,
                 Category = this.CategoryToName(e)
             }).ToList();
@@ -102,9 +113,9 @@ namespace Animart.Portal.Supply
         public SuppliesDTO GetSuppliesRetailer()
         {
             var result = new SuppliesDTO();
-            var supplies = _supplyItemRepository.GetAll().Where(e=>e.Available ).OrderByDescending(i=>i.CreationTime).ToList();
+            var supplies = _supplyItemRepository.GetAll().Where(e=>e.Available ).ToList();
 
-            result.Supply = supplies.Where(e=>!e.IsPo).Select(e=> new SupplyItemDto
+            result.Supply = supplies.Where(e=>!e.IsPo).OrderByDescending(i => i.CreationTime).Select(e=> new SupplyItemDto
             {   Available = e.Available,
                 Code = e.Code,
                 Id = e.Id,

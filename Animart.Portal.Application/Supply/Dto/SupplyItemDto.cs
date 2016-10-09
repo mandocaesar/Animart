@@ -40,6 +40,7 @@ namespace Animart.Portal.Supply.Dto
         public CustomDateTimeConverter()
         {
             base.DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
+            //base.DateTimeStyles = System.Globalization.DateTimeStyles.AdjustToUniversal;
         }
     }
 }

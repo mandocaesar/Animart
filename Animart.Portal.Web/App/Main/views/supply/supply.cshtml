@@ -60,6 +60,12 @@
             </div>
             <div class="form-group" ng-show="supply.ispo">
                 <label>Available Until:</label>
+                @*<div class='input-group date' id='datetimepicker2'>
+                    <input type='text' class="form-control" ng-model="supply.availableUntil"/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>*@
                 <input type="datetime-local" ng-model="supply.availableUntil" class="form-control" />
                 <span>Format: Bulan/Tanggal/Tahun Jam/Menit/AM-PM</span>
             </div>
@@ -68,6 +74,13 @@
             <button class="btn btn-primary" type="button" ng-click="ok()" ng-hide="IsEdit">Save</button>
             <button class="btn btn-primary" type="button" ng-click="update()" ng-show="IsEdit">Update</button>
             <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
-        </div>
+        </div>     
     </script>
 </div>
+<script>
+    $(function () {
+        $('#datetimepicker2').datetimepicker({
+            locale: 'id'
+        });
+    });
+</script>

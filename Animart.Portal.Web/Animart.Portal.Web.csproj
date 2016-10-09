@@ -898,6 +898,8 @@
     <Content Include="Content\angular-chart.css" />
     <Content Include="Content\angular-material.min.css" />
     <Content Include="Content\bootstrap-cosmo.min.css" />
+    <Content Include="Content\bootstrap-datetimepicker.css" />
+    <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -907,6 +909,8 @@
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\images\animart_logo.png" />
+    <Content Include="Scripts\bootstrap-datetimepicker.js" />
+    <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\dirPagination.js" />
     <Content Include="Scripts\dirPagination.spec.js" />
     <Content Include="Scripts\ngCart.js" />

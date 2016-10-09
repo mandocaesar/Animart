@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
+using Animart.Portal.Supply.Dto;
 using Animart.Portal.Users.Dto;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Animart.Portal.Order.Dto
 {
@@ -46,6 +49,17 @@ namespace Animart.Portal.Order.Dto
 
         public List<OrderItemDto> Items { get; set; }
         public UserDto CreatorUser { get; set; }
-       
+        [JsonConverter(typeof(CustomDateTimeConverter))]
+        public new DateTime CreationTime{get;set;}
+
+    }
+
+    public class CustomDateTimeConverter : IsoDateTimeConverter
+    {
+        public CustomDateTimeConverter()
+        {
+            //base.DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
+            base.DateTimeStyles = System.Globalization.DateTimeStyles.AdjustToUniversal;
+        }
     }
 }

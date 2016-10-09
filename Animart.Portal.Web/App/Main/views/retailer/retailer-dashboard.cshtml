@@ -150,7 +150,7 @@
             <form name="poForm">
                 <md-toolbar>
                     <div class="md-toolbar-tools">
-                        <h2>Order Details - {{status}}</h2>
+                        <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}}</h2>
                         <span flex></span>
                         <md-button class="md-icon-button" ng-click="cancel()">
                             <md-icon md-svg-src="" aria-label="Close dialog"></md-icon>

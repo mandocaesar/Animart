@@ -26,6 +26,9 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
         $scope.po = result;
         if ($scope.po.expedition != $scope.po.expeditionAdjustment)
             $scope.po.isAdjustment = true;
+        console.log($scope.po.creationTime);
+        //console.log(new Date($scope.po.creationTime));
+        //$scope.po.creationTime = new Date($scope.po.creationTime);
         $scope.isBod = result.status === "MARKETING";
         $scope.isPayment = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
         $scope.isPaid = result.status === "PAID";

@@ -69,9 +69,9 @@ namespace Animart.Portal.Order
         {
             var result = new OrderDashboardDto();
             var userId = AbpSession.GetUserId();
-            result.BDO = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "MARKETING");
-            result.Delivered = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "LOGISTIC");
-            result.Waiting = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "ACCOUNTING");
+            result.BDO = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "MARKETING" || e.Status == "ACCOUNTING");
+            result.Delivered = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "LOGISTIC" || e.Status == "DONE");
+            result.Waiting = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "PAYMENT");
             return result;
         }
 
@@ -143,6 +143,7 @@ namespace Animart.Portal.Order
                     result.TotalShipmentCost = (nextKilo * Math.Max(totalKilo-kiloQuantity,0))+(firstKilo);
                     result.TotalAdjustmentShipmentCost = (nextKiloAdjustment * Math.Max(totalKilo - kiloQuantityAdjustment, 0)) + (firstKiloAdjustment);
                     result.CreatorUser = user;
+                    result.CreationTime = result.CreationTime.ToUniversalTime();
                     return result;
                 }
                 return null;
@@ -405,6 +406,7 @@ namespace Animart.Portal.Order
                         list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                 }
+                
                 switch (num)
                 {
 
@@ -424,6 +426,7 @@ namespace Animart.Portal.Order
                     default:
                         return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING" || w.Status == "ACCOUNTING").ToList();
                 }
+
             }
             catch (Exception ex)
             {
@@ -458,28 +461,35 @@ namespace Animart.Portal.Order
             try
             {
                 var POid = Guid.Parse(id);
-                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e=>e.Id == POid);
-                
+                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == POid);
+
                 po.Status = status;
-                GmailExtension gmail = new GmailExtension("marketing@animart.co.id","GOSALES2015");
+                GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
                 string message = "";
                 string breakLine = "<br/>";
                 switch (status.Trim().ToLower())
                 {
                     case "payment":
-                        message = "Dear retailers,"+breakLine+breakLine
-                            +"Your purchase order with number: " +POid +" ,has been update to \"Payment\""+breakLine+breakLine
-                            +" Please kindly make a bank wire transfer to our account, and upload the bank wire transfer receipt via our system."
-                            +breakLine+breakLine+"Thank you";
+                        message = "Dear retailer," + breakLine + breakLine
+                                  + "Your purchase order with number: " + POid + " has been update to \"PAYMENT\"." + breakLine + breakLine
+                                  + "Please kindly make a bank wire transfer to our account, and upload the bank wire transfer receipt via our system."
+                                  + breakLine + breakLine + "Thank you";
+                        break;
+                    case "logistic":
+                        message = "Dear retailer," + breakLine + breakLine
+                                  + "Your purchase order with number: " + POid + " has been update to \"LOGISTIC\" for delivery." + breakLine + breakLine
+                                  + "Please kindly login to your account to check the status of the orders."
+                                  + breakLine + breakLine + "Thank you";
                         break;
                     default:
-                        message = " Dear retailers,"+breakLine+breakLine+" Your purchase order with number: "
-                            + POid + "has been updated to \"" + status 
-                            +"\" Please kindly login to your account to check the status of the orders.";
+                        message = " Dear retailer," + breakLine + breakLine 
+                                  + "Your purchase order with number: " + POid + " has been updated to \"" + status + "\"." + breakLine + breakLine
+                                  + "Please kindly login to your account to check the status of the orders."
+                                  + breakLine + breakLine + "Thank you";
                         break;
                 }
                 gmail.SendMessage("Purchase Order " + POid + " Has been updated",
-                    message,po.CreatorUser.EmailAddress);
+                    message, po.CreatorUser.EmailAddress);
                 _purchaseOrderRepository.Update(po);
                 return true;
             }
@@ -507,8 +517,34 @@ namespace Animart.Portal.Order
                         list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
                         break;
                 }
-                
-               
+                //List<PurchaseOrder> list = new List<PurchaseOrder>();
+                //PurchaseOrder temp;
+                //foreach (var item in listData)
+                //{
+                //    temp =  new PurchaseOrder
+                //    {
+                //        Id=item.Id,
+                //        Address=item.Address,
+                //        GrandTotal=item.GrandTotal,
+                //        IsPreOrder=item.IsPreOrder,
+                //        ModifiedBy=item.ModifiedBy,
+                //        ModifiedOn=item.ModifiedOn,
+                //        ExpeditionAdjustment=item.ExpeditionAdjustment,
+                //        City=item.City,
+                //        CreationTime=item.CreationTime.ToUniversalTime(),
+                //        CreatorUser=item.CreatorUser,
+                //        CreatorUserId=item.CreatorUserId,
+                //        Expedition=item.Expedition,
+                //        OrderItems=item.OrderItems,
+                //        PhoneNumber=item.PhoneNumber,
+                //        PostalCode=item.PostalCode,
+                //        Province=item.Province,
+                //        ReceiptNumber=item.ReceiptNumber,
+                //        Status=item.Status,
+                //        TotalWeight= item.TotalWeight
+                //    };
+                //    listData.Add(temp);
+                //}
                 switch (num)
                 {
                     case (int)STATUS.REJECT:
@@ -571,6 +607,7 @@ namespace Animart.Portal.Order
                     default:
                         return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "ACCOUNTING").ToList();
                 }
+                
             }
             catch (Exception)
             {
@@ -623,13 +660,19 @@ namespace Animart.Portal.Order
         {
             try
             {
+                string breakLine = "<br/>";
                 var poid = Guid.Parse(id);
                 var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poid);
                 po.ReceiptNumber = receipt;
                 po.Status = "DONE";
                 _purchaseOrderRepository.Update(po);
                 GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
-                gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", " Hello, your purchase order with id " + po.Id.ToString() + "has been updated to " + po.Status + " with receipt number" + po.ReceiptNumber + " please login to have look on it ",
+                gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", 
+                    "Dear retailer,"+breakLine+breakLine+
+                    "Your purchase order with number:" + po.Id.ToString() + " has been updated to \"" + po.Status +"\"."+breakLine+breakLine
+                    + "Your shipment tracking number is: \"" + po.ReceiptNumber+"\"."+ breakLine
+                    + "To track your shipment, use the corresponding couriers service website or contact by phone."+ breakLine+breakLine
+                    + "Thank you",
                     po.CreatorUser.EmailAddress);
                 return true;
             }
@@ -643,12 +686,17 @@ namespace Animart.Portal.Order
         {
             try
             {
+                string breakLine = "<br/>";
                 var poid = Guid.Parse(id);
                 var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poid);
                 po.ExpeditionAdjustment = name.Trim();
                 _purchaseOrderRepository.Update(po);
                 GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
-                gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", " Hello, your purchase order with id " + po.Id.ToString() + " expedition has been updated to " + name  + " please login to have look on it ",
+                gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", 
+                    "Dear retailer,"+breakLine+breakLine
+                    +"The expedition for your purchase order with number:" + po.Id.ToString() + " has been updated to \"" + name  +"\"."+breakLine+breakLine
+                    +"Please kindly login to your account to check the status of the orders."+breakLine+breakLine
+                    + "Thank you",
                     po.CreatorUser.EmailAddress);
                 return true;
             }

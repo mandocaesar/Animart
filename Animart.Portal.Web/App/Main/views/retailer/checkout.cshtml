@@ -1,4 +1,12 @@
 ﻿<ngcart-cart></ngcart-cart>
+<style>
+    .borderRed {
+        border:3px solid red;
+    }
+    .borderBlue {
+        border:3px solid blue;
+    }
+</style>
 <script type="text/ng-template" id="template/ngCart/cart.html">
     <div class="col-md-12 alert alert-warning" role="alert" ng-show="ngCart.getTotalItems() === 0">
         Your cart is empty
@@ -47,12 +55,13 @@
             </tfoot>
             </table>*@
             <div class="container table-bordered">
-                <div class="col-sm-6 col-lg-4" ng-repeat="item in ngCart.getCart().items track by $index">
-                    <div class="row" style="border:1px solid blue;padding:25px;">
-                        <div class="col-xs-6 col-lg-4" style="height:100px;"><label>Name:</label></div>
-                        <div class="col-xs-6 col-lg-8" align="right" style="height:100px;"> {{ item.getName() }}</div>
-                        <div class="col-xs-6 col-lg-4" style="height:50px;"><label>Is Pre-Order:</label></div>
-                        <div class="col-xs-6 col-lg-8" align="right" style="height:50px;">{{ item.getData().ispo }}</div>
+                <div class="col-sm-6 col-lg-4" style="padding:25px;" ng-repeat="item in ngCart.getCart().items track by $index" >
+                    <div class="row" style="padding:25px;" ng-class="{'borderRed': !item.getData().available,'borderBlue': item.getData().available}">
+                        <div class="col-xs-12" style="height:70px;"><label ng-hide="item.getData().available" style="color:red;">*This item is not available anymore, please remove this item from your cart</label></div>
+                        <div class="col-xs-6 col-lg-4" style="height:80px;"><label>Name:</label></div>
+                        <div class="col-xs-6 col-lg-8" align="right" style="height:80px;"> {{ item.getName() }}</div>
+                        <div class="col-xs-6 col-lg-6" style="height:50px;"><label>Is Pre-Order:</label></div>
+                        <div class="col-xs-6 col-lg-6" align="right" style="height:50px;">{{ item.getData().ispo }}</div>
                         <div class="col-xs-4" style="height:50px;"><label>Price:</label></div>
                         <div class="col-xs-8" align="right" style="height:50px;">{{ item.getPrice() | currency:"Rp."}}</div>
                         <div class="col-xs-4" style="height:50px;"><label>Quantity:</label></div>

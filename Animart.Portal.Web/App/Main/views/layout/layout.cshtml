@@ -39,10 +39,11 @@
     <script src="~/AbpScripts/GetScripts" type="text/javascript"></script>
 
     @Scripts.Render("~/Bundles/App/Main/js")
-
     <script src="~/Scripts/dirPagination.js" type="text/javascript"></script>
     <script type="text/javascript" src="~/bower_components/tinymce-dist/tinymce.js"></script>
     <script type="text/javascript" src="~/bower_components/angular-ui-tinymce/src/tinymce.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+
     <style>
         .fullscreen-dialog {
            height:85%;
@@ -75,8 +76,8 @@
 </head>
 <body>
 <div ng-app="app" ng-controller="app.views.layout as vm" layout="column" layout-fill>
-    <header flex ng-include="'/App/Main/views/layout/header.cshtml'"></header>
-    <main class="container" layout="row" flex>
+    <header flex="1" ng-include="'/App/Main/views/layout/header.cshtml'"></header>
+    <main class="container" layout="row" flex style="margin-top:100px;">
         <div class="angular-animation-container row" flex>
             <div ui-view class="shuffle-animation col-xs-12"></div>
         </div>

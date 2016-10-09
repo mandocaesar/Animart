@@ -91,7 +91,7 @@
                     { name: 'weight', displayName: 'Weight (gr)', type: 'number' },
                     { name: 'available', displayName: 'Active', type: 'boolean' },
                     { name: 'ispo', displayName: "Is PO ?", type: 'boolean' },
-                    { name: 'availableUntil', displayName: "Available Until", type: 'datetime' },
+                    { name: 'availableUntil', displayName: "Available Until", cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"' },
                     { name: 'hasImage', displayName: "Image", type: 'boolean', enableCellEdit: false },
                     { name: 'filename', displayName: 'File', width: '20%', editableCellTemplate: 'ui-grid/fileChooserEditor', editFileChooserCallback: $scope.storeFile }, {
                         name: 'view',
@@ -209,7 +209,7 @@
        
 
         $scope.update = function () {
-            supplyService.update($scope.supply)
+           supplyService.update($scope.supply)
               .success(function (result) {
                   $scope.result = result;
                   $uibModalInstance.close($scope.result);
@@ -227,10 +227,10 @@
             $scope.category = result;
             supplyService.supply(param.data).success(function (rs) {
                 //console.log(rs);
-                console.log(rs.availableUntil);
+                //console.log(rs.availableUntil);
 
                 rs.availableUntil = new Date(rs.availableUntil);
-                console.log(rs.availableUntil);
+                //console.log(rs.availableUntil);
                 $scope.supply = rs;
             }).error(function (er) {
                 abp.notify.error('Error Load Supply');
