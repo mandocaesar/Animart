@@ -15,9 +15,9 @@ namespace Animart.Portal.Supply
         [DontWrapResult]
         List<SupplyItemDto> GetSuppliesByCategoryId(Guid id);
         [DontWrapResult]
-        SuppliesDTO GetSuppliesRetailer();
+        SuppliesDTO GetSuppliesRetailer(bool latest);
         [DontWrapResult]
-        SuppliesDTO GetSuppliesRetailerByCategoryId(Guid id);
+        SuppliesDTO GetSuppliesRetailerByCategoryId(Guid id,bool latest);
         [DontWrapResult]
         PagedResultOutput<SupplyItem> GetSupplyByName(GetSupplyByNameInput Input);
         [DontWrapResult]

@@ -52,6 +52,10 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService, pu
         $mdDialog.cancel();
     };
 
+    $scope.print = function () {
+        window.location.href = "#/orderDetail/" + purchaseOrderId;
+        $mdDialog.cancel();
+    };
     $scope.getSubTotal = function () {
         var total = 0;
         if($scope.supplies!=null)

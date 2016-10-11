@@ -110,11 +110,12 @@ namespace Animart.Portal.Supply
         }
 
 
-        public SuppliesDTO GetSuppliesRetailer()
+        public SuppliesDTO GetSuppliesRetailer(bool latest)
         {
             var result = new SuppliesDTO();
             var supplies = _supplyItemRepository.GetAll().Where(e=>e.Available ).ToList();
 
+            
             result.Supply = supplies.Where(e=>!e.IsPo).OrderByDescending(i => i.CreationTime).Select(e=> new SupplyItemDto
             {   Available = e.Available,
                 Code = e.Code,
@@ -132,7 +133,8 @@ namespace Animart.Portal.Supply
                 Category = this.CategoryToName(e)
             }).ToList();
 
-            result.PoSupply = supplies.Where(e => e.IsPo && e.AvailableUntil>= DateTime.UtcNow)
+           
+                result.PoSupply = supplies.Where(e => e.IsPo && e.AvailableUntil>= DateTime.UtcNow)
                 .OrderByDescending(i => i.CreationTime).Select(e => new SupplyItemDto
             {
                 Available = e.Available,
@@ -151,11 +153,14 @@ namespace Animart.Portal.Supply
                 CategoryId = e.CategoryId,
                 Category = this.CategoryToName(e)
             }).ToList();
+            if (!latest)
+                result.PoSupply = result.PoSupply.OrderBy(i => i.AvailableUntil).ToList();
+
 
             return result;
         }
         
-        public SuppliesDTO GetSuppliesRetailerByCategoryId(Guid id)
+        public SuppliesDTO GetSuppliesRetailerByCategoryId(Guid id,bool latest)
         {
             var result = new SuppliesDTO();
             var supplies = _supplyItemRepository.GetAll().Where(e => e.Available && e.CategoryId==id).ToList();
@@ -196,6 +201,9 @@ namespace Animart.Portal.Supply
                 CategoryId = e.CategoryId,
                 Category = this.CategoryToName(e)
             }).ToList();
+
+            if (!latest)
+                result.PoSupply = result.PoSupply.OrderBy(i => i.AvailableUntil).ToList();
 
             return result;
         }

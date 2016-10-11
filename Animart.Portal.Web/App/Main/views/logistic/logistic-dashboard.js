@@ -72,6 +72,11 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
         $mdDialog.cancel();
     };
 
+    $scope.print = function () {
+        window.location.href = "#/orderDetail/" + purchaseOrderId;
+        $mdDialog.cancel();
+    };
+
     $scope.updateReceipt = function () {
         orderService.insertReceiptNumber(purchaseOrderId, $scope.po.receiptNumber).success(function () {
             abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");

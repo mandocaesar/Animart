@@ -37,6 +37,10 @@
                     url: '/item/:id',
                     templateUrl: '/App/Main/views/home/item.cshtml'
                 })
+                .state('orderDetail', {
+                    url: '/orderDetail/:id',
+                    templateUrl: '/App/Main/views/home/orderDetail.cshtml'
+                })
                 .state('product', {
                     url: '/product',
                     params: {

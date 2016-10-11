@@ -83,6 +83,12 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
     };
 
 
+    $scope.print = function () {
+        window.location.href = "#/orderDetail/" + purchaseOrderId;
+        $mdDialog.cancel();
+    };
+
+
     $scope.changeToPaid = function () {
         orderService.updatePurchaseOrderStatus(purchaseOrderId, "PAID").success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
@@ -223,6 +229,7 @@ function accountingController($http,$q, $rootScope, $scope, orderService, $uibMo
                 cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> View</button>'
             }
         ];
+
         $scope.$on('updateDashboard', function(event, data) { $scope.refresh(); });
         $scope.refresh();
     }

@@ -1,0 +1,192 @@
+﻿<div ng-controller="app.views.orderDetail as vm" id="printContent">
+    <md-content class="md-padding" layout-xs="column" layout="row">
+        <div flex-xs flex-gt-xs="100" layout="column">
+            <form name="poForm">
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
+                        <span flex></span>
+                        <span flex="1" class="printDialog"  ng-click="print()" style="cursor:default;">
+                            <span class="fa fa-print" style="font-size: 30px;" aria-label="Print dialog"></span>
+                            Save as PDF
+                        </span>
+                    </div>
+                </md-toolbar>
+                <md-dialog-content id="printContent">
+                    @*<md-subheader class="md-sticky">Grand Total : {{po.grandTotal | currency:"Rp"}}</md-subheader>*@
+                    <div class="md-dialog-content">
+                        <div layout-gt-sm="row">
+                            <div flex>
+                                <md-subheader class="md-sticky">Payment Receipt: </md-subheader>
+                                <md-card>
+                                    <md-card-content>
+                                        <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
+                                    </md-card-content>
+                                </md-card>
+                            </div>
+                            <div flex="1">
+                                <img src="~/Content/images/animart_logo.png" />
+                                @*<img src="~/App/Main/images/animartLogo.png" />*@
+                            </div>
+                        </div>
+                        <md-subheader class="md-sticky" ng-show="isPaid">Resi No: </md-subheader>
+                        <div layout-gt-sm="row" ng-show="isPaid">
+                            <md-card>
+                                @*<md-input-container class="md-block">
+                            @*<input ng-model="po.receiptNumber">*@
+                                @*<label>Resi No:</label>*@
+                                {{po.receiptNumber}}
+                                @*</md-input-container>*@
+                            </md-card>
+                        </div>
+                        <md-subheader class="md-sticky">Invoice Details: </md-subheader>
+                        <div layout-gt-sm="row">
+                            <div class="table-responsive col-lg-12">
+                                <div>
+                                    <table class="table table-striped ngCart cart table-bordered">
+                                        <tbody>
+                                        <tr>
+                                            <td colspan="6"><strong>Order Number:</strong></td>
+                                            <td>{{itemID}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6"><strong>Printed Date:</strong></td>
+                                            <td>{{printedDate}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <md-subheader class="md-sticky">Ordered Items: </md-subheader>
+                        <div layout-gt-sm="row">
+                            <div class="table-responsive col-lg-12">
+                                <div>
+                                    <table class="table table-striped ngCart cart table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Code</th>
+                                                <th>Name</th>
+                                                <th>Weight (gramm)</th>
+                                                <th>Quantity</th>
+                                                <th>Quantity Adjustment</th>
+                                                <th>Price</th>
+                                                <th>Price Adjustment</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="supply in supplies">
+                                                <td>
+                                                    {{supply.item.code}}
+                                                </td>
+                                                <td>
+                                                    {{ supply.item.name }}
+                                                </td>
+                                                <td>
+                                                    {{ supply.item.weight }}
+                                                </td>
+                                                <td>
+                                                    {{supply.quantity}}
+                                                </td>
+                                                <td>
+                                                    {{supply.quantityAdjustment}}
+                                                </td>
+                                                <td>
+                                                    {{ supply.item.price | currency:"Rp." }}
+                                                </td>
+                                                <td>
+                                                    {{ supply.priceAdjustment | currency:"Rp." }}
+                                                </td>
+                                                <td>
+                                                    {{ supply.priceAdjustment * supply.quantityAdjustment | currency:"Rp." }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="7" align="right" width="80%"><strong>SubTotal:</strong></td>
+                                                <td>{{ getSubTotal() | currency:"Rp." }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="7" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
+                                                <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
+                                            </tr>
+                                            <tr ng-show="po.isAdjustment">
+                                                <td colspan="7" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
+                                                <td>{{ po.totalAdjustmentShipmentCost | currency:"Rp." }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="7" align="right"><strong>Total:</strong></td>
+                                                <td><strong>{{ po.grandTotal + po.totalAdjustmentShipmentCost | currency:"Rp." }}</strong></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <md-subheader class="md-sticky">Shipping Address Information: </md-subheader>
+                        <div layout-gt-sm="row" class="table-responsive col-lg-12">
+                            <table class="table table-striped ngCart cart table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Phone Number</strong></td>
+                                        <td colspan="6">{{po.phoneNumber}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Address</strong></td>
+                                        <td colspan="6">{{po.address}}</td>
+                                    </tr>
+                                <tr>
+                                    <td><strong>Province</strong></td>
+                                    <td colspan="2">{{po.province}} </td>
+                                    <td><strong>City</strong></td>
+                                    <td>{{po.city}} </td>
+                                    <td><strong>Postal Code</strong></td>
+                                    <td>{{po.postalCode}} </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Expedition</strong></td>
+                                    <td colspan="6"> {{po.expedition}}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Expedition Adjustment</strong></td>
+                                    <td colspan="6">{{po.expeditionAdjustment}}</td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="6" align="right" width="80%"><strong>Shipping first({{po.kiloQuantity}}kg):</strong></td>
+                                        <td>{{ po.shipmentCostFirstKilo | currency:"Rp." }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" align="right" width="80%"><strong>Shipping next(kg):</strong></td>
+                                        <td>{{ po.shipmentCost | currency:"Rp." }}</td>
+                                    </tr>
+
+                                    <tr ng-show="po.isAdjustment">
+                                        <td colspan="6" align="right" width="80%"><strong>Shipping Adjustment first({{po.kiloAdjustmentQuantity}}kg):</strong></td>
+                                        <td>{{ po.shipmentAdjustmentCostFirstKilo | currency:"Rp." }}</td>
+                                    </tr>
+                                    <tr ng-show="po.isAdjustment">
+                                        <td colspan="6" align="right" width="80%"><strong>Shipping Adjustment next(kg):</strong></td>
+                                        <td>{{ po.shipmentAdjustmentCost | currency:"Rp." }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" align="right"><strong>Total Weight:</strong></td>
+                                        <td>{{ po.totalWeight }} kg</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" align="right"><strong>Total Shipping:</strong></td>
+                                        <td><strong>{{ po.totalAdjustmentShipmentCost| currency:"Rp." }}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </md-dialog-content>
+               
+            </form>
+        </div>
+    </md-content>
+</div>

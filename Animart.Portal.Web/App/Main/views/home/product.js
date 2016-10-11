@@ -14,6 +14,8 @@
             
             $scope.pageSize = 5;
             $scope.pagePOSize = 5;
+            $scope.isLatestPO = true;
+
 
             $scope.currentPOPage = 1;
             $scope.currentPage = 1;
@@ -39,7 +41,7 @@
                 //console.log(stateParams);
                 if (catId == null || catId === "00000000-0000-0000-0000-000000000000" || catId === "") {
                     $scope.catName = "- All Categories -";
-                    supplyService.getSuppliesRetailer().success(function(result) {
+                    supplyService.getSuppliesRetailer($scope.isLatestPO).success(function(result) {
                         $scope.supplies = result.supply;
 
                         for (var i = 0; i < $scope.supplies.length; i++) {
@@ -63,7 +65,7 @@
                         }
                     });
                 } else {
-                    supplyService.getSuppliesRetailerByCategoryId(catId).success(function (result) {
+                    supplyService.getSuppliesRetailerByCategoryId(catId, $scope.isLatestPO).success(function (result) {
                         $scope.supplies = result.supply;
 
                         for (var i = 0; i < $scope.supplies.length; i++) {

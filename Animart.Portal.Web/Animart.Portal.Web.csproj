@@ -273,6 +273,7 @@
     <Content Include="App\Main\views\admin\cityManagement.js" />
     <Content Include="App\Main\views\admin\expeditionManagement.js" />
     <Content Include="App\Main\views\admin\userManagement.js" />
+    <Content Include="App\Main\views\home\orderDetail.js" />
     <Content Include="App\Main\views\home\termAndCondition.js" />
     <Content Include="App\Main\views\home\howtoorder.js" />
     <Content Include="App\Main\views\home\product.js" />
@@ -913,6 +914,7 @@
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\dirPagination.js" />
     <Content Include="Scripts\dirPagination.spec.js" />
+    <Content Include="Scripts\html2canvas.js" />
     <Content Include="Scripts\ngCart.js" />
     <Content Include="Scripts\ngCart.min.js" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -1149,6 +1151,7 @@
     <Content Include="bower_components\tinymce-dist\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="App\Main\views\home\termAndCondition.cshtml" />
     <Content Include="App\Main\views\layout\footer.cshtml" />
+    <Content Include="App\Main\views\home\orderDetail.cshtml" />
     <None Include="Properties\PublishProfiles\PublishFileSystem.pubxml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
