@@ -11,6 +11,7 @@ namespace Animart.Portal
     {
         public override void PreInitialize()
         {
+            Configuration.Auditing.IsEnabled = false;
             Configuration.DefaultNameOrConnectionString = "Default";
         }
 

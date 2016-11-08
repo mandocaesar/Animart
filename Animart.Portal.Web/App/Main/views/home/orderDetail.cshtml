@@ -1,10 +1,10 @@
 ﻿<div ng-controller="app.views.orderDetail as vm" id="printContent">
     <md-content class="md-padding" layout-xs="column" layout="row">
         <div flex-xs flex-gt-xs="100" layout="column">
-            <form name="poForm">
+            <form name="poForm" class="table-bordered">
                 <md-toolbar>
                     <div class="md-toolbar-tools">
-                        <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
+                        <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma "}}) - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
                         <span flex></span>
                         <span flex="1" class="printDialog"  ng-click="print()" style="cursor:default;">
                             <span class="fa fa-print" style="font-size: 30px;" aria-label="Print dialog"></span>
@@ -16,17 +16,17 @@
                     @*<md-subheader class="md-sticky">Grand Total : {{po.grandTotal | currency:"Rp"}}</md-subheader>*@
                     <div class="md-dialog-content">
                         <div layout-gt-sm="row">
-                            <div flex>
+                            @*<div flex>
                                 <md-subheader class="md-sticky">Payment Receipt: </md-subheader>
                                 <md-card>
                                     <md-card-content>
                                         <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
                                     </md-card-content>
                                 </md-card>
-                            </div>
+                            </div>*@
+                            <div flex></div>
                             <div flex="1">
                                 <img src="~/Content/images/animart_logo.png" />
-                                @*<img src="~/App/Main/images/animartLogo.png" />*@
                             </div>
                         </div>
                         <md-subheader class="md-sticky" ng-show="isPaid">Resi No: </md-subheader>

@@ -1,9 +1,9 @@
 ﻿angular.module('app').controller('app.views.accountingDashboard', ['$http',
-    '$q', '$rootScope', '$scope', 'abp.services.app.order', '$uibModal', '$mdDialog',
+    '$q', '$rootScope', '$scope', 'abp.services.app.order', 'abp.services.app.shipment', '$uibModal', '$mdDialog',
     accountingController
 ]);
 
-function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId) {
+function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,expeditionService, purchaseOrderId) {
 
     $scope.po = {
         address: '',
@@ -39,6 +39,7 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
         if ($scope.isPayment) {
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
         }
+        $scope.updateExpedition();
     });
 
     $scope.file = {};
@@ -128,10 +129,51 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService, p
         $mdDialog.cancel();
 
     }
+    $scope.insertExpeditionAdjustment = function () {
+        if ($scope.po.expeditionAdjustment !== '') {
+            orderService.insertExpeditionAdjustment(purchaseOrderId, $scope.po.expeditionAdjustment).success(function () {
+                abp.message.success("Success", "Expedition Adjustment for Purchase Order " + purchaseOrderId + " has been Updated");
+            });
+        }
+        $mdDialog.cancel();
+    }
+
+    $scope.updateExpedition = function () {
+        if ($scope.po.city !== '') {
+            expeditionService.getShipmentCostFilterByCity($scope.po.city).success(function (rs) {
+                //console.log(rs);
+                //alert(rs[0].nextKilo);
+
+                if (rs == null || rs.length === 0) {
+                    alert("Sorry your city is not available for shipment at the moment. Please contact marketing@animart.co.id for inquries.");
+                    $scope.po.showExpedition = false;
+                } else {
+                    $scope.expeditions = rs;
+                    $scope.po.showExpedition = true;
+                }
+            });
+        }
+    };
+
+    $scope.updateShippingPrice = function () {
+        $scope.po.expeditionAdjustment = $scope.po.expeditionAdjustment.trim();
+        if ($scope.po.expeditionAdjustment !== '' && $scope.po.city !== '') {
+            var name = $scope.po.expeditionAdjustment.split('-')[0];
+            var type = $scope.po.expeditionAdjustment.split('-')[1];
+            expeditionService.getShipmentCostFilterByExpeditionAndCity(name, $scope.po.city, type).success(function (rs) {
+                console.log(rs);
+                //alert(rs[0].nextKilo);
+                $scope.po.kiloAdjustmentQuantity = rs[0].kiloQuantity;
+                $scope.po.shipmentAdjustmentCostFirstKilo = rs[0].firstKilo;
+                $scope.po.shipmentAdjustmentCost = rs[0].nextKilo;
+                $scope.po.totalAdjustmentShipmentCost = Math.max($scope.po.totalWeight - rs[0].kiloQuantity, 0) * rs[0].nextKilo + rs[0].firstKilo;
+            });
+        }
+    };
 
 }
 
-function accountingController($http,$q, $rootScope, $scope, orderService, $uibModal, $mdDialog) {
+function accountingController($http,$q, $rootScope, $scope, orderService,expeditionService, $uibModal, $mdDialog) {
 
     if (!(abp.auth.isGranted('CanAccessAccounting') || abp.auth.isGranted('CanAccessAdministrator')))
         window.location.href = "#";
@@ -201,7 +243,8 @@ function accountingController($http,$q, $rootScope, $scope, orderService, $uibMo
                 clickOutsideToClose: true,
                 locals: {
                     purchaseOrderId: id,
-                    orderService: orderService
+                    orderService: orderService,
+                    expeditionService:expeditionService
                 }
             }).then(function(rs) {
                 $scope.$emit('updateDashboard', "ok");

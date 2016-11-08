@@ -12,11 +12,10 @@
         Your cart is empty
     </div>
     <div class="table-responsive col-md-12" ng-show="ngCart.getTotalItems() > 0" ng-controller="app.views.retailer.checkout">
-
-        <label style="color:red;">*Item quantities will changed depends on Reviews and Quota</label>
-        <br/>
-        <label>Review Order</label>
-        @*<table class="col-md-12 table table-striped ngCart cart table-bordered">
+            <label style="color:red;">*Item quantities will changed depends on Reviews and Quota</label>
+            <br />
+            <label>Review Order</label>
+            @*<table class="col-md-12 table table-striped ngCart cart table-bordered">
             <thead>
                 <tr>
                     <th></th>
@@ -25,8 +24,8 @@
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Total</th>
-                </tr>     
-            </thead>         
+                </tr>
+            </thead>
             <tbody>
                 <tr ng-repeat="item in ngCart.getCart().items track by $index">
                     <td><span ng-click="ngCart.removeItemById(item.getId())" class="glyphicon glyphicon-remove"></span></td>
@@ -37,12 +36,12 @@
                         <span class="fa fa-minus-circle" ng-class="{'disabled':item.getQuantity()<=1}"
                                 ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;
                         {{ item.getQuantity() | number }}&nbsp;&nbsp;
-                        <span class="fa fa-plus-circle" ng-class="{'disabled': item.getQuantity()>=500}" 
+                        <span class="fa fa-plus-circle" ng-class="{'disabled': item.getQuantity()>=500}"
                               ng-click="item.setQuantity(1, true)"></span>
                     </td>
                     <td>{{ item.getQuantity() *  item.getPrice() | currency:"Rp." }}</td>
                 </tr>
-            </tbody>     
+            </tbody>
             <tfoot>
                 <tr>
                     <td colspan="5" align="right" width="70%"><strong>Weight ({{po.totalGram}} gr):</strong></td>
@@ -54,51 +53,57 @@
                 </tr>
             </tfoot>
             </table>*@
-            <div class="container table-bordered">
-                <div class="col-sm-6 col-lg-4" style="padding:25px;" ng-repeat="item in ngCart.getCart().items track by $index" >
+            <div class="container row table-bordered">
+                <div  class="col-sm-6 col-lg-4" style="padding:25px;" ng-repeat="item in ngCart.getCart().items track by $index">
                     <div class="row" style="padding:25px;" ng-class="{'borderRed': !item.getData().available,'borderBlue': item.getData().available}">
-                        <div class="col-xs-12" style="height:70px;"><label ng-hide="item.getData().available" style="color:red;">*This item is not available anymore, please remove this item from your cart</label></div>
-                        <div class="col-xs-6 col-lg-4" style="height:80px;"><label>Name:</label></div>
-                        <div class="col-xs-6 col-lg-8" align="right" style="height:80px;"> {{ item.getName() }}</div>
-                        <div class="col-xs-6 col-lg-6" style="height:50px;"><label>Is Pre-Order:</label></div>
-                        <div class="col-xs-6 col-lg-6" align="right" style="height:50px;">{{ item.getData().ispo }}</div>
-                        <div class="col-xs-4" style="height:50px;"><label>Price:</label></div>
-                        <div class="col-xs-8" align="right" style="height:50px;">{{ item.getPrice() | currency:"Rp."}}</div>
-                        <div class="col-xs-4" style="height:50px;"><label>Quantity:</label></div>
-                        <div class="col-xs-8" align="right" style="height:50px;">
-                            <span class="fa fa-minus-circle" ng-class="{'disabled':item.getQuantity()<=1}"
-                                ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;
+                        <div class="row col-xs-12"><label ng-hide="item.getData().available" style="color:red;">*This item is not available anymore, please remove this item from your cart</label></div>
+                        <div class="row">
+                            <div class="col-xs-6 col-lg-4"><label>Name:</label></div>
+                            <div class="col-xs-6 col-lg-8" align="right"> {{ item.getName() }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8 col-lg-8"><label>Is Pre-Order:</label></div>
+                            <div class="col-xs-4 col-lg-4" align="right">{{ item.getData().ispo }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4"><label>Price:</label></div>
+                            <div class="col-xs-8" align="right">{{ item.getPrice() | currency:"Rp."}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4"><label>Quantity:</label></div>
+                            <div class="col-xs-8" align="right">
+                                <span class="fa fa-minus-circle" ng-class="{'disabled':item.getQuantity()<=1}"
+                                      ng-click="item.setQuantity(-1, true)"></span>&nbsp;&nbsp;
                                 {{ item.getQuantity() | number }}&nbsp;&nbsp;
                                 <span class="fa fa-plus-circle" ng-class="{'disabled': item.getQuantity()>=500}" @*item.getQuantity()>=item.getData().inStock && !item.getData().ispo ||(item.getData().ispo &&*@
-                                ng-click="item.setQuantity(1, true)"></span>
+                                      ng-click="item.setQuantity(1, true)"></span>
+                            </div>
                         </div>
-                        <div class="col-xs-4"><label>Subtotal:</label></div>
-                        <div class="col-xs-8" align="right">{{ item.getQuantity() *  item.getPrice() | currency:"Rp." }}</div>
-                        <div class="col-xs-12"><h4><a ng-click="ngCart.removeItemById(item.getId())" class="col-xs-12 btn btn-danger glyphicon glyphicon-remove">Remove</a></h4></div>
-                    </div>
+                        <div class="row">
+                            <div class="col-xs-4"><label>Subtotal:</label></div>
+                            <div class="col-xs-8" align="right">{{ item.getQuantity() *  item.getPrice() | currency:"Rp." }}</div>
+                        </div>
+                            <div class="col-xs-12"><h4><a ng-click="ngCart.removeItemById(item.getId())" class="col-xs-12 btn btn-danger glyphicon glyphicon-remove">Remove</a></h4></div>
+                        </div>
                 </div>
             </div>
-        <br />
-        <br />
-        <label>Items Summary</label>
-        <div class="row table-bordered">
-            <div class="col-xs-6 col-lg-9" align="right" style="height:50px"><strong>Total Weight ({{po.totalGram}} gr):</strong></div>
-            <div class="col-xs-6 col-lg-3" align="right" style="height:50px">{{ po.totalWeight}} kg</div>
+            <br />
+            <br />
+            <label>Items Summary</label>
+            <br/>
+            <div class="row table-bordered">
+                <div class="col-xs-6 col-lg-9" align="right" style="height:50px"><strong>Total Weight ({{po.totalGram}} gr):</strong></div>
+                <div class="col-xs-6 col-lg-3" align="right" style="height:50px">{{ po.totalWeight}} kg</div>
 
-            <div class="col-xs-6 col-lg-9" align="right" style="height:50px"><strong>SubTotal:</strong></div>
-            <div class="col-xs-6 col-lg-3" align="right" style="height:50px"><strong>{{ po.subTotal | currency:"Rp." }}</strong></div>
-        </div>
+                <div class="col-xs-6 col-lg-9" align="right" style="height:50px"><strong>SubTotal:</strong></div>
+                <div class="col-xs-6 col-lg-3" align="right" style="height:50px"><strong>{{ po.subTotal | currency:"Rp." }}</strong></div>
+            </div>
             <br />
             <br />
             <label>Shipping Address and Expedition Information</label>
             <label style="color:red;">*Please fill your shipping address information</label>
             <div class="row table-bordered">
-                @*<tbody>
-                <tr>
-                    <td colspan="5">*@
                 <div>
-                    <md-input-container class="md-block">
-                    </md-input-container>
                     <md-input-container class="md-block">
                         <label><strong>Phone Number</strong></label>
                         <input ng-model="po.phoneNumber">
@@ -137,6 +142,9 @@
                         <label style="color:red;">*Please select your city first, to choose an expedition</label>
                     </div>
                     <div layout-gt-sm="row" ng-show="po.showExpedition">
+                        <select name="expedition" id="expedition" ng-model="po.expedition"
+                                ng-options="expedition in expeditions"></select>
+
                         <md-input-container class="md-block" flex-gt-sm>
                             <label><strong>Expedition</strong></label>
                             <md-select ng-model="po.expedition" ng-change="updateShippingPrice()">
@@ -201,6 +209,6 @@
                 <a href="" class="btn btn-primary" ng-hide="po.hideOrderBtn || isCombined" ng-click="placeOrder()">Order Now</a>
                 <a href="./#/hwto"><h2><u>How to Pay</u></h2></a>
             </div>
-</div>
+        </div>
    
 </script>

@@ -214,6 +214,10 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
     //        abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
     //    });
     //};
+    $scope.print = function () {
+        window.location.href = "#/orderDetail/" + purchaseOrderId;
+        $mdDialog.cancel();
+    };
 
     $scope.upload = function() {
         var data = new FormData();

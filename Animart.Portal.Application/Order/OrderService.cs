@@ -473,18 +473,21 @@ namespace Animart.Portal.Order
                         message = "Dear retailer," + breakLine + breakLine
                                   + "Your purchase order with number: " + POid + " has been update to \"PAYMENT\"." + breakLine + breakLine
                                   + "Please kindly make a bank wire transfer to our account, and upload the bank wire transfer receipt via our system."
+                                  + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/"+id
                                   + breakLine + breakLine + "Thank you";
                         break;
                     case "logistic":
                         message = "Dear retailer," + breakLine + breakLine
                                   + "Your purchase order with number: " + POid + " has been update to \"LOGISTIC\" for delivery." + breakLine + breakLine
                                   + "Please kindly login to your account to check the status of the orders."
+                                  + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/" + id
                                   + breakLine + breakLine + "Thank you";
                         break;
                     default:
                         message = " Dear retailer," + breakLine + breakLine 
                                   + "Your purchase order with number: " + POid + " has been updated to \"" + status + "\"." + breakLine + breakLine
                                   + "Please kindly login to your account to check the status of the orders."
+                                  + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/" + id
                                   + breakLine + breakLine + "Thank you";
                         break;
                 }
@@ -686,19 +689,29 @@ namespace Animart.Portal.Order
         {
             try
             {
-                string breakLine = "<br/>";
-                var poid = Guid.Parse(id);
-                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poid);
-                po.ExpeditionAdjustment = name.Trim();
-                _purchaseOrderRepository.Update(po);
-                GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
-                gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", 
-                    "Dear retailer,"+breakLine+breakLine
-                    +"The expedition for your purchase order with number:" + po.Id.ToString() + " has been updated to \"" + name  +"\"."+breakLine+breakLine
-                    +"Please kindly login to your account to check the status of the orders."+breakLine+breakLine
-                    + "Thank you",
-                    po.CreatorUser.EmailAddress);
-                return true;
+                var poId = Guid.Parse(id);
+                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poId);
+                //var exAdjustment = _shipmentCostRepository.GetAll().FirstOrDefault(
+                //    e => e.Expedition.ToLower() == name.Trim().ToLower());
+                if ( po!=null)//exAdjustment != null &&
+                {
+                    po.ExpeditionAdjustment = name.Trim();
+                    _purchaseOrderRepository.Update(po);
+
+                    string breakLine = "<br/>";
+                    GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                    gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated",
+                        "Dear retailer," + breakLine + breakLine
+                        + "The expedition for your purchase order with number:" + po.Id.ToString() +
+                        " has been updated to \"" + name + "\"." + breakLine + breakLine
+                        + "Please kindly login to your account to check the status of the orders." + breakLine + breakLine
+                        + "Thank you",
+                        po.CreatorUser.EmailAddress);
+                    return true;
+                }
+                else
+                    return false;
+
             }
             catch (Exception ex)
             {

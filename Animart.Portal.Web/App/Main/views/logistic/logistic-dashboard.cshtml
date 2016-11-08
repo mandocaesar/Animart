@@ -153,7 +153,7 @@
                                             <td colspan="7" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
                                         </tr>
-                                        <tr ng-show="po.isAdjustment">
+                                        <tr ng-show="po.expedition!=po.expeditionAdjustment">
                                             <td colspan="7" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalAdjustmentShipmentCost | currency:"Rp." }}</td>
                                         </tr>
@@ -263,14 +263,16 @@
             </md-dialog-content>
             <md-dialog-actions layout="row">
                 <span flex></span>
+                <md-button ng-click="reject()"> @*ng-show="isBod  && !isPayment"*@
+                    Reject
+                </md-button>      
                 <md-button ng-click="receive()" ng-show="isLogistic">
                     Already Sent
                 </md-button>
                 <md-button ng-click="updateReceipt()" >@*ng-show="isPaid && !isDone"*@
                     Update Resi
                 </md-button>
-
-                <md-button ng-click="insertExpedition()"> @*ng-show="isPaid && !isDone"*@
+                <md-button ng-click="insertExpeditionAdjustment()"> @*ng-show="isPaid && !isDone"*@
                 Update Expedition
             </md-button>
                 <md-button ng-click="close()">

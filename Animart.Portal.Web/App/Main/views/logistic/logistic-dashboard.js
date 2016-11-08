@@ -29,7 +29,6 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
     };
 
     $scope.updateShippingPrice = function () {
-        //console.log(ngCart);
         $scope.po.expeditionAdjustment = $scope.po.expeditionAdjustment.trim();
         if ($scope.po.expeditionAdjustment !== '' && $scope.po.city !== '') {
             var name = $scope.po.expeditionAdjustment.split('-')[0];
@@ -37,13 +36,14 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
             //alert(name);
             //alert(type);
             expeditionService.getShipmentCostFilterByExpeditionAndCity(name, $scope.po.city, type).success(function (rs) {
-                //console.log(rs);
+                console.log(rs);
                 //alert(rs[0].nextKilo);
+                $scope.po.kiloAdjustmentQuantity = rs[0].kiloQuantity;
+                $scope.po.shipmentAdjustmentCostFirstKilo = rs[0].firstKilo;
                 $scope.po.shipmentAdjustmentCost = rs[0].nextKilo;
+                $scope.po.totalAdjustmentShipmentCost = Math.max($scope.po.totalWeight - rs[0].kiloQuantity, 0) * rs[0].nextKilo + rs[0].firstKilo;
             });
         }
-        $mdDialog.cancel();
-
     };
     $scope.updateExpedition = function () {
         if ($scope.po.city !== '') {
@@ -79,18 +79,27 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
 
     $scope.updateReceipt = function () {
         orderService.insertReceiptNumber(purchaseOrderId, $scope.po.receiptNumber).success(function () {
-            abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
+            abp.message.success("Success", "Receipt number for Purchase Order " + purchaseOrderId + " has been Updated");
         });
         $mdDialog.cancel();
 
     }
-    $scope.insertExpedition = function () {
-        orderService.insertExpeditionAdjustment(purchaseOrderId, $scope.po.expeditionAdjustment).success(function () {
-            abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
+    $scope.insertExpeditionAdjustment = function () {
+        if ($scope.po.expeditionAdjustment !== '' ) {
+            orderService.insertExpeditionAdjustment(purchaseOrderId, $scope.po.expeditionAdjustment).success(function () {
+                abp.message.success("Success", "Expedition Adjustment for Purchase Order " + purchaseOrderId + " has been Updated");
+            });
+        }
+        $mdDialog.cancel();
+    }
+
+    $scope.reject = function () {
+        orderService.updatePurchaseOrderStatus(purchaseOrderId, "REJECT").success(function () {
+            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Rejected");
         });
         $mdDialog.cancel();
 
-    }
+    };
 }
 
 function dashboardController($q, $rootScope, $scope, orderService,expeditionService, $uibModal,$mdDialog) {

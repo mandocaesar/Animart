@@ -8,7 +8,8 @@
         '$scope', 'abp.services.app.order', 'abp.services.app.user', '$stateParams', '$sce',
         function($scope, orderService, appSession, stateParams, $sce) {
             if (!(abp.auth.isGranted('CanAccessLogistic') || abp.auth.isGranted('CanAccessAdministrator')
-                || abp.auth.isGranted('CanAccessAccounting') || abp.auth.isGranted('CanAccessMarketing')))
+                || abp.auth.isGranted('CanAccessAccounting') || abp.auth.isGranted('CanAccessMarketing')
+                || abp.auth.isGranted('CanAccessRetailer')))
                 window.location.href = "#";
             else {
                 var itemID = stateParams.id;
