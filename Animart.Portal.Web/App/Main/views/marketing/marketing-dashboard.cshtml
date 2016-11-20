@@ -58,7 +58,7 @@
         <form name="poForm">
             <md-toolbar>
                 <div class="md-toolbar-tools">
-                    <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
+                    <h2>Order Details {{po.code}} ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
                     <span flex></span>
                     <md-button class="md-icon-button" style="font-size:30px;" ng-click="print()">
                         @*<md-icon md-svg-src="" aria-label="Close dialog"></md-icon>*@
@@ -99,6 +99,11 @@
                                 <table class="table table-striped ngCart cart table-bordered">
                                     <thead>
                                         <tr>
+                                            <th>
+                                                <input type="checkbox"
+                                                       ng-click="toggleAllInvoice()"
+                                                       ng-model="allChecked" />
+                                            </th>
                                             <th>Code</th>
                                             <th>Name</th>
                                             <th>Weight (gramm)</th>
@@ -106,11 +111,17 @@
                                             <th>Quantity Adjustment</th>
                                             <th>Price</th>
                                             <th>Price Adjustment</th>
+                                            <th>Invoice</th>
                                             <th>Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="supply in supplies">
+                                            <td>
+                                                <input type="checkbox"
+                                                       ng-click="toggleInvoice(supply.checked)"
+                                                       ng-model="supply.checked" />
+                                            </td>
                                             <td>
                                                 {{supply.item.code}}
                                             </td>
@@ -124,7 +135,7 @@
                                                 {{supply.quantity}}
                                             </td>
                                             <td ng-hide="isBod && !isPayment">
-                                                {{supply.quantityAdjustment}}
+                                                {{ supply.quantityAdjustment | currency:"Rp." }}
                                             </td>
                                             <td ng-show="isBod && !isPayment">
                                                 <input type="number" min="0" class="pull-right" ng-model="supply.quantityAdjustment" style="margin-left:40px;width:100%;" ng-disabled="isPaid">
@@ -136,25 +147,28 @@
                                                 {{ supply.priceAdjustment | currency:"Rp." }}
                                             </td>
                                             <td>
+                                                <a class="btn btn-primary" ng-click="showInvoice(supply.invoice.id)" ng-show="{{supply.invoice!=null}}">{{supply.invoice.invoiceNumber}}</a>
+                                            </td>
+                                            <td>
                                                 {{ supply.priceAdjustment * supply.quantityAdjustment | currency:"Rp." }}
                                             </td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="7" align="right" width="80%"><strong>SubTotal:</strong></td>
+                                            <td colspan="9" align="right" width="80%"><strong>SubTotal:</strong></td>
                                             <td>{{ getSubTotal() | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="7" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
+                                            <td colspan="9" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
                                         </tr>
                                         <tr ng-show="po.expedition!=po.expeditionAdjustment">
-                                            <td colspan="7" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
+                                            <td colspan="9" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalAdjustmentShipmentCost | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="7" align="right"><strong>Total:</strong></td>
+                                            <td colspan="9" align="right"><strong>Total:</strong></td>
                                             <td><strong>{{ po.grandTotal + po.totalAdjustmentShipmentCost | currency:"Rp." }}</strong></td>
                                         </tr>
                                     </tfoot>
@@ -268,10 +282,10 @@
                 <md-button ng-click="update()" ng-show="isBod && !isPayment">
                     Update Quantity Adjustment
                 </md-button>               
-                <md-button ng-click="approve()" ng-show="isBod  && !isPayment">
+                <md-button ng-click="approve()"  ng-disabled="!showExpedition" ng-show="isBod  && !isPayment">
                     Send to Accounting
                 </md-button>
-                <md-button ng-click="reject()"> @*ng-show="isBod  && !isPayment">*@
+                <md-button ng-click="reject()" ng-disabled="!showExpedition"> @*ng-show="isBod  && !isPayment">*@
                     Reject
                 </md-button>               
                 <md-button ng-click="close()">

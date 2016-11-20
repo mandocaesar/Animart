@@ -52,7 +52,8 @@ namespace Animart.Test.Order
         [Test]
         public async void When_001CreatePurchaseOrderShouldNotError()
         {
-            await _orderService.Create(_createPurchaseOrderDto);
+            //await _orderService.Create(_createPurchaseOrderDto);
+            await _orderService.CreateInvoice(_createPurchaseOrderDto);
             //_orderService.GetAllPurchaseOrderByUserId().ShouldNotBeNull();
         }
 
@@ -60,6 +61,7 @@ namespace Animart.Test.Order
         [Test]
         public void WhenGetAllOrderItems()
         {
+            
             ////var result = _orderService.GetAllPurchaseOrderByUserId().ToList();
             //_purchaseOrderDto = result[0];
             //result.ShouldNotBeNull();

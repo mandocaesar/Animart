@@ -10,10 +10,13 @@ using Newtonsoft.Json.Converters;
 namespace Animart.Portal.Order.Dto
 {
     [AutoMapFrom(typeof(PurchaseOrder))]
-    public class PurchaseOrderDto:CreationAuditedEntityDto, IEntityDto
+    public class InvoicePODto : CreationAuditedEntityDto, IEntityDto
     {
         public Guid Id { get; set; }
-        
+
+        public string InvoiceNumber { get; set; }
+        public string ResiNumber { get; set; }
+
         public string Expedition { get; set; }
         public string ExpeditionAdjustment { get; set; }
         public string Code { get; set; }
@@ -50,17 +53,8 @@ namespace Animart.Portal.Order.Dto
 
         public List<OrderItemDto> Items { get; set; }
         public UserDto CreatorUser { get; set; }
-        [JsonConverter(typeof(CustomDateTimeConverter))]
+        [JsonConverter(typeof(Supply.Dto.CustomDateTimeConverter))]
         public new DateTime CreationTime{get;set;}
 
-    }
-
-    public class CustomDateTimeConverter : IsoDateTimeConverter
-    {
-        public CustomDateTimeConverter()
-        {
-            //base.DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
-            base.DateTimeStyles = System.Globalization.DateTimeStyles.AdjustToUniversal;
-        }
     }
 }

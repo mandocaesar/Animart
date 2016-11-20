@@ -79,7 +79,7 @@ function dashboardController($q, $rootScope, $scope, orderService, expedition, $
         };
 
         $scope.gridOptions.columnDefs = [
-            { name: 'id', enableCellEdit: false },
+            { name: 'code', enableCellEdit: false },
             { name: 'creationTime', displayName: 'Date', cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"', enableCellEdit: false },
             { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
             { name: 'province', displayName: 'Province', enableCellEdit: false },
@@ -216,6 +216,11 @@ function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrd
     //};
     $scope.print = function () {
         window.location.href = "#/orderDetail/" + purchaseOrderId;
+        $mdDialog.cancel();
+    };
+
+    $scope.showInvoice = function (id) {
+        window.location.href = "#/invoice/" + id;
         $mdDialog.cancel();
     };
 

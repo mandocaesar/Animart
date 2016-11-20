@@ -66,7 +66,7 @@
                             $scope.po.showExpedition = false;
                         } else {
                             $scope.expeditions = rs;
-                            console.log(rs);
+                            //console.log(rs);
                             ngCart.setShipping(0);
                             $scope.po.showExpedition = true;
                         }

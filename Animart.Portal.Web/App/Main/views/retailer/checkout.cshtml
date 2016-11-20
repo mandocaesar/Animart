@@ -141,18 +141,21 @@
                     <div layout-gt-sm="row" ng-hide="po.showExpedition">
                         <label style="color:red;">*Please select your city first, to choose an expedition</label>
                     </div>
-                    <div layout-gt-sm="row" ng-show="po.showExpedition">
-                        <select name="expedition" id="expedition" ng-model="po.expedition"
-                                ng-options="expedition in expeditions"></select>
+                    <div layout="column" ng-show="po.showExpedition">
+                        <label><strong>Expedition</strong></label>
+                        <select  class="md-block" flex-gt-sm
+                            name="expedition" id="expedition" ng-model="po.expedition"  ng-change="updateShippingPrice()">
+                            <option ng-repeat="expedition in expeditions">{{expedition.expedition}}-{{expedition.type}}</option>
+                        </select>
 
-                        <md-input-container class="md-block" flex-gt-sm>
+                        @*<md-input-container class="md-block" flex-gt-sm>
                             <label><strong>Expedition</strong></label>
                             <md-select ng-model="po.expedition" ng-change="updateShippingPrice()">
                                 <md-option ng-repeat="expedition in expeditions">
                                     {{expedition.expedition}}-{{expedition.type}}
                                 </md-option>
                             </md-select>
-                        </md-input-container>
+                        </md-input-container>*@
                     </div>
                 </div>
                 @*</td>

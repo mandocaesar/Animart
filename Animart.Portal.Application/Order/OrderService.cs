@@ -26,6 +26,7 @@ namespace Animart.Portal.Order
         private readonly IRepository<Users.User, long> _userRepository;
         private readonly IRepository<SupplyItem, Guid> _supplyItemRepository;
         private readonly IRepository<PurchaseOrder, Guid> _purchaseOrderRepository;
+        private readonly IRepository<Invoice.Invoice, Guid> _invoiceRepository;
         private readonly IRepository<ShipmentCost, Guid> _shipmentCostRepository;
         private readonly IRepository<City, Guid> _cityRepository;
         private readonly OrderDomainService _orderDomainService;
@@ -48,9 +49,8 @@ namespace Animart.Portal.Order
             PREORDER=1
         }
 
-
         public OrderService(IRepository<OrderItem, Guid> orderItemRepository, IRepository<Users.User, long> userRepository, OrderDomainService orderDomainService,
-            IUnitOfWorkManager unitOfWorkManager, IRepository<PurchaseOrder, Guid> purchaseOrderRepository, IRepository<SupplyItem, Guid> supplyRepository, 
+            IUnitOfWorkManager unitOfWorkManager, IRepository<PurchaseOrder, Guid> purchaseOrderRepository, IRepository<Invoice.Invoice, Guid> invoiceRepository, IRepository<SupplyItem, Guid> supplyRepository, 
             IRepository<ShipmentCost, Guid> shipmentCostRepository, IRepository<City, Guid> cityRepository)
         {
             _orderItemRepository = orderItemRepository;
@@ -58,6 +58,7 @@ namespace Animart.Portal.Order
             _orderDomainService = orderDomainService;
             _unitOfWorkManager = unitOfWorkManager;
             _purchaseOrderRepository = purchaseOrderRepository;
+            _invoiceRepository = invoiceRepository;
             _supplyItemRepository = supplyRepository;
             _shipmentCostRepository = shipmentCostRepository;
             _cityRepository = cityRepository;
@@ -74,7 +75,6 @@ namespace Animart.Portal.Order
             result.Waiting = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "PAYMENT");
             return result;
         }
-
 
         public OrderDashboardDto GetDashboardAdmin()
         {
@@ -143,7 +143,80 @@ namespace Animart.Portal.Order
                     result.TotalShipmentCost = (nextKilo * Math.Max(totalKilo-kiloQuantity,0))+(firstKilo);
                     result.TotalAdjustmentShipmentCost = (nextKiloAdjustment * Math.Max(totalKilo - kiloQuantityAdjustment, 0)) + (firstKiloAdjustment);
                     result.CreatorUser = user;
-                    result.CreationTime = result.CreationTime.ToUniversalTime();
+                    result.CreationTime = result.CreationTime;
+                    return result;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public InvoicePODto GetSingleInvoice(string id)
+        {
+            try
+            {
+                Guid _id;
+                Guid invId;
+                if (Guid.TryParse(id, out _id))
+                {
+                    invId = Guid.Parse(id);
+
+                    var orderItems = _orderItemRepository.GetAll().Where(e => e.InvoiceId == invId).ToList();
+                    var invoice = orderItems[0].Invoice;
+                    //var result = _purchaseOrderRepository.GetAll().FirstOrDefault(e=>e.OrderItems.FirstOrDefault().InvoiceId == invId).MapTo<InvoicePODto>();
+                    _id = orderItems[0].PurchaseOrder.Id;
+                    var result = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == _id).MapTo<InvoicePODto>();
+                    result.InvoiceNumber = invoice.InvoiceNumber;
+                    result.ExpeditionAdjustment = invoice.Expedition;
+                    result.ResiNumber = invoice.ResiNumber;
+                    result.CreationTime = invoice.CreationTime;
+
+                    //  result.OrderItems = new List<OrderItem>();
+                    var user = _userRepository.Get(result.CreatorUserId.Value).MapTo<UserDto>(); ;
+
+                    var _expedition = result.Expedition.Split('-')[0];
+                    var _expeditionAdjustment = result.ExpeditionAdjustment.Split('-')[0];
+
+                    var _city = result.City;
+                    var _type = result.Expedition.Split('-')[1];
+                    var _typeAdjustment = result.ExpeditionAdjustment.Split('-')[1];
+                    var cityId = _cityRepository.Single(e => e.Name.ToLower() == _city.ToLower());
+                    var shipment =
+                        _shipmentCostRepository.GetAllList()
+                            .FirstOrDefault(e => e.Expedition == _expedition && e.City == cityId && e.Type == _type);
+                    var shipmentAdjustment =
+                       _shipmentCostRepository.GetAllList()
+                           .FirstOrDefault(e => e.Expedition == _expeditionAdjustment && e.City == cityId && e.Type == _typeAdjustment);
+
+                    var firstKilo = (shipment != null) ? (shipment.FirstKilo) : 0;
+                    var kiloQuantity = (shipment != null) ? (shipment.KiloQuantity) : 1;
+                    var nextKilo = (shipment != null) ? (shipment.NextKilo) : 0;
+
+                    var kiloQuantityAdjustment = (shipmentAdjustment != null) ? (shipmentAdjustment.KiloQuantity) : 0;
+                    var firstKiloAdjustment = (shipmentAdjustment != null) ? (shipmentAdjustment.FirstKilo) : 0;
+                    var nextKiloAdjustment = (shipmentAdjustment != null) ? (shipmentAdjustment.NextKilo) : 0;
+
+                    result.Items = orderItems.Select(e => e.MapTo<OrderItemDto>()).ToList();
+                    var totalGram = result.Items.Sum(e => e.Item.Weight * e.QuantityAdjustment);
+                    var totalKilo = (int)((totalGram + 999) / 1000);
+
+                    result.TotalWeight = totalKilo;
+                    result.ShipmentCost = nextKilo;
+                    result.ShipmentCostFirstKilo = firstKilo;
+                    result.KiloQuantity = kiloQuantity;
+
+                    result.ShipmentAdjustmentCost = nextKiloAdjustment;
+                    result.ShipmentAdjustmentCostFirstKilo = firstKiloAdjustment;
+                    result.KiloAdjustmentQuantity = kiloQuantityAdjustment;
+
+                    result.TotalShipmentCost = (nextKilo * Math.Max(totalKilo - kiloQuantity, 0)) + (firstKilo);
+                    result.TotalAdjustmentShipmentCost = (nextKiloAdjustment * Math.Max(totalKilo - kiloQuantityAdjustment, 0)) + (firstKiloAdjustment);
+                    result.CreatorUser = user;
+                    //result.CreationTime = result.CreationTime.ToUniversalTime();
                     return result;
                 }
                 return null;
@@ -182,7 +255,7 @@ namespace Animart.Portal.Order
                     //if (orderItem.Quantity == 0)
                     //{
                     //    return true;
-                    //}
+                    //})
 
                     var item = new OrderItem()
                     {
@@ -209,6 +282,60 @@ namespace Animart.Portal.Order
                 }
                
 
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool AddOrderItemToInvoice(string id, List<InvoiceInputDto> invoiceInput)
+        {
+            try
+            {
+                Guid invId = Guid.Parse(id);
+                List<Guid> ids = new List<Guid>();
+
+                var inv = _invoiceRepository.GetAll().First(e => e.Id == invId);
+
+                foreach (var orderItem in invoiceInput.Where(i=>i.Checked))
+                {
+                    bool isInvoice = false;
+                    var order = _orderItemRepository.GetAll().First(i => i.Id == orderItem.Id);
+                    isInvoice = order.InvoiceId.HasValue;
+                    if (isInvoice)
+                    {
+                        ids.Add(order.InvoiceId.Value);
+                    }
+                    order.InvoiceId = invId;
+                    order.Invoice = inv;
+                    _orderItemRepository.Update(order);
+                }
+                inv.GrandTotal = invoiceInput.Where(i => i.Checked).Sum(e => e.PriceAdjustment * e.QuantityAdjustment);
+                inv.TotalWeight = invoiceInput.Where(i => i.Checked).Sum(e => e.Item.Weight * e.QuantityAdjustment);
+                _invoiceRepository.Update(inv);
+
+                ids = ids.Distinct().ToList();
+                if (ids.Count > 0)
+                {
+                    foreach (var item in ids)
+                    {
+                        var query = _invoiceRepository.GetAll().First(e => e.Id == item);
+
+                        if (query.OrderItems.Count==0)
+                            _invoiceRepository.Delete(item);
+                        else
+                        {
+                            query.GrandTotal = query.OrderItems.Sum(e => e.PriceAdjustment * e.QuantityAdjustment);
+                            query.TotalWeight = query.OrderItems.Sum(e => e.Item.Weight * e.QuantityAdjustment);
+                            _invoiceRepository.Update(query);
+                        }
+
+                    }
+                }
+              
                 return true;
 
             }
@@ -258,10 +385,32 @@ namespace Animart.Portal.Order
 
         public async Task<Guid> Create(Dto.CreatePurchaseOrderDto purchaseOrderItem)
         {
+            DateTime date = DateTime.Now;
+            string code = purchaseOrderItem.IsPreOrder? "PO" : "RS";
+            string year = date.Year.ToString();
+            string month = "00"+date.Month;
+            string day = "00"+date.Day;
+            string dateStr = year.Substring(2)
+                             + month.Substring(month.Length-2)
+                             + day.Substring(day.Length-2);
+            var data = _purchaseOrderRepository.GetAll().
+                Where(i => i.Code.Substring(0,8) == code + dateStr);
+            string max = "0";
+            if (data.Count() > 0) { 
+                max = data.Max(i=>i.Code);
+                max = max.Substring(max.Length - 5);
+            }
+
+            int num;
+            int.TryParse(max, out num);
+
+            max = ("00000" + ++num);
+            code = code + dateStr + "-" + max.Substring(max.Length-5);
 
             _unitOfWorkManager.Begin();
             return await _purchaseOrderRepository.InsertAndGetIdAsync(new PurchaseOrder()
             {
+                Code = code,
                 Address = purchaseOrderItem.Address,
                 PhoneNumber = purchaseOrderItem.PhoneNumber,
                 City = purchaseOrderItem.City.Trim(),
@@ -273,12 +422,47 @@ namespace Animart.Portal.Order
                 Status = purchaseOrderItem.Status,
                 PostalCode = purchaseOrderItem.PostalCode,
                 TotalWeight = purchaseOrderItem.TotalWeight,
-                CreationTime = DateTime.Now,
+                CreationTime = date,
                 CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
                 CreatorUserId = AbpSession.GetUserId()
             });
         }
+        public async Task<Guid> CreateInvoice(Dto.CreatePurchaseOrderDto purchaseOrderItem)
+        {
+            DateTime date = DateTime.Now;
+            string code = purchaseOrderItem.IsPreOrder ? "INV-PO" : "INV-RS";
+            string year = date.Year.ToString();
+            string month = "00" + date.Month;
+            string day = "00" + date.Day;
+            string dateStr = year.Substring(2)
+                             + month.Substring(month.Length - 2)
+                             + day.Substring(day.Length - 2);
+            var data = _invoiceRepository.GetAll().
+                Where(i => i.InvoiceNumber.Substring(0, 12) == code + dateStr);
+            string max = "0";
+            if (data.Count()>0)
+            {
+                max = data.Max(i => i.InvoiceNumber);
+                max = max.Substring(max.Length - 5);
+            }
 
+            int num;
+            int.TryParse(max, out num);
+
+            max = ("00000" + ++num);
+            code = code + dateStr + "-" + max.Substring(max.Length - 5);
+
+            _unitOfWorkManager.Begin();
+            return await _invoiceRepository.InsertAndGetIdAsync(new Invoice.Invoice()
+            {
+                InvoiceNumber = code,
+                Expedition = purchaseOrderItem.ExpeditionAdjustment.Trim(),
+                CreationTime = date,
+                CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
+                CreatorUserId = AbpSession.GetUserId()
+            });
+
+        }
         public bool Update(string id , Dto.OrderItemDto orderItem)
         {
             try
@@ -434,7 +618,6 @@ namespace Animart.Portal.Order
             }
         }
 
-
         public List<int> UpdateChart()
         {
             var uid = AbpSession.GetUserId();
@@ -456,6 +639,7 @@ namespace Animart.Portal.Order
             return result;
         }
 
+        //INI YANG BELOOM KE BAWAH
         public bool UpdatePurchaseOrderStatus(string id, string status)
         {
             try
@@ -494,6 +678,61 @@ namespace Animart.Portal.Order
                 gmail.SendMessage("Purchase Order " + POid + " Has been updated",
                     message, po.CreatorUser.EmailAddress);
                 _purchaseOrderRepository.Update(po);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateOrderItemStatus(string id, string status, List<InvoiceInputDto> orderItems)
+        {
+            try
+            {
+                var POid = Guid.Parse(id);
+                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == POid);
+                po.Status = status;
+                _purchaseOrderRepository.Update(po);
+
+
+                for (int i = 0; i < orderItems.Count(e=>e.Checked); i++)
+                {
+                    var order = orderItems[i];
+                    var data = _orderItemRepository.Get(order.Id);
+                    data.Status = status;
+                    _orderItemRepository.Update(data);
+                }
+
+                GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                string message = "";
+                string breakLine = "<br/>";
+                switch (status.Trim().ToLower())
+                {
+                    case "payment":
+                        message = "Dear retailer," + breakLine + breakLine
+                                  + "Your purchase order with number: " + POid + " has been update to \"PAYMENT\"." + breakLine + breakLine
+                                  + "Please kindly make a bank wire transfer to our account, and upload the bank wire transfer receipt via our system."
+                                  + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/" + id
+                                  + breakLine + breakLine + "Thank you";
+                        break;
+                    case "logistic":
+                        message = "Dear retailer," + breakLine + breakLine
+                                  + "Your purchase order with number: " + POid + " has been update to \"LOGISTIC\" for delivery." + breakLine + breakLine
+                                  + "Please kindly login to your account to check the status of the orders."
+                                  + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/" + id
+                                  + breakLine + breakLine + "Thank you";
+                        break;
+                    default:
+                        message = " Dear retailer," + breakLine + breakLine
+                                  + "Your purchase order with number: " + POid + " has been updated to \"" + status + "\"." + breakLine + breakLine
+                                  + "Please kindly login to your account to check the status of the orders."
+                                  + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/" + id
+                                  + breakLine + breakLine + "Thank you";
+                        break;
+                }
+                gmail.SendMessage("Purchase Order " + POid + " Has been updated",
+                    message, po.CreatorUser.EmailAddress);
                 return true;
             }
             catch (Exception)

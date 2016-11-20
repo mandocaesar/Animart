@@ -3,7 +3,7 @@
         var len = (String(base || 10).length - String(this).length) + 1;
         return len > 0 ? new Array(len).join(chr || '0') + this : this;
     };
-    var controllerId = 'app.views.orderDetail';
+    var controllerId = 'app.views.invoice';
     angular.module('app').controller(controllerId, [
         '$scope', 'abp.services.app.order', 'abp.services.app.user', '$stateParams', '$sce',
         function($scope, orderService, appSession, stateParams, $sce) {
@@ -31,6 +31,7 @@
                 var user = null;
                 appSession.user = null;
 
+                $scope.supplies = [];
                 $scope.po = {
                     address: '',
                     province: '',
@@ -48,10 +49,9 @@
                     showExpedition: false
                 };
 
-                orderService.getSinglePurchaseOrder(itemID).success(function(result) {
-                    //console.log(result);
+                orderService.getSingleInvoice(itemID).success(function (result) {
                     $scope.po = result;
-                    if ($scope.po.expedition != $scope.po.expeditionAdjustment)
+                    if ($scope.po.expedition !== $scope.po.expeditionAdjustment)
                         $scope.po.isAdjustment = true;
                     $scope.isPayment = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
                     $scope.isPaid = result.status === "PAID";
@@ -60,7 +60,6 @@
                     $scope.supplies = result.items;
                     $scope.isBod = result.status === "ACCOUNTING";
                     $scope.status = (result.isPreOrder) ? "Pre-Order" : "Ready Stock";
-                    //console.log($scope.supplies);
                     $scope.image = "";
                     if ($scope.isPayment) {
                         $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
@@ -71,7 +70,7 @@
 
                 $scope.getSubTotal = function() {
                     var total = 0;
-                    if ($scope.supplies != null)
+                    if ($scope.supplies !== null)
                         for (var i = 0; i < $scope.supplies.length; i++) {
                             var product = $scope.supplies[i];
                             total += (product.priceAdjustment * product.quantityAdjustment);
@@ -106,7 +105,6 @@
                     $scope.luser = user;
                 }).error(
                     function(result) {
-                        //console.log(result);
                     }
                 );
                 vm.getShownUserName = function() {

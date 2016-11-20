@@ -57,11 +57,11 @@
 </script>
 
 <script type="text/ng-template" id="template/ngCart/cart.html">
-    <div class="alert alert-warning" role="alert" ng-show="ngCart.getTotalItems() === 0">
+    <div class="alert alert-warning" role="alert" ng-show="ngCart.getTotalItems() === 0" >
         Your cart is empty
     </div>
 
-    <div class="table-responsive col-lg-12" style ="height:255px;overflow-y:scroll;" ng-show="ngCart.getTotalItems() > 0">
+    <div class="table-responsive col-lg-12" style ="height:255px;overflow-y:scroll;"ng-controller="app.views.layout.header as vm" ng-show="ngCart.getTotalItems() > 0">
 
         <table class="table table-striped ngCart cart">
 
@@ -112,7 +112,7 @@
                     </td>
                     <td>{{ item.getPrice() | currency:"Rp."}}</td>
                     <td>{{ item.getTotal() | currency:"Rp." }}</td>
-                    <a href="#/checkout" class="btn btn-primary" >Check Out</a>
+                    <button ng-click="setCheckout()" class="btn btn-danger">Check Out</button>
                 </tr>
             </tbody>
         </table>

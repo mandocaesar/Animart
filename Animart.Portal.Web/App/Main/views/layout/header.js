@@ -51,6 +51,10 @@
                 });
             };
 
+            $scope.setCheckout = function () {
+                $('.navbar-toggle').click();
+                window.location.href = "#/checkout";
+            };
 
             $scope.changePassword = function () {
                 var modalInstance = $uibModal.open({

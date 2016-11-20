@@ -27,10 +27,16 @@
                     if (catId === "00000000-0000-0000-0000-000000000000" || catId === "")
                         supplyService.getSupplies().success(function(result) {
                             //console.log(result);
+                            for (var i = 0; i < result.length; i++) {
+                                result[i].availableUntil = new Date(result[i].availableUntil);
+                            }
                             $scope.gridOptions.data = result;
                         });
                     else
-                        supplyService.getSuppliesByCategoryId($scope.categoryId).success(function(result) {
+                        supplyService.getSuppliesByCategoryId($scope.categoryId).success(function (result) {
+                            for (var i = 0; i < result.length; i++) {
+                                result[i].availableUntil = new Date(result[i].availableUntil);
+                            }
                             $scope.gridOptions.data = result;
                         });
                 };
@@ -84,14 +90,14 @@
 
                 $scope.gridOptions.columnDefs = [
                     { name: 'id', enableCellEdit: false },
-                    { name: 'category', displayName: 'Category' },
-                    { name: 'code', displayName: 'Code' },
-                    { name: 'name', displayName: 'Name' },
-                    { name: 'price', displayName: 'Price', cellFilter: 'currency:"Rp."' },
-                    { name: 'weight', displayName: 'Weight (gr)', type: 'number' },
-                    { name: 'available', displayName: 'Active', type: 'boolean' },
-                    { name: 'ispo', displayName: "Is PO ?", type: 'boolean' },
-                    { name: 'availableUntil', displayName: "Available Until", cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"' },
+                    { name: 'category', displayName: 'Category', enableCellEdit: false },
+                    { name: 'code', displayName: 'Code', enableCellEdit: false },
+                    { name: 'name', displayName: 'Name', enableCellEdit: false },
+                    { name: 'price', displayName: 'Price', cellFilter: 'currency:"Rp."', enableCellEdit: false },
+                    { name: 'weight', displayName: 'Weight (gr)', type: 'number', enableCellEdit: false },
+                    { name: 'available', displayName: 'Active', type: 'boolean', enableCellEdit: false },
+                    { name: 'ispo', displayName: "Is PO ?", type: 'boolean', enableCellEdit: false },
+                    { name: 'availableUntil', displayName: "Available Until", cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"' , enableCellEdit: false},
                     { name: 'hasImage', displayName: "Image", type: 'boolean', enableCellEdit: false },
                     { name: 'filename', displayName: 'File', width: '20%', editableCellTemplate: 'ui-grid/fileChooserEditor', editFileChooserCallback: $scope.storeFile }, {
                         name: 'view',

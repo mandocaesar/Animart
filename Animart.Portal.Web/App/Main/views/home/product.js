@@ -1,24 +1,65 @@
 ﻿(function () {
     var controllerId = 'app.views.product';
     angular.module('app').controller(controllerId, [
-        '$scope', 'abp.services.app.supply', 'abp.services.app.category', 'abp.services.app.user', 'ngCart', '$stateParams', '$state',
-        function ($scope, supplyService,categoryService, appSession, ngCart, stateParams, $state) {
+        '$scope', '$timeout', '$mdSidenav', 'abp.services.app.supply', 'abp.services.app.category', 'abp.services.app.user', 'ngCart', '$stateParams', '$state',
+        function ($scope, $timeout, $mdSidenav, supplyService, categoryService, appSession, ngCart, stateParams, $state) {
 
+            $scope.toggleLeft =buildDelayedToggler('left');
+            function debounce(func, wait, context) {
+                var timer;
+
+                return function debounced() {
+                    var context = $scope,
+                        args = Array.prototype.slice.call(arguments);
+                    $timeout.cancel(timer);
+                    timer = $timeout(function () {
+                        timer = undefined;
+                        func.apply(context, args);
+                    }, wait || 10);
+                };
+            }
+
+            /**
+             * Build handler to open/close a SideNav; when animation finishes
+             * report completion in console
+             */
+            function buildDelayedToggler(navID) {
+                return debounce(function () {
+                    // Component lookup should always be available since we are not using `ng-if`
+                    $mdSidenav(navID)
+                      .toggle()
+                      .then(function () {
+                          //$log.debug("toggle " + navID + " is done");
+                      });
+                }, 200);
+            }
+
+            //function buildToggler(navID) {
+            //    return function () {
+            //        // Component lookup should always be available since we are not using `ng-if`
+            //        $mdSidenav(navID)
+            //          .toggle()
+            //          .then(function () {
+            //              //$log.debug("toggle " + navID + " is done");
+            //          });
+            //    }
+            //}
             ngCart.setTaxRate(0);
             ngCart.setShipping(0);
 
-            var catId = stateParams.id;
+            var catId = stateParams.catId;
             $scope.catName = stateParams.name;
+            $scope.catId = catId;
 
             var vm = this;
             
             $scope.pageSize = 5;
             $scope.pagePOSize = 5;
-            $scope.isLatestPO = true;
-
-
-            $scope.currentPOPage = 1;
-            $scope.currentPage = 1;
+            $scope.isLatestPO = stateParams.isLatestPO;
+            $scope.currentPOPage = stateParams.currentPOPage;
+            $scope.currentPage = stateParams.currentPage;
+            $scope.search = stateParams.search;
+            $scope.searchPO = stateParams.searchPO;
 
             $scope.categories = [];
             $scope.supplies = [];
@@ -94,14 +135,31 @@
             });
             $scope.refresh();
 
-            $scope.changeCategory = function (id, name,type) {
-                $state.go("product", { id: id, name: name,type:type});
+            $scope.changeCategory = function (id, name, type) {
+                $scope.toggleLeft();
+                $state.go("product", {
+                    catId: id, name: name, type: type,
+                    currentPage: 1,
+                    currentPOPage: 1,
+                    isLatestPO: $scope.isLatestPO,
+                    search: "",
+                    searchPO:""
+                });
             };
             $scope.changeItemType = function (no) {
+                $scope.toggleLeft();
                 $scope.itemType = no;
             };
             $scope.view = function (id) {
-                $state.go("item", { id: id });
+                $state.go("item", {
+                    id: id, catId: $scope.catId,
+                    type: $scope.itemType, name: $scope.catName,
+                    currentPage: $scope.currentPage,
+                    currentPOPage: $scope.currentPOPage,
+                    isLatestPO: $scope.isLatestPO,
+                    search: $scope.search,
+                    searchPO: $scope.searchPO
+                });
             };
 
             var user = null;

@@ -45,5 +45,7 @@ namespace Animart.Portal.Supply
 
         public Guid? CategoryId { get; set; }
         public Category Category { get; set; }
+
+       
     }
 }

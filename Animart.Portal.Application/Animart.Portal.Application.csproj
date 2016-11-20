@@ -178,9 +178,12 @@
     <Compile Include="Categories\CategoryService.cs" />
     <Compile Include="Extension\GmailExtension.cs" />
     <Compile Include="Order\CreatePurchaseOrderDto.cs" />
+    <Compile Include="Order\Dto\InvoiceDto.cs" />
     <Compile Include="Order\Dto\OrderDashboardDto.cs" />
     <Compile Include="Order\Dto\OrderItemDto.cs" />
+    <Compile Include="Order\Dto\InvoiceInputDto.cs" />
     <Compile Include="Order\Dto\OrderItemInputDto.cs" />
+    <Compile Include="Order\Dto\InvoicePODto.cs" />
     <Compile Include="Order\Dto\PurchaseOrderDto.cs" />
     <Compile Include="Order\IOrderService.cs" />
     <Compile Include="Order\OrderService.cs" />

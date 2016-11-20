@@ -35,24 +35,59 @@
                 })
                 .state('item', {
                     url: '/item/:id',
-                    templateUrl: '/App/Main/views/home/item.cshtml'
+                    params: {
+                        catId: null,
+                        name: null,
+                        type: 0,
+                        currentPage: 1,
+                        currentPOPage: 1,
+                        isLatestPO: true,
+                        search: "",
+                        searchPO: ""
+                    },
+                    templateUrl: '/App/Main/views/home/item.cshtml',
+                    controller: function ($scope, $stateParams) {
+                        $scope.catId = $stateParams.catId;
+                        $scope.catName = $stateParams.name;
+                        $scope.itemType = $stateParams.type;
+                        $scope.currentPOPage = $stateParams.currentPOPage;
+                        $scope.currentPage = $stateParams.currentPage;
+                        $scope.isLatestPO = $stateParams.isLatestPO;
+                        $scope.search = $stateParams.search;
+                        $scope.searchPO = $stateParams.searchPO;
+                    }
                 })
                 .state('orderDetail', {
                     url: '/orderDetail/:id',
                     templateUrl: '/App/Main/views/home/orderDetail.cshtml'
                 })
+                 .state('invoice', {
+                     url: '/invoice/:id',
+                     templateUrl: '/App/Main/views/home/invoice.cshtml'
+                 })
                 .state('product', {
                     url: '/product',
                     params: {
-                        id: null,
+                        catId: null,
                         name: null,
-                        type:0
+                        type: 0,
+                        currentPage: 1,
+                        currentPOPage: 1,
+                        isLatestPO: true,
+                        search: "",
+                        searchPO:""
                     },
                     templateUrl: '/App/Main/views/home/product.cshtml',
                     menu: 'Product',
                     controller: function ($scope, $stateParams) {
-                        $scope.catId = $stateParams.id;
+                        $scope.catId = $stateParams.catId;
                         $scope.catName = $stateParams.name;
+                        $scope.itemType = $stateParams.type;
+                        $scope.currentPOPage = $stateParams.currentPOPage;
+                        $scope.currentPage = $stateParams.currentPage;
+                        $scope.isLatestPO = $stateParams.isLatestPO;
+                        $scope.search = $stateParams.search;
+                        $scope.searchPO = $stateParams.searchPO;
                     }
                 })
                 .state('checkout', {

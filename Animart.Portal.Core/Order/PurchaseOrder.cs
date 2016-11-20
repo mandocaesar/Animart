@@ -20,6 +20,8 @@ namespace Animart.Portal.Order
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public  Guid Id { get; set; }
 
+        public string Code { get; set; }
+
         public  string Expedition { get; set; }
         public string ExpeditionAdjustment { get; set; }
 

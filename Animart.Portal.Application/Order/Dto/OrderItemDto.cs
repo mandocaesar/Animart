@@ -17,6 +17,10 @@ namespace Animart.Portal.Order.Dto
         [AutoMapFrom(typeof(SupplyItem))]
         public SupplyItemDto Item { get; set; }
 
+        [AutoMapFrom(typeof(Invoice.Invoice))]
+        public InvoiceDto Invoice { get; set; }
+
+        public string Status { get; set; }
         public int Quantity { get; set; }
         public int PriceAdjustment { get; set; }
         public int QuantityAdjustment { get; set;}

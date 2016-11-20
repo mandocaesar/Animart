@@ -79,7 +79,7 @@ namespace Animart.Portal.Supply
                 Description = e.Description,
                 HasImage = e.HasImage,
                 IsPO = e.IsPo,
-                AvailableUntil = e.AvailableUntil.ToUniversalTime(),
+                AvailableUntil = e.AvailableUntil,
                 CategoryId = e.CategoryId,
                 Category = this.CategoryToName(e)
             }).ToList();
@@ -103,7 +103,7 @@ namespace Animart.Portal.Supply
                 Description = e.Description,
                 HasImage = e.HasImage,
                 IsPO = e.IsPo,
-                AvailableUntil = e.AvailableUntil.ToUniversalTime(),
+                AvailableUntil = e.AvailableUntil,
                 CategoryId = e.CategoryId,
                 Category = this.CategoryToName(e)
             }).ToList();
@@ -249,7 +249,7 @@ namespace Animart.Portal.Supply
                     Description = supplyItem.Description,
                     IsPo = supplyItem.IsPO,
                     CategoryId = supplyItem.CategoryId,
-                    AvailableUntil = supplyItem.AvailableUntil <= DateTime.MinValue ? DateTime.Now : supplyItem.AvailableUntil
+                    AvailableUntil = supplyItem.AvailableUntil
                 });
             }
             catch (Exception ex)
@@ -276,7 +276,7 @@ namespace Animart.Portal.Supply
                 item.HasImage = supplyItem.HasImage;
                 item.IsPo = supplyItem.IsPO;
                 item.CategoryId = supplyItem.CategoryId;
-                item.AvailableUntil = supplyItem.AvailableUntil <= DateTime.MinValue ? DateTime.Now : supplyItem.AvailableUntil;
+                item.AvailableUntil = supplyItem.AvailableUntil;
 
                 _supplyItemRepository.Update(item);
                 return true;

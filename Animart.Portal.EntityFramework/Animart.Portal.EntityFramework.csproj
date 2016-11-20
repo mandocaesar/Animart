@@ -201,6 +201,22 @@
     <Compile Include="Migrations\201610041112107_AddShipmentKiloQuantity.Designer.cs">
       <DependentUpon>201610041112107_AddShipmentKiloQuantity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611160506435_AddStatusOnOrderItem.cs" />
+    <Compile Include="Migrations\201611160506435_AddStatusOnOrderItem.Designer.cs">
+      <DependentUpon>201611160506435_AddStatusOnOrderItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611160707407_AddCodeOnPurchaseOrder.cs" />
+    <Compile Include="Migrations\201611160707407_AddCodeOnPurchaseOrder.Designer.cs">
+      <DependentUpon>201611160707407_AddCodeOnPurchaseOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611171334127_AddInvoiceToOrderItem.cs" />
+    <Compile Include="Migrations\201611171334127_AddInvoiceToOrderItem.Designer.cs">
+      <DependentUpon>201611171334127_AddInvoiceToOrderItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611180447413_AddTotalWeightAndGrandTotalToInvoice.cs" />
+    <Compile Include="Migrations\201611180447413_AddTotalWeightAndGrandTotalToInvoice.Designer.cs">
+      <DependentUpon>201611180447413_AddTotalWeightAndGrandTotalToInvoice.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -282,6 +298,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610041112107_AddShipmentKiloQuantity.resx">
       <DependentUpon>201610041112107_AddShipmentKiloQuantity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611160506435_AddStatusOnOrderItem.resx">
+      <DependentUpon>201611160506435_AddStatusOnOrderItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611160707407_AddCodeOnPurchaseOrder.resx">
+      <DependentUpon>201611160707407_AddCodeOnPurchaseOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611171334127_AddInvoiceToOrderItem.resx">
+      <DependentUpon>201611171334127_AddInvoiceToOrderItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611180447413_AddTotalWeightAndGrandTotalToInvoice.resx">
+      <DependentUpon>201611180447413_AddTotalWeightAndGrandTotalToInvoice.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

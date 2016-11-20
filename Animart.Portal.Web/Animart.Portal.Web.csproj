@@ -273,6 +273,7 @@
     <Content Include="App\Main\views\admin\cityManagement.js" />
     <Content Include="App\Main\views\admin\expeditionManagement.js" />
     <Content Include="App\Main\views\admin\userManagement.js" />
+    <Content Include="App\Main\views\home\invoice.js" />
     <Content Include="App\Main\views\home\orderDetail.js" />
     <Content Include="App\Main\views\home\termAndCondition.js" />
     <Content Include="App\Main\views\home\howtoorder.js" />
@@ -896,6 +897,7 @@
     <Content Include="bower_components\tinymce-dist\tinymce.jquery.min.js" />
     <Content Include="bower_components\tinymce-dist\tinymce.js" />
     <Content Include="bower_components\tinymce-dist\tinymce.min.js" />
+    <Content Include="Content\simple-sidebar.css" />
     <Content Include="Content\angular-chart.css" />
     <Content Include="Content\angular-material.min.css" />
     <Content Include="Content\bootstrap-cosmo.min.css" />
@@ -1152,6 +1154,7 @@
     <Content Include="App\Main\views\home\termAndCondition.cshtml" />
     <Content Include="App\Main\views\layout\footer.cshtml" />
     <Content Include="App\Main\views\home\orderDetail.cshtml" />
+    <Content Include="App\Main\views\home\invoice.cshtml" />
     <None Include="Properties\PublishProfiles\PublishFileSystem.pubxml" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />

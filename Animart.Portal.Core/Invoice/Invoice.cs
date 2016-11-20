@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities;
@@ -16,9 +17,13 @@ namespace Animart.Portal.Invoice
 
         public virtual string InvoiceNumber { get; set; }
 
-        public virtual PurchaseOrder PurchaseOrder {get;set;}
+        public virtual string Expedition { get; set; }
 
         public virtual string ResiNumber { get; set; }
+        public virtual decimal TotalWeight { get; set; }
+        public virtual decimal GrandTotal { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; }
+
 
     }
 }

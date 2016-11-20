@@ -1,10 +1,12 @@
-﻿angular.module('app').controller('app.views.marketingDashboard', [
+﻿/// <reference path="marketing-dashboard.js" />
+angular.module('app').controller('app.views.marketingDashboard', [
     '$q', '$rootScope', '$scope', 'abp.services.app.order', 'abp.services.app.shipment', '$uibModal', '$mdDialog',
     marketingController
 ]);
 
 function ViewMarketingOrderController($http, $scope, $mdDialog, orderService,expeditionService, purchaseOrderId) {
 
+    $scope.supplies = [];
     $scope.po = {
         address: '',
         province: '',
@@ -21,21 +23,19 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService,exp
         shipping: 0,
         showExpedition: false
     };
+    $scope.allChecked = false;
+
 
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
         if ($scope.po.expedition != $scope.po.expeditionAdjustment)
             $scope.po.isAdjustment = true;
-        console.log($scope.po.creationTime);
-        //console.log(new Date($scope.po.creationTime));
-        //$scope.po.creationTime = new Date($scope.po.creationTime);
         $scope.isBod = result.status === "MARKETING";
         $scope.isPayment = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
         $scope.isPaid = result.status === "PAID";
         $scope.isDone = result.status === "LOGISTIC" || result.status === "DONE";
         $scope.supplies = result.items;
         $scope.status = (result.isPreOrder) ? "Pre-Order" : "Ready Stock";
-        //console.log(result);
         if ($scope.isPayment) {
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
         }
@@ -57,6 +57,13 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService,exp
         window.location.href = "#/orderDetail/" + purchaseOrderId;
         $mdDialog.cancel();
     };
+
+    $scope.showInvoice = function (id) {
+        window.location.href = "#/invoice/" + id;
+        $mdDialog.cancel();
+    };
+
+
     $scope.getSubTotal = function () {
         var total = 0;
         if($scope.supplies!=null)
@@ -127,9 +134,6 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService,exp
     $scope.updateExpedition = function () {
         if ($scope.po.city !== '') {
             expeditionService.getShipmentCostFilterByCity($scope.po.city).success(function (rs) {
-                //console.log(rs);
-                //alert(rs[0].nextKilo);
-
                 if (rs == null || rs.length === 0) {
                     alert("Sorry your city is not available for shipment at the moment. Please contact marketing@animart.co.id for inquries.");
                     $scope.po.showExpedition = false;
@@ -147,13 +151,28 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService,exp
             var name = $scope.po.expeditionAdjustment.split('-')[0];
             var type = $scope.po.expeditionAdjustment.split('-')[1];
             expeditionService.getShipmentCostFilterByExpeditionAndCity(name, $scope.po.city, type).success(function (rs) {
-                console.log(rs);
-                //alert(rs[0].nextKilo);
                 $scope.po.kiloAdjustmentQuantity = rs[0].kiloQuantity;
                 $scope.po.shipmentAdjustmentCostFirstKilo = rs[0].firstKilo;
                 $scope.po.shipmentAdjustmentCost = rs[0].nextKilo;
                 $scope.po.totalAdjustmentShipmentCost = Math.max($scope.po.totalWeight - rs[0].kiloQuantity, 0) * rs[0].nextKilo + rs[0].firstKilo;
             });
+        }
+    };
+    $scope.toggleInvoice = function (res) {
+        $scope.showExpedition = false;
+        if (!res)
+            $scope.allChecked = false;
+        for (var i = 0; i < $scope.supplies.length; i++) {
+            if ($scope.supplies[i].checked) {
+                $scope.showExpedition = true;
+                i = $scope.supplies.length;
+            }
+        }
+    };
+    $scope.toggleAllInvoice = function () {
+        $scope.showExpedition = $scope.allChecked;
+        for (var i = 0; i < $scope.supplies.length; i++) {
+            $scope.supplies[i].checked = $scope.showExpedition;
         }
     };
 }
@@ -202,13 +221,11 @@ function marketingController($q, $rootScope, $scope, orderService, expeditionSer
         ];
         $scope.refresh = function() {
             orderService.getDashboardAdmin().success(function(result) {
-                //console.log(result);
                 $scope.dashboard = result;
             });
 
             $scope.gridOptions.data = null;
             orderService.getAllPurchaseOrderForMarketing($scope.statusType, $scope.statusGrid).success(function(result) {
-                //console.log(result);
                 $scope.gridOptions.data = result;
             });
         };
@@ -237,7 +254,7 @@ function marketingController($q, $rootScope, $scope, orderService, expeditionSer
         };
 
         $scope.gridOptions.columnDefs = [
-            { name: 'id', enableCellEdit: false },
+            { name: 'code', enableCellEdit: false },
             { name: 'creationTime', displayName: 'Date', cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"', enableCellEdit: false },
             { name: 'creatorUser.name', displayName: 'Name', enableCellEdit: false },
             { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },

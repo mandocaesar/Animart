@@ -9,7 +9,8 @@ namespace Animart.Portal.Order
 {
     public interface IOrderService: IApplicationService
     {
-        Task<Guid> Create(Dto.CreatePurchaseOrderDto purchaseOrderrderItem);
+        Task<Guid> Create(Dto.CreatePurchaseOrderDto purchaseOrderItem);
+        Task<Guid> CreateInvoice(Dto.CreatePurchaseOrderDto purchaseOrderItem);
 
         bool Update(string id, Dto.OrderItemDto orderItem);
         bool UpdatePO(string poId, List<Dto.OrderItemDto> orderItems);
@@ -24,7 +25,10 @@ namespace Animart.Portal.Order
 
         PurchaseOrderDto GetSinglePurchaseOrder(string id);
 
+        InvoicePODto GetSingleInvoice(string id);
+
         bool AddOrderItem(string id, List<Dto.OrderItemInputDto> orderItems);
+        bool AddOrderItemToInvoice(string id, List<InvoiceInputDto> orderItems);
 
         bool UpdateOrderItem(string id, Dto.OrderItemInputDto orderItem);
 
@@ -35,6 +39,7 @@ namespace Animart.Portal.Order
         bool CheckOrderItem(Dto.OrderItemInputDto orderItem);
 
         bool UpdatePurchaseOrderStatus(string id, string status);
+        bool UpdateOrderItemStatus(string id, string status, List<InvoiceInputDto> orderItems);
 
         List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing(int type,int num);
 

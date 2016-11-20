@@ -1,10 +1,10 @@
-﻿<div ng-controller="app.views.orderDetail as vm" id="printContent">
+﻿<div ng-controller="app.views.invoice as vm" id="printContent">
     <md-content class="md-padding" layout-xs="column" layout="row">
         <div flex-xs flex-gt-xs="100" layout="column">
             <form name="poForm" class="table-bordered">
                 <md-toolbar>
                     <div class="md-toolbar-tools">
-                        <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma "}}) - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
+                        <h2>Invoice ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma "}}) - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
                         <span flex></span>
                         <span flex="1" class="printDialog"  ng-click="print()" style="cursor:default;">
                             <span class="fa fa-print" style="font-size: 30px;" aria-label="Print dialog"></span>
@@ -13,17 +13,8 @@
                     </div>
                 </md-toolbar>
                 <md-dialog-content id="printContent">
-                    @*<md-subheader class="md-sticky">Grand Total : {{po.grandTotal | currency:"Rp"}}</md-subheader>*@
                     <div class="md-dialog-content">
                         <div layout-gt-sm="row">
-                            @*<div flex>
-                                <md-subheader class="md-sticky">Payment Receipt: </md-subheader>
-                                <md-card>
-                                    <md-card-content>
-                                        <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
-                                    </md-card-content>
-                                </md-card>
-                            </div>*@
                             <div flex></div>
                             <div flex="1">
                                 <img src="~/Content/images/animart_logo.png" />
@@ -35,7 +26,7 @@
                                 @*<md-input-container class="md-block">
                             @*<input ng-model="po.receiptNumber">*@
                                 @*<label>Resi No:</label>*@
-                                {{po.receiptNumber}}
+                                {{po.resiNumber}}
                                 @*</md-input-container>*@
                             </md-card>
                         </div>
@@ -45,6 +36,10 @@
                                 <div>
                                     <table class="table table-striped ngCart cart table-bordered">
                                         <tbody>
+                                        <tr>
+                                            <td colspan="6"><strong>Invoice Number:</strong></td>
+                                            <td>{{po.invoiceNumber}}</td>
+                                        </tr>
                                         <tr>
                                             <td colspan="6"><strong>Order Number:</strong></td>
                                             <td>{{po.code}}</td>

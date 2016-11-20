@@ -1,107 +1,157 @@
-﻿<div ng-controller="app.views.product as vm">
-
-    <div class="row">
-        <div class="col-md-2" style="padding-right:30px;">
-            <div class="row">
-                <h2>Product Types</h2>
-                <hr />
-                <div style="max-width: 100%; overflow-x:scroll; cursor: default;">
-                        <div ng-repeat="type in itemTypes">
-                                <a ng-click="changeItemType(type.no)">{{type.name}}</a>
-                            <hr />
-                        </div>
-                </div>
-            </div>
-            <div class="row">
-                <h2>Categories</h2>
-                <hr/>
-                <div style="max-width: 100%; overflow-x:scroll; cursor: default;">
-                    <div ng-repeat="cat in categories">
-                        <a ng-click="changeCategory(cat.id,cat.name,itemType)">{{cat.name}}</a>
+﻿<style>
+    .main-container {
+        margin-left: 0px;
+        margin-right: 0px;
+        width: 100%;
+    }
+    .angular-animation-container {
+        padding-top:0px;
+    }
+    /*@@media screen and (max-width: 640px) {
+        .md-sidenav-left {
+            position: fixed;
+            top:50px;
+        }
+    }*/
+</style>
+<div ng-controller="app.views.product as vm">
+    <section layout="row" flex>
+        <md-sidenav class="md-sidenav-left"
+                    md-component-id="left"
+                    md-is-locked-open="$mdMedia('gt-md')"
+                    md-whiteframe="4" style=" z-index: 1001;">
+            <md-toolbar class="md-theme-indigo">
+                <h1 class="md-toolbar-tools">Product Types</h1>
+            </md-toolbar>
+            <md-content layout-padding>
+                <div style="max-width: 100%; height:auto;overflow-x: scroll; cursor: default;">
+                    <div ng-repeat="type in itemTypes">
+                        <a ng-click="changeItemType(type.no)">{{type.name}}</a>
                         <hr/>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-10"  style="padding-left:30px;">
-            <h1>{{catName}}</h1>
-            <hr/>
-            <div class="row" ng-hide="itemType==2">
-                <h2>Pre-Order</h2><hr/>
-                <label>Search:</label><input ng-model="searchPO" id="search" class="form-control" placeholder="Filter text">
-                @*<md-content class="md-padding" layout-xs="column" layout="row">*@
+            </md-content>
 
-                <hr/>
-                <div pagination-id="paginatePO" dir-paginate="posupply in poSupplies | filter:searchPO | itemsPerPage: pagePOSize" current-page="currentPOPage"
-                     class="col-md-3" layout="row">
-                    <md-card style="text-align: center;">
-                        <md-card-title>
-                            <md-card-title-text>
-                                <span class="md-head" style="font-weight: bold; word-wrap: break-word; max-width: 150px; height: 50px;">{{posupply.name | limitTo:30}}</span>
-                                <span class="md-subhead">
-                                    <b>Available Until:</b>
-                                    <br />{{posupply.availableUntil| date: "dd-MMMM-yyyy, HH:mma"}}
-                                </span>
-                            </md-card-title-text>
-                        </md-card-title>
-                        <md-card-content layout="row" layout-align="center">
-                            <img src="{{posupply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(posupply.id)"/>
-                        </md-card-content>
-                        <md-card-actions>
-                            <md-button class="md-raised md-primary" ng-click="view(posupply.id)">Details</md-button>
-                        </md-card-actions>
-                    </md-card>
+            <md-toolbar class="md-theme-indigo">
+                <h1 class="md-toolbar-tools">Categories</h1>
+            </md-toolbar>
+            <md-content layout-padding>
+                <div style="max-width: 100%; height:auto;overflow-x: scroll; cursor: default;">
+                    <div ng-repeat="cat in categories">
+                        <a ng-click="changeCategory(cat.id,cat.name,itemType)">{{cat.name}}</a>
+                        <hr />
+                    </div>
                 </div>
-                @*</md-content>*@
-            </div>
-            <div class="text-center row"ng-hide="itemType==2">
-                <div class="col-md-8">
-                    <dir-pagination-controls pagination-id="paginatePO" boundary-links="true" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+            </md-content>
+        </md-sidenav>
+        <md-content style="margin: 0;" flex layout-padding>
+                @*<div class="col-sm-2" style="padding-right: 30px;">
+                        <div class="row">
+                            <h2>Product Types</h2>
+                            <hr/>
+                            <div style="max-width: 100%; overflow-x: scroll; cursor: default;">
+                                <div ng-repeat="type in itemTypes">
+                                    <a ng-click="changeItemType(type.no)">{{type.name}}</a>
+                                    <hr/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h2>Categories</h2>
+                            <hr/>
+                            <div style="max-width: 100%; overflow-x: scroll; cursor: default;">
+                                <div ng-repeat="cat in categories">
+                                    <a ng-click="changeCategory(cat.id,cat.name,itemType)">{{cat.name}}</a>
+                                    <hr/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                <div class="row" style="margin:0px;padding-right:30px;padding-left: 30px;padding-top:50px;">
+                    <div style="float: left;position: fixed;top: 110px;left: 0px;z-index: 1000;">
+                        <button ng-click="toggleLeft()"
+                                   class="btn btn-primary"ng-hide="" hide-gt-md>
+                            <span class="fa fa-filter"></span> Show Filter
+                        </button>
+                    </div>
+                    <h1>{{catName}}</h1>
+                    <hr/>
+                    <div class="row" ng-hide="itemType==2">
+                        <h2>Pre-Order</h2><hr/>
+                        <label>Search:</label><input ng-model="searchPO" id="search" class="form-control" placeholder="Contoh: Magic The Gathering">
+                        @*<md-content class="md-padding" layout-xs="column" layout="row">*@
+                        <hr/>
+                        <div pagination-id="paginatePO" dir-paginate="posupply in poSupplies | filter:searchPO | itemsPerPage: pagePOSize" current-page="currentPOPage"
+                             class="col-sm-4 col-md-3" layout="column">
+                            <md-card style="text-align: center;">
+                                <md-card-title layout="row" layout-align="center">
+                                    <md-card-title-text>
+                                        <span class="md-head" style="font-weight: bold; word-wrap: break-word; max-width: 150px; height: 50px;">{{posupply.name | limitTo:30}}</span>
+                                        <span class="md-subhead">
+                                            <b>Available Until:</b>
+                                            <br />{{posupply.availableUntil| date: "dd-MMMM-yyyy, HH:mma"}}
+                                        </span>
+                                    </md-card-title-text>
+                                </md-card-title>
+                                <md-card-content layout="row" layout-align="center">
+                                    <img src="{{posupply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(posupply.id)"/>
+                                </md-card-content>
+                                <md-card-actions>
+                                    <md-button class="md-raised md-primary" ng-click="view(posupply.id)">Details</md-button>
+                                </md-card-actions>
+                            </md-card>
+                        </div>
+                        @*</md-content>*@
+                    </div>
+                    <div class="text-center row" ng-hide="itemType==2">
+                        <div class="col-md-8">
+                            <dir-pagination-controls pagination-id="paginatePO" boundary-links="true" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Page Size:</label>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" min="1" max="100" class="form-control" value="5" ng-model="pagePOSize">
+                        </div>
+                    </div>
+                    <div class="row" ng-hide="itemType==1">
+                        <h2> In Stock</h2><hr/>
+                        <label>Search:</label><input ng-model="search" id="search" class="form-control" placeholder="Contoh: Magic The Gathering">
+                        <hr/>
+                        @*<md-content class="md-padding" layout-xs="column" layout="row">*@
+                        <div pagination-id="paginateSupply" dir-paginate="supply in supplies | filter:search | itemsPerPage: pageSize" current-page="currentPage"
+                             class="col-sm-4 col-md-3" layout="column">
+                            <md-card style="text-align: center;">
+                                <md-card-title layout="row" layout-align="center">
+                                    <md-card-title-text>
+                                        <span class="md-head" style="font-weight: bold; word-wrap: break-word; max-width: 150px; height: 50px;">{{supply.name | limitTo:100}}</span>
+                                    </md-card-title-text>
+                                </md-card-title>
+                                <md-card-content layout="row" layout-align="center" style="margin-top: 50px;">
+                                    <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(supply.id)"/>
+                                </md-card-content>
+                                <md-card-content>
+                                    <md-button class="md-raised md-primary" ng-click="view(supply.id)">Details</md-button>
+                                </md-card-content>
+                            </md-card>
+                        </div>
+                        @*</md-content>*@
+                    </div>
+                    <div class="text-center row" ng-hide="itemType==1">
+                        <div class="col-md-8">
+                            <dir-pagination-controls pagination-id="paginateSupply" boundary-links="true" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Page Size:</label>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" min="1" max="100" class="form-control" value="5" ng-model="pageSize">
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <label>Page Size:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" min="1" max="100" class="form-control" value="5" ng-model="pagePOSize">
-                </div>
-            </div>
-            <div class="row" ng-hide="itemType==1">
-                <h2> In Stock</h2><hr/>
-                <label>Search:</label><input ng-model="search" id="search" class="form-control" placeholder="Filter text">
-                <hr/>
-                @*<md-content class="md-padding" layout-xs="column" layout="row">*@
-                <div pagination-id="paginateSupply" dir-paginate="supply in supplies | filter:search | itemsPerPage: pageSize" current-page="currentPage"
-                     class="col-md-3" layout="column">
-                    <md-card style="text-align: center;">
-                        <md-card-title>
-                            <md-card-title-text>
-                                <span class="md-head" style="font-weight: bold; word-wrap: break-word; max-width: 150px; height: 50px;">{{supply.name | limitTo:100}}</span>
-                            </md-card-title-text>
-                        </md-card-title>
-                        <md-card-content layout="row" layout-align="center" style="margin-top:50px;">
-                            <img src="{{supply.image}}" class="md-media-md " width="100px" height="100px" ng-click="view(supply.id)"/>
-                        </md-card-content>
-                        <md-card-content>
-                            <md-button class="md-raised md-primary" ng-click="view(supply.id)">Details</md-button>
-                        </md-card-content>
-                    </md-card>
-                </div>
-                @*</md-content>*@
-            </div>
-
-            <div class="text-center row" ng-hide="itemType==1">
-                <div class="col-md-8">
-                    <dir-pagination-controls pagination-id="paginateSupply" boundary-links="true" template-url="dirPagination.tpl.html"></dir-pagination-controls>
-                </div>
-                <div class="col-md-2">
-                    <label>Page Size:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" min="1" max="100" class="form-control" value="5" ng-model="pageSize">
-                </div>
-            </div>
-        </div>
-    </div>
+            @*</div>*@
+        </md-content>
+    </section>
 </div>
 
     <script type="text/ng-template" id="dirPagination.tpl.html">
@@ -124,7 +174,7 @@
             </li>
         </ul>
     </script>
-    <script type="text/ng-template" id="template/ngCart/addtocart.html">
+<script type="text/ng-template" id="template/ngCart/addtocart.html">
         <div ng-hide="attrs.id">
             <a class="btn btn-lg btn-primary" ng-disabled="true" ng-transclude> Add To Cart</a>
         </div>
@@ -144,3 +194,9 @@
         </div>
 
     </script>
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>

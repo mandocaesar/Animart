@@ -2,33 +2,36 @@
     <style>
         .isSelected {
             text-decoration: none;
-            color:black;
+            color: black;
         }
         .notSelected {
             text-decoration: underline;
-            color:blue;
-            cursor:default;
+            color: blue;
+            cursor: default;
         }
     </style>
-    <div class="col-xs-5 col-lg-3" ng-click="setLatestPO(true)">
-        <h2  ng-class="{ 'isSelected' : isLatestPO, 'notSelected' : !isLatestPO}">Latest Pre-Order</h2>
+    <div class="row">
+        <div class="col-xs-5 col-lg-3" ng-click="setLatestPO(true)">
+            <h2 ng-class="{ 'isSelected' : isLatestPO, 'notSelected' : !isLatestPO}">Latest Pre-Order</h2>
+        </div>
+        <div class="col-xs-1 col-lg-1">
+            <h2>|</h2>
+        </div>
+        <div class="col-xs-6 col-lg-8" ng-click="setLatestPO(false)">
+            <h2 ng-class="{ 'isSelected' : !isLatestPO, 'notSelected' : isLatestPO}">Nearest Pre-Order</h2>
+        </div>
+        <hr />
     </div>
-    <div class="col-xs-1 col-lg-1">
-        <h2>|</h2>
-    </div>
-    <div class="col-xs-6 col-lg-8" ng-click="setLatestPO(false)">
-        <h2 ng-class="{ 'isSelected' : !isLatestPO, 'notSelected' : isLatestPO}">Nearest Pre-Order</h2>
-    </div>
-    <hr/>
+    <br/>
     <label>Search:</label><input ng-model="searchPO" id="search" class="form-control" placeholder="Filter text">
 
     <md-content class="md-padding" layout-xs="column" layout="row">
-        <div pagination-id="paginatePO" dir-paginate="posupply in poSupplies | filter:searchPO | itemsPerPage: pagePOSize" current-page="currentPOPage" flex-xs flex-gt-xs="16" flex="none" layout="row">
+        <div pagination-id="paginatePO" dir-paginate="posupply in poSupplies | filter:searchPO | itemsPerPage: pagePOSize" current-page="currentPOPage" flex-xs flex-gt-xs="16" flex="none" layout="column">
             @*ng-repeat="posupply in filteredPOSupplies"*@
             <md-card style="text-align: center;">
                 <md-card-title>
                     <md-card-title-text>
-                        <span class="md-head" style="font-weight: bold; word-wrap: break-word; width: 150px; height: 50px;">{{posupply.name | limitTo:30}}</span>
+                        <span class="md-head" style="font-weight: bold; word-wrap: break-word; width: 200px; height: 50px;">{{posupply.name | limitTo:30}}</span>
                         @*<span class="md-subhead">{{posupply.price | currency:"Rp."}}</span>*@
                         <span class="md-subhead">
                             <b>Available Until:</b>
@@ -65,12 +68,12 @@
     @*@ng-repeat="supply in filteredSupplies" flex-xs flex-gt-xs="16" layout="column">
     <md-card style="text-align: center;"> ng-if="supply.inStock>0"*@
     <md-content class="md-padding" layout-xs="column" layout="row">
-        <div pagination-id="paginateSupply" dir-paginate="supply in supplies | filter:search | itemsPerPage: pageSize" current-page="currentPage" flex-xs flex-gt-xs="16" layout="column">
+        <div pagination-id="paginateSupply" dir-paginate="supply in supplies | filter:search | itemsPerPage: pageSize" current-page="currentPage" flex-xs flex-gt-xs="16"flex="none" layout="column">
             <md-card style="text-align: center;">
                 @*ng-if="supply.inStock>0"*@
                 <md-card-title>
                     <md-card-title-text>
-                        <span class="md-head" style="font-weight: bold; word-wrap: break-word; width: 150px; height: 50px;">{{supply.name | limitTo:100}}</span>
+                        <span class="md-head" style="font-weight: bold; word-wrap: break-word; width: 200px; height: 50px;">{{supply.name | limitTo:100}}</span>
                         @*<span class="md-subhead">{{supply.price | currency:"Rp."}}</span>*@
                     </md-card-title-text>
                 </md-card-title>

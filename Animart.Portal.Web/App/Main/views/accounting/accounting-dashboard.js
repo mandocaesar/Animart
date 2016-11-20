@@ -5,6 +5,7 @@
 
 function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,expeditionService, purchaseOrderId) {
 
+    $scope.supplies = [];
     $scope.po = {
         address: '',
         province: '',
@@ -22,10 +23,13 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
         showExpedition: false
     };
 
+    $scope.showInvoice = false;
+    $scope.allChecked = false;
+
+
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
-        //console.log(result);
         $scope.po = result;
-        if ($scope.po.expedition != $scope.po.expeditionAdjustment)
+        if ($scope.po.expedition !== $scope.po.expeditionAdjustment)
             $scope.po.isAdjustment = true;
         $scope.isPayment = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
         $scope.isPaid = result.status === "PAID";
@@ -34,7 +38,6 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
         $scope.supplies = result.items;
         $scope.isBod = result.status === "ACCOUNTING";
         $scope.status = (result.isPreOrder) ? "Pre-Order" : "Ready Stock";
-        //console.log($scope.supplies);
         $scope.image = "";
         if ($scope.isPayment) {
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
@@ -65,7 +68,7 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
     };
     $scope.getSubTotal = function () {
         var total = 0;
-        if ($scope.supplies != null)
+        if ($scope.supplies !== null)
             for (var i = 0; i < $scope.supplies.length; i++) {
                 var product = $scope.supplies[i];
                 total += (product.priceAdjustment * product.quantityAdjustment);
@@ -73,7 +76,6 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
         $scope.po.grandTotal = total;
         return total;
     }
-
     $scope.getFile = function (e) {
         $scope.$apply(function () {
             $scope.files = e.files;
@@ -82,46 +84,40 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
     $scope.close = function () {
         $mdDialog.cancel();
     };
-
-
     $scope.print = function () {
         window.location.href = "#/orderDetail/" + purchaseOrderId;
         $mdDialog.cancel();
     };
-
-
+    $scope.showInvoice = function (id) {
+        window.location.href = "#/invoice/" + id;
+        $mdDialog.cancel();
+    };
     $scope.changeToPaid = function () {
-        orderService.updatePurchaseOrderStatus(purchaseOrderId, "PAID").success(function () {
+        orderService.updateOrderItemStatus(purchaseOrderId, "PAID",$scope.supplies).success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
         });
         $mdDialog.cancel();
 
     };
-
     $scope.approve = function () {
-        orderService.updatePurchaseOrderStatus(purchaseOrderId, "PAYMENT").success(function () {
+        orderService.updateOrderItemStatus(purchaseOrderId, "PAYMENT", $scope.supplies).success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
         });
         $mdDialog.cancel();
 
     };
-
     $scope.reject = function () {
-        orderService.updatePurchaseOrderStatus(purchaseOrderId, "REJECT").success(function () {
+        orderService.updateOrderItemStatus(purchaseOrderId, "REJECT", $scope.supplies).success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Rejected");
         });
         $mdDialog.cancel();
-
     };
-
     $scope.sendToLogistic = function () {
-        orderService.updatePurchaseOrderStatus(purchaseOrderId, "LOGISTIC").success(function () {
+        orderService.updateOrderItemStatus(purchaseOrderId, "LOGISTIC", $scope.supplies).success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Sent to Logistic");
         });
         $mdDialog.cancel();
-
     };
-
     $scope.updateReceipt = function() {
         orderService.insertReceiptNumber(purchaseOrderId, $scope.po.receiptNumber).success(function () {
             abp.message.success("Success", "Receipt number fo Purchase Order " + purchaseOrderId + " Has Been Updated");
@@ -137,14 +133,10 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
         }
         $mdDialog.cancel();
     }
-
     $scope.updateExpedition = function () {
         if ($scope.po.city !== '') {
             expeditionService.getShipmentCostFilterByCity($scope.po.city).success(function (rs) {
-                //console.log(rs);
-                //alert(rs[0].nextKilo);
-
-                if (rs == null || rs.length === 0) {
+                if (rs === null || rs.length === 0) {
                     alert("Sorry your city is not available for shipment at the moment. Please contact marketing@animart.co.id for inquries.");
                     $scope.po.showExpedition = false;
                 } else {
@@ -161,8 +153,6 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
             var name = $scope.po.expeditionAdjustment.split('-')[0];
             var type = $scope.po.expeditionAdjustment.split('-')[1];
             expeditionService.getShipmentCostFilterByExpeditionAndCity(name, $scope.po.city, type).success(function (rs) {
-                console.log(rs);
-                //alert(rs[0].nextKilo);
                 $scope.po.kiloAdjustmentQuantity = rs[0].kiloQuantity;
                 $scope.po.shipmentAdjustmentCostFirstKilo = rs[0].firstKilo;
                 $scope.po.shipmentAdjustmentCost = rs[0].nextKilo;
@@ -171,6 +161,36 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
         }
     };
 
+    $scope.createInvoice = function() {
+        orderService.createInvoice($scope.po).success(function (result) {
+            orderService.addOrderItemToInvoice(result, $scope.supplies).success(function (rs) {
+                abp.message.info('Invoice ID:' + result);
+                $mdDialog.cancel();
+            }).error(function (rs) {
+                abp.message.error(rs);
+            });
+        }).error(function (result) {
+            abp.message.error('Error:' + result);
+        });
+    };
+
+    $scope.toggleInvoice = function (res) {
+        $scope.showExpedition = false;
+        if (!res)
+            $scope.allChecked = false;
+        for (var i = 0; i < $scope.supplies.length; i++) {
+            if ($scope.supplies[i].checked){
+                $scope.showExpedition = true;
+                i = $scope.supplies.length;
+            }
+        }
+    };
+    $scope.toggleAllInvoice = function () {
+        $scope.showExpedition = $scope.allChecked;
+        for (var i = 0; i < $scope.supplies.length; i++) {
+            $scope.supplies[i].checked = $scope.showExpedition;
+        }
+    };
 }
 
 function accountingController($http,$q, $rootScope, $scope, orderService,expeditionService, $uibModal, $mdDialog) {
@@ -222,13 +242,11 @@ function accountingController($http,$q, $rootScope, $scope, orderService,expedit
 
         $scope.refresh = function() {
             orderService.getDashboardAdmin().success(function(result) {
-                //console.log(result);
                 $scope.dashboard = result;
             });
 
             $scope.gridOptions.data = null;
             orderService.getAllPurchaseOrderForAccounting($scope.statusType, $scope.statusGrid).success(function(result) {
-                //console.log(result);
                 $scope.gridOptions.data = result;
             });
         };
@@ -257,7 +275,7 @@ function accountingController($http,$q, $rootScope, $scope, orderService,expedit
         };
 
         $scope.gridOptions.columnDefs = [
-            { name: 'id', enableCellEdit: false },
+            { name: 'code', enableCellEdit: false },
             { name: 'creationTime', displayName: 'Date', cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"', enableCellEdit: false },
             { name: 'creatorUser.name', displayName: 'Name', enableCellEdit: false },
             { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },

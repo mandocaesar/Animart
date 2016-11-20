@@ -1,12 +1,21 @@
 ﻿(function () {
     var controllerId = 'app.views.item';
     angular.module('app').controller(controllerId, [
-        '$scope', 'abp.services.app.supply', 'abp.services.app.user', 'ngCart', '$stateParams','$sce',
-        function ($scope, supplyService, appSession, ngCart, stateParams,$sce) {
+        '$scope', 'abp.services.app.supply', 'abp.services.app.user', 'ngCart', '$stateParams', '$sce', '$stateParams', '$state',
+        function ($scope, supplyService, appSession, ngCart, stateParams, $sce, stateParams, $state) {
             ngCart.setTaxRate(0);
             ngCart.setShipping(0);
 
             var itemID = stateParams.id;
+
+            $scope.catName = stateParams.name;
+            $scope.catId = stateParams.catId;
+            $scope.currentPOPage = stateParams.currentPOPage;
+            $scope.currentPage = stateParams.currentPage;
+            $scope.isLatestPO = stateParams.isLatestPO;
+            $scope.search = stateParams.search;
+            $scope.searchPO = stateParams.searchPO;
+
 
             var vm = this;
 
@@ -32,6 +41,18 @@
                    //console.log(result);
                }
            );
+
+            $scope.backToProduct = function () {
+                $state.go("product", {
+                    catId: $scope.catId,
+                    type: $scope.itemType, name: $scope.catName,
+                    currentPage: $scope.currentPage,
+                    currentPOPage: $scope.currentPOPage,
+                    search: $scope.search,
+                    searchPO: $scope.searchPO
+                });
+            };
+
             vm.getShownUserName = function () {
                 return user;
             };

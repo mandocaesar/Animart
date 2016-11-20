@@ -1,203 +1,175 @@
 ﻿<div ng-controller="app.views.retailerDashboard" layout="column">
-    <md-content flex layout-padding>
-        <div layout="row">
-            <div flex-xs="" flex-gt-xs="33" layout="column">
-                <md-card style="background-color: #0288d1">
-                    <md-card-title>
-                        <md-card-title-text style="color: white">
-                            <span class="md-headline">{{dashboard.bdo}} Order(s)</span>
-                            <span class="md-subhead">In Review</span>
-                        </md-card-title-text>
-                    </md-card-title>
-                </md-card>
-            </div>
-            <div flex-xs="" flex-gt-xs="33" layout="column">
-                <md-card class="yellow">
-                    <md-card-title style="background-color: #72d572">
-                        <md-card-title-text style="color: white">
-                            <span class="md-headline">{{dashboard.waiting}} Order(s)</span>
-                            <span class="md-subhead">Waiting For Payment</span>
-                        </md-card-title-text>
-                    </md-card-title>
-                </md-card>
-            </div>
-            <div flex-xs="" flex-gt-xs="33" layout="column">
-                <md-card class="md-theme-green">
-                    <md-card-title style="background-color: #284e28">
-                        <md-card-title-text style="color: white">
-                            <span class="md-headline">{{dashboard.delivered}} Order(s)</span>
-                            <span class="md-subhead">Has been Delivered</span>
-                        </md-card-title-text>
-                    </md-card-title>
-                </md-card>
-            </div>
+<md-content flex layout-padding>
+    <div layout="row">
+        <div flex-xs="" flex-gt-xs="33" layout="column">
+            <md-card style="background-color: #0288d1">
+                <md-card-title>
+                    <md-card-title-text style="color: white">
+                        <span class="md-headline">{{dashboard.bdo}} Order(s)</span>
+                        <span class="md-subhead">In Review</span>
+                    </md-card-title-text>
+                </md-card-title>
+            </md-card>
         </div>
-        <div class="row">
-            @*<div class="col">
+        <div flex-xs="" flex-gt-xs="33" layout="column">
+            <md-card class="yellow">
+                <md-card-title style="background-color: #72d572">
+                    <md-card-title-text style="color: white">
+                        <span class="md-headline">{{dashboard.waiting}} Order(s)</span>
+                        <span class="md-subhead">Waiting For Payment</span>
+                    </md-card-title-text>
+                </md-card-title>
+            </md-card>
+        </div>
+        <div flex-xs="" flex-gt-xs="33" layout="column">
+            <md-card class="md-theme-green">
+                <md-card-title style="background-color: #284e28">
+                    <md-card-title-text style="color: white">
+                        <span class="md-headline">{{dashboard.delivered}} Order(s)</span>
+                        <span class="md-subhead">Has been Delivered</span>
+                    </md-card-title-text>
+                </md-card-title>
+            </md-card>
+        </div>
+    </div>
+    <div class="row">
+        @*<div class="col">
                 <div flex-xs="" flex-gt-xs="90" layout="column">
                     <canvas id="line" class="chart chart-line" chart-data="data"
                             chart-labels="labels" chart-legend="true" chart-series="series"
                             chart-click="onClick"></canvas>
                 </div>
             </div>*@
-            <div class="col">
-                <div class="row">
-                    <div clas="col" style="margin-bottom: 5px; float: right"  ng-repeat="tab in orderType">
-                        <span class="btn btn-default" ng-click="changeType(tab.no)" ng-class="{'btn-primary': tab.no == statusType }" style="padding: 5px; margin-right: 10px; min-width: 100px; text-align: center;">{{tab.name}}</span>
-                    </div>
+        <div class="col">
+            <div class="row">
+                <div clas="col" style="margin-bottom: 5px; float: right" ng-repeat="tab in orderType">
+                    <span class="btn btn-default" ng-click="changeType(tab.no)" ng-class="{'btn-primary': tab.no == statusType }" style="padding: 5px; margin-right: 10px; min-width: 100px; text-align: center;">{{tab.name}}</span>
                 </div>
-                <div class="row">
-                    <div clas="col" style="margin-bottom: 5px; float: right" ng-repeat="tab in tabOrders">
-                        @*<span class="btn btn-danger" ng-click="refresh(0)" style="padding:5px; width:100px; text-align:center">Rejected</span>
+            </div>
+            <div class="row">
+                <div clas="col" style="margin-bottom: 5px; float: right" ng-repeat="tab in tabOrders">
+                    @*<span class="btn btn-danger" ng-click="refresh(0)" style="padding:5px; width:100px; text-align:center">Rejected</span>
                         <span class="btn btn-success" ng-click="refresh(1)" style="padding:5px; width:100px; text-align:center">In Review</span> 
                         <span class="btn btn-warning" ng-click="refresh(3)" style="padding: 5px; text-align: center">Waiting For Payment</span>
                         <span class="btn btn-default" ng-click="refresh(6)" style="padding: 5px; text-align: center;width:100px;">Paid</span>
                         <span class="btn btn-info" ng-click="refresh(4)" style="padding:5px; width:100px; text-align:center">On Delivery</span>
                         <span class="btn btn-primary" ng-click="refresh(5)" style="padding:5px; margin-right:10px; width:100px; text-align:center">Done</span>*@
-                        <span class="btn btn-default" ng-click="changeTab(tab.no)" ng-class="{'btn-primary': tab.no == statusGrid }" style="padding: 5px; margin-right: 10px; min-width: 100px; text-align: center;">{{tab.name}}</span>
+                    <span class="btn btn-default" ng-click="changeTab(tab.no)" ng-class="{'btn-primary': tab.no == statusGrid }" style="padding: 5px; margin-right: 10px; min-width: 100px; text-align: center;">{{tab.name}}</span>
 
-                    </div>
                 </div>
             </div>
-            <div class="col">
-                    <div ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
-            </div>
         </div>
-    </md-content>
+        <div class="col">
+            <div ui-grid="gridOptions" ui-grid-resize-columns ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-selection class="myGrid"></div>
+        </div>
+    </div>
+</md-content>
 
-    <script type="text/ng-template" id="order.tmpl.html">
-        <md-dialog aria-label="Mango (Fruit)" ng-cloak class="fullscreen-dialog">
-            <form name="poForm">
-                <md-toolbar>
-                    <div class="md-toolbar-tools">
-                        <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}}</h2>
-                        <span flex></span>
-                        <md-button class="md-icon-button" style="font-size:30px;" ng-click="print()">
-                            @*<md-icon md-svg-src="" aria-label="Close dialog"></md-icon>*@
-                            <span class="fa fa-print" aria-label="Print dialog"></span>Invoice
-                        </md-button>
-                        <md-button class="md-icon-button" style="font-size:30px;" ng-click="close()">
-                            @*<md-icon md-svg-src="" aria-label="Close dialog"></md-icon>*@
-                            <span class="fa fa-close" aria-label="Close dialog"></span>
-                        </md-button>
-                    </div>
-                </md-toolbar>
-                <md-dialog-content>
-                    <md-subheader class="md-sticky">Grand Total : {{po.grandTotal | currency:"Rp"}}</md-subheader>
-                    <div class="md-dialog-content">
-                        <md-input-container class="md-block">
-                            <label>Address</label>
-                            <input ng-model="po.address">
-                        </md-input-container>
-                        <div layout-gt-sm="row">
-                            <md-input-container class="md-block" flex-gt-sm>
-                                <label>Province</label>
-                                <input ng-model="po.province">
-                            </md-input-container>
-                            <md-input-container class="md-block" flex-gt-sm>
-                                <label>City</label>
-                                <md-select ng-model="po.city">
-                                    <md-option ng-repeat="city in cities">
-                                        {{city.name}}
-                                    </md-option>
-                                </md-select>
-                            </md-input-container>
-                            <md-input-container class="md-block" flex-gt-sm>
-                                <label>Postal Code</label>
-                                <input name="postalCode" ng-model="po.postalCode" placeholder="12345"
-                                       required ng-pattern="/^[0-9]{5}$/" md-maxlength="5">
-                                <div ng-messages="poForm.postalCode.$error" role="alert" multiple>
-                                    <div ng-message="required" class="my-message">You must supply a postal code.</div>
-                                    <div ng-message="pattern" class="my-message">
-                                        That doesn't look like a valid postal
-                                        code.
-                                    </div>
-                                </div>
-                            </md-input-container>
-
-                        </div>
-                        <div layout-gt-sm="row">
-                            <md-input-container class="md-block" flex-gt-sm>
-                                <label>Expedition</label>
-                                <md-select ng-model="po.expedition">
-                                    <md-option ng-repeat="expedition in expeditions">
-                                        {{expedition.expedition}}
-                                    </md-option>
-                                </md-select>
-                            </md-input-container>
-                        </div>
-                        <div layout-gt-sm="row">
-                            <md-input-container>
-                                <md-subheader class="md-sticky">Available Item to Order</md-subheader>
-                                <md-list-item ng-repeat="item in supplies">
-                                    <p> {{ item.name }} </p>
-                                    <input type="number" min="0" ng-model="item.quantity" ng-change="calculate($index)" style="margin-left:40px;">
-                                </md-list-item>
-                            </md-input-container>
-                        </div>
-                    </div>
-                </md-dialog-content>
-                <md-dialog-actions layout="row">
+<script type="text/ng-template" id="order.tmpl.html">
+    <md-dialog aria-label="Mango (Fruit)" ng-cloak class="fullscreen-dialog">
+        <form name="poForm">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}}</h2>
                     <span flex></span>
-                    <md-button ng-click="cancel()">
-                        Cancel
+                    <md-button class="md-icon-button" style="font-size:30px;" ng-click="print()">
+                        @*<md-icon md-svg-src="" aria-label="Close dialog"></md-icon>*@
+                        <span class="fa fa-print" aria-label="Print dialog"></span>Invoice
                     </md-button>
-                    <md-button ng-click="place()" style="margin-right:20px;" ng-hide="error">
-                        Place
+                    <md-button class="md-icon-button" style="font-size:30px;" ng-click="close()">
+                        @*<md-icon md-svg-src="" aria-label="Close dialog"></md-icon>*@
+                        <span class="fa fa-close" aria-label="Close dialog"></span>
                     </md-button>
-                </md-dialog-actions>
-            </form>
-        </md-dialog>
-    </script>
+                </div>
+            </md-toolbar>
+            <md-dialog-content>
+                <md-subheader class="md-sticky">Grand Total : {{po.grandTotal | currency:"Rp"}}</md-subheader>
+                <div class="md-dialog-content">
+                    <md-input-container class="md-block">
+                        <label>Address</label>
+                        <input ng-model="po.address">
+                    </md-input-container>
+                    <div layout-gt-sm="row">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Province</label>
+                            <input ng-model="po.province">
+                        </md-input-container>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>City</label>
+                            <md-select ng-model="po.city">
+                                <md-option ng-repeat="city in cities">
+                                    {{city.name}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Postal Code</label>
+                            <input name="postalCode" ng-model="po.postalCode" placeholder="12345"
+                                    required ng-pattern="/^[0-9]{5}$/" md-maxlength="5">
+                            <div ng-messages="poForm.postalCode.$error" role="alert" multiple>
+                                <div ng-message="required" class="my-message">You must supply a postal code.</div>
+                                <div ng-message="pattern" class="my-message">
+                                    That doesn't look like a valid postal
+                                    code.
+                                </div>
+                            </div>
+                        </md-input-container>
+
+                    </div>
+                    <div layout-gt-sm="row">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>Expedition</label>
+                            <md-select ng-model="po.expedition">
+                                <md-option ng-repeat="expedition in expeditions">
+                                    {{expedition.expedition}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div layout-gt-sm="row">
+                        <md-input-container>
+                            <md-subheader class="md-sticky">Available Item to Order</md-subheader>
+                            <md-list-item ng-repeat="item in supplies">
+                                <p> {{ item.name }} </p>
+                                <input type="number" min="0" ng-model="item.quantity" ng-change="calculate($index)" style="margin-left:40px;">
+                            </md-list-item>
+                        </md-input-container>
+                    </div>
+                </div>
+            </md-dialog-content>
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <md-button ng-click="cancel()">
+                    Cancel
+                </md-button>
+                <md-button ng-click="place()" style="margin-right:20px;" ng-hide="error">
+                    Place
+                </md-button>
+            </md-dialog-actions>
+        </form>
+    </md-dialog>
+</script>
 
 <script type="text/ng-template" id="view-order.tmpl.html">
         <md-dialog aria-label="Mango (Fruit)" ng-cloak class="fullscreen-dialog">
             <form name="poForm">
                 <md-toolbar>
                     <div class="md-toolbar-tools">
-                        <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}}</h2>
+                        <h2>Order Details {{po.code}} ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}}</h2>
                         <span flex></span>
                         Invoice
                         <md-button class="md-icon-button" style="font-size:30px;" ng-click="print()">
-                            @*<md-icon md-svg-src="" aria-label="Close dialog"></md-icon>*@
                             <span class="fa fa-print" aria-label="Print dialog"></span>
                         </md-button>
                         <md-button class="md-icon-button" style="font-size:30px;" ng-click="close()">
-                            @*<md-icon md-svg-src="" aria-label="Close dialog"></md-icon>*@
                             <span class="fa fa-close" aria-label="Close dialog"></span>
                         </md-button>
                     </div>
                 </md-toolbar>
                 <md-dialog-content>
-                   @* <md-subheader class="md-sticky">Grand Total : {{po.grandTotal + po.shippingTotal | currency:"Rp"}}</md-subheader>
-                    <div class="md-dialog-content">
-                        @*<md-subheader class="md-sticky">Payment Receipt: </md-subheader>
-                        <div layout-gt-sm="row">                           
-                            <md-card>
-                                <md-card-content>
-                                    <img src="{{image}}" class="md-card-image" alt="Payment Receipt">
-                                </md-card-content>
-                            </md-card>                                          
-                        </div>
-                        <md-subheader class="md-sticky" ng-show="isPaid">Resi No: </md-subheader>
-                        <div layout-gt-sm="row" ng-show="isPaid">
-                            <md-card>
-                                @*<md-input-container class="md-block" ng-show="isPaid">
-                                    @*<input ng-model="po.receiptNumber">
-                                    @*<label>Resi No:</label>
-                                    {{po.receiptNumber}}
-                                @*</md-input-container>
-                            </md-card>
-                        </div>
-                        <div layout-gt-sm="row" ng-show="isPayment">
-                            <input type="file" id="file" name="file" onchange="angular.element(this).scope().getFile(this)" />
-                        </div>
-                        <md-button ng-show="isPayment" ng-click="upload()" style="border:1px solid black;margin-right:20px;" ng-hide="error" ng-disabled="checkStatus">
-                            Upload payment receipt
-                        </md-button>*@
-
-                        <md-subheader class="md-sticky">Ordered Items: </md-subheader>
-                        <label style="color:red;">* Adjustment meant there are changes from Animart, the right prices need to be paid are calculated from Adjustment attributes</label>
+                    <md-subheader class="md-sticky">Ordered Items: </md-subheader>
+                    <label style="color:red;">* Adjustment meant there are changes from Animart, the right prices need to be paid are calculated from Adjustment attributes</label>
+                        <label style="color:red;">** Please check invoices to know how much that should be paid for items that have been reviewed and accepted</label>
                         <div layout-gt-sm="row">
                             <md-input-container  class="table-responsive col-lg-12">                                
                                 <div>
@@ -211,6 +183,7 @@
                                                 <th>Quantity Adjustment</th>
                                                 <th>Price</th>
                                                 <th>Price Adjustment</th>
+                                                <th>Invoice</th>
                                                 <th>Total</th>
                                             </tr>
                                         </thead>
@@ -238,27 +211,30 @@
                                                     {{ supply.priceAdjustment | currency:"Rp." }}
                                                 </td>
                                                 <td>
+                                                    <a class="btn btn-primary" ng-click="showInvoice(supply.invoice.id)" ng-show="{{supply.invoice!=null}}">{{supply.invoice.invoiceNumber}}</a>
+                                                </td>
+                                                <td>
                                                     {{ supply.priceAdjustment * supply.quantityAdjustment | currency:"Rp." }}
                                                 </td>
                                             </tr>
                                         </tbody>
                                         <tfoot>                                          
-                                            <tr>
-                                                <td colspan="7" align="right" width="80%"><strong>SubTotal:</strong></td>
+                                            @*<tr>
+                                                <td colspan="8" align="right" width="80%"><strong>SubTotal:</strong></td>
                                                 <td>{{ po.grandTotal | currency:"Rp." }}</td>
                                             </tr>
                                             <tr>
-                                                <td colspan="7" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
+                                                <td colspan="8" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
                                                 <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
                                             </tr>
                                             <tr ng-show="po.isAdjustment">
-                                                <td colspan="7" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
+                                                <td colspan="8" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
                                                 <td>{{ po.totalAdjustmentShipmentCost | currency:"Rp." }}</td>
                                             </tr>
                                             <tr>
-                                                <td colspan="7" align="right"><strong>Total:</strong></td>
+                                                <td colspan="8" align="right"><strong>Total:</strong></td>
                                                 <td><strong>{{ po.grandTotal + po.totalAdjustmentShipmentCost | currency:"Rp." }}</strong></td>
-                                            </tr>
+                                            </tr>*@
                                         </tfoot>
                                     </table>
                                 </div>
@@ -343,19 +319,10 @@
                                 </tfoot>
                             </table>
                         </div>                        
-                        @*<div layout-gt-sm="row" ng-show="isApproved" ng-disable="isNotBOD">
-                            <input type="file" id="file" name="file" onchange="angular.element(this).scope().getFile(this)" />
-                            <md-button ng-click="upload()" style="margin-right:20px;" ng-hide="error" ng-disabled="checkStatus">
-                                Upload payment receipt
-                            </md-button>
-                        </div>*@
                     </div>
                 </md-dialog-content>
                 <md-dialog-actions layout="row">
                     <span flex></span>
-                    @*<md-button ng-click="receive()" ng-show="isLogistic">
-                        Already Received
-                    </md-button>*@
                     <md-button ng-click="close()">
                         Close
                     </md-button>

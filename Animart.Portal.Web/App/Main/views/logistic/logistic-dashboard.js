@@ -4,22 +4,22 @@
 ]);
 
 function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, expeditionService, purchaseOrderId) {
-
+    $scope.po = {};
+    $scope.supplies = [];
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
         $scope.isBod = result.status === "LOGISTIC";
         $scope.isPaid = result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC";
         $scope.isDone = result.status === "DONE";
         $scope.supplies = result.items;
-        //console.log(result.items);
         $scope.isLogistic = result.status === "LOGISTIC";
         $scope.status = (result.isPreOrder) ? "Pre-Order" : "Ready Stock";
-        //console.log(result);
         if ($scope.isPaid) {
             $scope.image = '../UserImage/' + $scope.po.id + ".jpg";
         }
         $scope.updateExpedition();
     });
+    $scope.allChecked = false;
 
     $scope.file = {};
     $scope.getFile = function (e) {
@@ -33,11 +33,7 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
         if ($scope.po.expeditionAdjustment !== '' && $scope.po.city !== '') {
             var name = $scope.po.expeditionAdjustment.split('-')[0];
             var type = $scope.po.expeditionAdjustment.split('-')[1];
-            //alert(name);
-            //alert(type);
             expeditionService.getShipmentCostFilterByExpeditionAndCity(name, $scope.po.city, type).success(function (rs) {
-                console.log(rs);
-                //alert(rs[0].nextKilo);
                 $scope.po.kiloAdjustmentQuantity = rs[0].kiloQuantity;
                 $scope.po.shipmentAdjustmentCostFirstKilo = rs[0].firstKilo;
                 $scope.po.shipmentAdjustmentCost = rs[0].nextKilo;
@@ -48,9 +44,6 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
     $scope.updateExpedition = function () {
         if ($scope.po.city !== '') {
             expeditionService.getShipmentCostFilterByCity($scope.po.city).success(function (rs) {
-                //console.log(rs);
-                //alert(rs[0].nextKilo);
-
                 if (rs == null || rs.length === 0) {
                     alert("Sorry your city is not available for shipment at the moment. Please contact marketing@animart.co.id for inquries.");
                     $scope.po.showExpedition = false;
@@ -77,6 +70,12 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
         $mdDialog.cancel();
     };
 
+    $scope.showInvoice = function (id) {
+        window.location.href = "#/invoice/" + id;
+        $mdDialog.cancel();
+    };
+
+
     $scope.updateReceipt = function () {
         orderService.insertReceiptNumber(purchaseOrderId, $scope.po.receiptNumber).success(function () {
             abp.message.success("Success", "Receipt number for Purchase Order " + purchaseOrderId + " has been Updated");
@@ -98,7 +97,23 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Rejected");
         });
         $mdDialog.cancel();
-
+    };
+    $scope.toggleInvoice = function (res) {
+        $scope.showExpedition = false;
+        if (!res)
+            $scope.allChecked = false;
+        for (var i = 0; i < $scope.supplies.length; i++) {
+            if ($scope.supplies[i].checked) {
+                $scope.showExpedition = true;
+                i = $scope.supplies.length;
+            }
+        }
+    };
+    $scope.toggleAllInvoice = function () {
+        $scope.showExpedition = $scope.allChecked;
+        for (var i = 0; i < $scope.supplies.length; i++) {
+            $scope.supplies[i].checked = $scope.showExpedition;
+        }
     };
 }
 
@@ -138,13 +153,11 @@ function dashboardController($q, $rootScope, $scope, orderService,expeditionServ
 
     $scope.refresh = function () {
         orderService.getDashboardAdmin().success(function (result) {
-            //console.log(result);
             $scope.dashboard = result;
         });
 
         $scope.gridOptions.data = null;
         orderService.getAllPurchaseOrderForLogistic($scope.statusType,$scope.statusGrid).success(function (result) {
-            //console.log(result);
             $scope.gridOptions.data = result;
         });
     };
@@ -173,7 +186,7 @@ function dashboardController($q, $rootScope, $scope, orderService,expeditionServ
     };
 
     $scope.gridOptions.columnDefs = [
-        { name: 'id', enableCellEdit: false },
+        { name: 'code', enableCellEdit: false },
         { name: 'creationTime', displayName: 'Date', cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"', enableCellEdit: false },
          { name: 'creatorUser.name', displayName: 'Name', enableCellEdit: false },
         { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },

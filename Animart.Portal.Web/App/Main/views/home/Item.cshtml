@@ -12,16 +12,21 @@
                         </span>
                     </md-card-title-text>
                 </md-card-title>
-                <md-card-content layout="row" class="layout-row">
-                    <img src="{{supply.image}}" class="md-media-lg" width="400" height="400"/>
-                    <p layout="column">
-                        <div style="padding-left:25px;" ng-bind-html="renderHtml(supply.description)"></div> 
-                    </p>
+                <md-card-content layout="column" layout-gt-xs="row" >
+                    <div flex>
+                        <img src="{{supply.image}}" class="md-media-xl card-media" style="width: 100%; max-width: 400px; height: auto;"/>
+                    </div>
+                    <div flex>
+                        <p layout="column">
+                            <div style="padding-left: 25px;" ng-bind-html="renderHtml(supply.description)"></div>
+                        </p>
+                    </div>
                 </md-card-content>
                 <md-card-actions layout="row" layout-align="right center" ng-if="vm.getShownUserName().currentRole == '5'">
                     <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="500" data=supply>Add To Cart</ngcart-addtocart>
                 </md-card-actions>
-            </md-card>
+                <a class="btn btn-default" ng-click="backToProduct()" style="" class="col-sm-4">Back To Product List</a>
+</md-card>
         </div>
     </md-content>
 </div>
