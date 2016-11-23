@@ -100,7 +100,7 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService,exp
     };
 
     $scope.approve = function () {
-        orderService.updatePurchaseOrderStatus(purchaseOrderId, "ACCOUNTING").success(function () {
+        orderService.updateOrderItemStatus(purchaseOrderId, "ACCOUNTING",$scope.supplies).success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has been sent to accounting for approval");
         });
         $mdDialog.cancel();
@@ -108,7 +108,7 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService,exp
     };
 
     $scope.reject = function () {
-        orderService.updatePurchaseOrderStatus(purchaseOrderId, "REJECT").success(function () {
+        orderService.updateOrderItemStatus(purchaseOrderId, "REJECT", $scope.supplies).success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Rejected");
         });
         $mdDialog.cancel();
@@ -121,10 +121,9 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService,exp
         });
         $mdDialog.cancel();
     }
-
     $scope.insertExpeditionAdjustment = function () {
         if ($scope.po.expeditionAdjustment !== '') {
-            orderService.insertExpeditionAdjustment(purchaseOrderId, $scope.po.expeditionAdjustment).success(function () {
+            orderService.updateExpeditionAdjustment(purchaseOrderId, $scope.po.expeditionAdjustment, $scope.supplies).success(function () {
                 abp.message.success("Success", "Expedition Adjustment for Purchase Order " + purchaseOrderId + " has been Updated");
             });
         }

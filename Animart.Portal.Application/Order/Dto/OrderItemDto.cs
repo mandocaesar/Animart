@@ -24,5 +24,7 @@ namespace Animart.Portal.Order.Dto
         public int Quantity { get; set; }
         public int PriceAdjustment { get; set; }
         public int QuantityAdjustment { get; set;}
+
+        public bool Checked { get; set; }
     }
 }

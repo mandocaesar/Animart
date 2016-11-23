@@ -6,6 +6,7 @@
 function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, expeditionService, purchaseOrderId) {
     $scope.po = {};
     $scope.supplies = [];
+    $scope.showExpedition = false;
     orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
         $scope.po = result;
         $scope.isBod = result.status === "LOGISTIC";
@@ -55,7 +56,7 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
         }
     };
     $scope.receive = function () {
-        orderService.updatePurchaseOrderStatus(purchaseOrderId, "DONE").success(function () {
+        orderService.updateOrderItemStatus(purchaseOrderId, "DONE", $scope.supplies).success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Verified");
         });
         $mdDialog.cancel();
@@ -77,7 +78,7 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
 
 
     $scope.updateReceipt = function () {
-        orderService.insertReceiptNumber(purchaseOrderId, $scope.po.receiptNumber).success(function () {
+        orderService.insertInvoiceReceiptNumber(purchaseOrderId, $scope.po.receiptNumber, $scope.supplies).success(function () {
             abp.message.success("Success", "Receipt number for Purchase Order " + purchaseOrderId + " has been Updated");
         });
         $mdDialog.cancel();
@@ -85,7 +86,7 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
     }
     $scope.insertExpeditionAdjustment = function () {
         if ($scope.po.expeditionAdjustment !== '' ) {
-            orderService.insertExpeditionAdjustment(purchaseOrderId, $scope.po.expeditionAdjustment).success(function () {
+            orderService.updateExpeditionAdjustment(purchaseOrderId,$scope.po.expeditionAdjustment, $scope.supplies).success(function () {
                 abp.message.success("Success", "Expedition Adjustment for Purchase Order " + purchaseOrderId + " has been Updated");
             });
         }
@@ -93,7 +94,7 @@ function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, exp
     }
 
     $scope.reject = function () {
-        orderService.updatePurchaseOrderStatus(purchaseOrderId, "REJECT").success(function () {
+        orderService.updateOrderItemStatus(purchaseOrderId, "REJECT",$scope.supplies).success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Rejected");
         });
         $mdDialog.cancel();

@@ -5,6 +5,7 @@
 
 function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,expeditionService, purchaseOrderId) {
 
+    $scope.showExpedition = false;
     $scope.supplies = [];
     $scope.po = {
         address: '',
@@ -125,9 +126,17 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
         $mdDialog.cancel();
 
     }
+    //$scope.insertExpeditionAdjustment = function () {
+    //    if ($scope.po.expeditionAdjustment !== '') {
+    //        orderService.insertExpeditionAdjustment(purchaseOrderId, $scope.po.expeditionAdjustment).success(function () {
+    //            abp.message.success("Success", "Expedition Adjustment for Purchase Order " + purchaseOrderId + " has been Updated");
+    //        });
+    //    }
+    //    $mdDialog.cancel();
+    //}
     $scope.insertExpeditionAdjustment = function () {
         if ($scope.po.expeditionAdjustment !== '') {
-            orderService.insertExpeditionAdjustment(purchaseOrderId, $scope.po.expeditionAdjustment).success(function () {
+            orderService.updateExpeditionAdjustment(purchaseOrderId, $scope.po.expeditionAdjustment, $scope.supplies).success(function () {
                 abp.message.success("Success", "Expedition Adjustment for Purchase Order " + purchaseOrderId + " has been Updated");
             });
         }

@@ -699,7 +699,7 @@ namespace Animart.Portal.Order
                 for (int i = 0; i < orderItems.Count(e=>e.Checked); i++)
                 {
                     var order = orderItems[i];
-                    var data = _orderItemRepository.Get(order.Id);
+                    var data = _orderItemRepository.FirstOrDefault(e=>e.Id== order.Id);
                     data.Status = status;
                     _orderItemRepository.Update(data);
                 }
@@ -742,70 +742,61 @@ namespace Animart.Portal.Order
 
         }
 
+        private PurchaseOrderDto ConvertStatusToPurchaseOrder(PurchaseOrderDto purchase,string status)
+        {
+            purchase.Status = status;
+            return purchase;
+        }
+
         public List<PurchaseOrderDto> GetAllPurchaseOrderForMarketing(int type,int num)
         {
             try
             {
                 var list = new List<PurchaseOrder>();
-                switch (type)
-                {
-                    case (int)TYPE.PREORDER:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).OrderByDescending(i=>i.CreationTime).ToList();
-                        break;
-                    case (int)TYPE.READYSTOCK:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
-                        break;
-                    default:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
-                        break;
-                }
-                //List<PurchaseOrder> list = new List<PurchaseOrder>();
-                //PurchaseOrder temp;
-                //foreach (var item in listData)
-                //{
-                //    temp =  new PurchaseOrder
-                //    {
-                //        Id=item.Id,
-                //        Address=item.Address,
-                //        GrandTotal=item.GrandTotal,
-                //        IsPreOrder=item.IsPreOrder,
-                //        ModifiedBy=item.ModifiedBy,
-                //        ModifiedOn=item.ModifiedOn,
-                //        ExpeditionAdjustment=item.ExpeditionAdjustment,
-                //        City=item.City,
-                //        CreationTime=item.CreationTime.ToUniversalTime(),
-                //        CreatorUser=item.CreatorUser,
-                //        CreatorUserId=item.CreatorUserId,
-                //        Expedition=item.Expedition,
-                //        OrderItems=item.OrderItems,
-                //        PhoneNumber=item.PhoneNumber,
-                //        PostalCode=item.PostalCode,
-                //        Province=item.Province,
-                //        ReceiptNumber=item.ReceiptNumber,
-                //        Status=item.Status,
-                //        TotalWeight= item.TotalWeight
-                //    };
-                //    listData.Add(temp);
-                //}
+                string status = "";
                 switch (num)
                 {
                     case (int)STATUS.REJECT:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "REJECT").ToList();
+                        status = "REJECT"; break;
                     case (int)STATUS.ACCOUNTING:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "ACCOUNTING").ToList();
+                        status = "ACCOUNTING"; break;
                     case (int)STATUS.MARKETING:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING").ToList();
+                        status = "MARKETING"; break;
                     case (int)STATUS.PAYMENT:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAYMENT").ToList();
+                        status = "PAYMENT"; break;
                     case (int)STATUS.PAID:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAID").ToList();
+                        status = "PAID"; break;
                     case (int)STATUS.LOGISTIC:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "LOGISTIC").ToList();
+                        status = "LOGISTIC"; break;
                     case (int)STATUS.DONE:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "DONE").ToList();
+                        status = "DONE"; break;
                     default:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING").ToList();
+                        status = "MARKETING"; break;
                 }
+
+                switch (type)
+                {
+                    case (int)TYPE.PREORDER:
+                        list = _orderItemRepository.GetAll()
+                            .Where(i => i.Status == status && i.PurchaseOrder.IsPreOrder)
+                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
+                            .ToList();
+                        break;
+                    case (int)TYPE.READYSTOCK:
+                        list = _orderItemRepository.GetAll()
+                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
+                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
+                            .ToList();
+                        break;
+                    default:
+                        list = _orderItemRepository.GetAll()
+                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
+                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
+                            .ToList();
+                        break;
+                }
+              
+                return list.Select(item => ConvertStatusToPurchaseOrder(item.MapTo<PurchaseOrderDto>(), status)).ToList();
             }
             catch (Exception)
             {
@@ -818,38 +809,51 @@ namespace Animart.Portal.Order
             try
             {
                 var list = new List<PurchaseOrder>();
-                switch (type)
-                {
-                    case (int)TYPE.PREORDER:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
-                        break;
-                    case (int)TYPE.READYSTOCK:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
-                        break;
-                    default:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
-                        break;
-                }
+                string status = "";
                 switch (num)
                 {
                     case (int)STATUS.REJECT:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "REJECT").ToList();
+                        status = "REJECT"; break;
                     case (int)STATUS.ACCOUNTING:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "ACCOUNTING").ToList();
+                        status = "ACCOUNTING"; break;
                     case (int)STATUS.MARKETING:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING").ToList();
+                        status = "MARKETING"; break;
                     case (int)STATUS.PAYMENT:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAYMENT").ToList();
+                        status = "PAYMENT"; break;
                     case (int)STATUS.PAID:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAID").ToList();
+                        status = "PAID"; break;
                     case (int)STATUS.LOGISTIC:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "LOGISTIC").ToList();
+                        status = "LOGISTIC"; break;
                     case (int)STATUS.DONE:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "DONE").ToList();
+                        status = "DONE"; break;
                     default:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "ACCOUNTING").ToList();
+                        status = "ACCOUNTING"; break;
                 }
-                
+
+                switch (type)
+                {
+                    case (int)TYPE.PREORDER:
+                        list = _orderItemRepository.GetAll()
+                            .Where(i => i.Status == status && i.PurchaseOrder.IsPreOrder)
+                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
+                            .ToList();
+                        break;
+                    case (int)TYPE.READYSTOCK:
+                        list = _orderItemRepository.GetAll()
+                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
+                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
+                            .ToList();
+                        break;
+                    default:
+                        list = _orderItemRepository.GetAll()
+                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
+                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
+                            .ToList();
+                        break;
+                }
+
+                return list.Select(item => ConvertStatusToPurchaseOrder(item.MapTo<PurchaseOrderDto>(), status)).ToList();
+
             }
             catch (Exception)
             {
@@ -862,35 +866,40 @@ namespace Animart.Portal.Order
             try
             {
                 var list = new List<PurchaseOrder>();
+                string status = "";
+                switch (num)
+                {
+                    case (int)STATUS.LOGISTIC:
+                        status = "LOGISTIC"; break;
+                    case (int)STATUS.DONE:
+                        status = "DONE"; break;
+                    default:
+                        status = "LOGISTIC"; break;
+                }
+
                 switch (type)
                 {
                     case (int)TYPE.PREORDER:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
+                        list = _orderItemRepository.GetAll()
+                            .Where(i => i.Status == status && i.PurchaseOrder.IsPreOrder)
+                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
+                            .ToList();
                         break;
                     case (int)TYPE.READYSTOCK:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
+                        list = _orderItemRepository.GetAll()
+                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
+                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
+                            .ToList();
                         break;
                     default:
-                        list = _purchaseOrderRepository.GetAll().Where(e => !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
+                        list = _orderItemRepository.GetAll()
+                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
+                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
+                            .ToList();
                         break;
                 }
-                switch (num)
-                {
-                    //case (int)STATUS.REJECT:
-                    //    return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "REJECT").ToList();
-                    //case (int)STATUS.ACCOUNTING:
-                    //    return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "ACCOUNTING").ToList();
-                    //case (int)STATUS.MARKETING:
-                    //    return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING").ToList();
-                    //case (int)STATUS.PAYMENT:
-                    //    return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAYMENT").ToList();
-                    case (int)STATUS.LOGISTIC:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "LOGISTIC").ToList();
-                    case (int)STATUS.DONE:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "DONE").ToList();
-                    default:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "LOGISTIC").ToList();
-                }
+
+                return list.Select(item => ConvertStatusToPurchaseOrder(item.MapTo<PurchaseOrderDto>(), status)).ToList();
             }
             catch (Exception)
             {
@@ -924,6 +933,49 @@ namespace Animart.Portal.Order
             }
         }
 
+        public bool InsertInvoiceReceiptNumber(string id, string receipt, List<OrderItemDto> orderItems)
+        {
+            try
+            {
+                var poId = Guid.Parse(id);
+                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poId);
+                orderItems= orderItems.Where(e => e.Checked).ToList();
+                for (int i = 0; i < orderItems.Count; i++)
+                {
+                    var orderId = orderItems[i].Id;
+                    var ord =_orderItemRepository.FirstOrDefault(e=>e.Id==orderId);
+                    ord.Status = "DONE";
+                    _orderItemRepository.Update(ord);
+                }
+                var invoices = orderItems.Select(e => e.Invoice).Distinct().ToList();
+                for (int i = 0; i < invoices.Count(); i++)
+                {
+                    var invId = invoices[i].Id;
+                    var inv = _invoiceRepository.FirstOrDefault(e=>e.Id== invId);
+                    if (inv != null)
+                    {
+                        inv.ResiNumber = receipt;
+                        _invoiceRepository.Update(inv);
+                        string breakLine = "<br/>";
+                        GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                        gmail.SendMessage("Invoice Number " + inv.InvoiceNumber + " Has been updated",
+                        "Dear retailer," + breakLine + breakLine +
+                        "Your invoice with number:" + inv.InvoiceNumber + " has been updated to \"" + "DONE" + "\"." + breakLine + breakLine
+                        + "Your shipment tracking number is: \"" + inv.ResiNumber + "\"." + breakLine
+                        + "To track your shipment, use the corresponding couriers service website or contact by phone." + breakLine + breakLine
+                        + "Thank you",
+                        po.CreatorUser.EmailAddress);
+                    }
+                }
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool InsertExpeditionAdjustment(string id, string name)
         {
             try
@@ -950,6 +1002,42 @@ namespace Animart.Portal.Order
                 }
                 else
                     return false;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateExpeditionAdjustment(string id, string name, List<OrderItemDto> orderItems)
+        {
+            try
+            {
+                var poId = Guid.Parse(id);
+                var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poId);
+
+                var invoices = orderItems.Where(e => e.Checked).Select(e => e.Invoice).Distinct().ToList();
+                for (int i = 0; i < invoices.Count(); i++)
+                {
+                    var invId = invoices[i].Id;
+                    var inv = _invoiceRepository.FirstOrDefault(e => e.Id == invId);
+                    if (inv != null)
+                    {
+                        inv.Expedition = name.Trim();
+                        _invoiceRepository.Update(inv);
+                        string breakLine = "<br/>";
+                        GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                        gmail.SendMessage("Invoice Order " + inv.InvoiceNumber + " Has been updated",
+                            "Dear retailer," + breakLine + breakLine
+                            + "The expedition for your purchase order with number:" + inv.InvoiceNumber +
+                            " has been updated to \"" + name + "\"." + breakLine + breakLine
+                            + "Please kindly login to your account to check the status of the orders." + breakLine + breakLine
+                            + "Thank you",
+                            po.CreatorUser.EmailAddress);
+                    }
+                }
+                return true;
 
             }
             catch (Exception ex)

@@ -48,7 +48,9 @@ namespace Animart.Portal.Order
         List<PurchaseOrderDto> GetAllPurchaseOrderForLogistic(int type,int num);
 
         bool InsertReceiptNumber(string id, string receipt);
+        bool InsertInvoiceReceiptNumber(string id, string receipt, List<OrderItemDto> orderItems);
 
         bool InsertExpeditionAdjustment(string id, string name);
+        bool UpdateExpeditionAdjustment(string id, string name, List<OrderItemDto> orderItems);
     }
 }

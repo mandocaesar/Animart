@@ -83,16 +83,12 @@
                             </md-card-content>
                         </md-card>   
                     </div>
-                    <md-subheader class="md-sticky"  ng-show="isPaid || isDone">Resi No: </md-subheader>
+                    @*<md-subheader class="md-sticky"  ng-show="isPaid || isDone">Resi No: </md-subheader>
                     <div layout-gt-sm="row" >
                         <md-card>
-                            @*<md-input-container class="md-block"> ng-show="isPaid && !isDone"*@
-                                @*<label>Resi No:</label>*@
-                                <input ng-model="po.receiptNumber">
-                                @*<label>Resi No:</label> {{po.receiptNumber}}*@
-                            @*</md-input-container>*@
+                            <input ng-model="po.receiptNumber">
                         </md-card>   
-                    </div>
+                    </div>*@
                     @*<div layout-gt-sm="row" ng-show="isDone">
                         <md-card>
                             <label>{{po.receiptNumber}}</label>
@@ -107,9 +103,6 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input type="checkbox"
-                                                       ng-click="toggleAllInvoice()"
-                                                       ng-model="allChecked" />
                                             </th>
                                             <th>Code</th>
                                             <th>Name</th>
@@ -118,6 +111,7 @@
                                             <th>Quantity Adjustment</th>
                                             <th>Price</th>
                                             <th>Price Adjustment</th>
+                                            <th>Status</th>
                                             <th>Invoice</th>
                                             <th>Total</th>
                                         </tr>
@@ -151,6 +145,9 @@
                                                 {{ supply.priceAdjustment | currency:"Rp." }}
                                             </td>
                                             <td>
+                                                {{supply.status}}
+                                            </td>
+                                            <td>
                                                 <a class="btn btn-primary" ng-click="showInvoice(supply.invoice.id)" ng-show="{{supply.invoice!=null}}">{{supply.invoice.invoiceNumber}}</a>
                                             </td>
                                             <td>
@@ -160,23 +157,36 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="9" align="right" width="80%"><strong>SubTotal:</strong></td>
+                                            <td colspan="10" align="right" width="80%"><strong>SubTotal:</strong></td>
                                             <td>{{ getSubTotal() | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="9" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
+                                            <td colspan="10" align="right"><strong>Shipping Cost ({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalShipmentCost | currency:"Rp." }}</td>
                                         </tr>
                                         <tr ng-show="po.expedition!=po.expeditionAdjustment">
-                                            <td colspan="9" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
+                                            <td colspan="10" align="right"><strong>Shipping Cost Adjustment({{ po.totalWeight}} kg):</strong></td>
                                             <td>{{ po.totalAdjustmentShipmentCost | currency:"Rp." }}</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="9" align="right"><strong>Total:</strong></td>
+                                            <td colspan="10" align="right"><strong>Total:</strong></td>
                                             <td><strong>{{ po.grandTotal + po.totalAdjustmentShipmentCost | currency:"Rp." }}</strong></td>
                                         </tr>
                                     </tfoot>
                                 </table>
+                                <div layout="column"ng-show="(isPaid || isDone) && showExpedition">
+                                    <label style="color:red;">* Write invoice Number to Update Resi</label>
+                                    <label><strong>Insert Resi Number:</strong></label>
+                                    <input ng-model="po.receiptNumber">
+                                </div>
+                                <div layout="column" ng-show="showExpedition">
+                                    <label style="color:red;">* Choose Expedition that will be used for invoice</label>
+                                    <label><strong>Choose Expedition</strong></label>
+                                    <select class="md-block" flex-gt-sm
+                                            name="expedition" id="expedition" ng-model="po.expeditionAdjustment" ng-change="updateShippingPrice()">
+                                        <option ng-repeat="expedition in expeditions">{{expedition.expedition}}-{{expedition.type}}</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -232,20 +242,6 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="5">
-                                        <div layout-gt-sm="row">
-                                            <md-input-container class="md-block" flex-gt-sm>
-                                                <label><strong>Expedition Adjustment</strong></label>
-                                                <md-select ng-model="po.expeditionAdjustment" ng-change="updateShippingPrice()">
-                                                    <md-option ng-repeat="expedition in expeditions">
-                                                        {{expedition.expedition}}-{{expedition.type}}
-                                                    </md-option>
-                                                </md-select>
-                                            </md-input-container>
-                                         </div>
-                                    </td>
-                                </tr>
-                                <tr>
                                     <td colspan="4" align="right" width="80%"><strong>Shipping first({{po.kiloQuantity}}kg):</strong></td>
                                     <td>{{ po.shipmentCostFirstKilo | currency:"Rp." }}</td>
                                 </tr>
@@ -283,10 +279,10 @@
                 <md-button ng-click="receive()"  ng-disabled="!showExpedition" ng-show="isLogistic">
                     Already Sent
                 </md-button>
-                <md-button ng-click="updateReceipt()" >@*ng-show="isPaid && !isDone"*@
+                <md-button ng-click="updateReceipt()" ng-disabled="!showExpedition">@*ng-show="isPaid && !isDone"*@
                     Update Resi
                 </md-button>
-                <md-button ng-click="insertExpeditionAdjustment()"> @*ng-show="isPaid && !isDone"*@
+                <md-button ng-click="insertExpeditionAdjustment()" ng-disabled="!showExpedition"> @*ng-show="isPaid && !isDone"*@
                 Update Expedition
             </md-button>
                 <md-button ng-click="close()">

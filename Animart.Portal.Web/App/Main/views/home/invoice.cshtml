@@ -20,22 +20,22 @@
                                 <img src="~/Content/images/animart_logo.png" />
                             </div>
                         </div>
-                        <md-subheader class="md-sticky" ng-show="isPaid">Resi No: </md-subheader>
-                        <div layout-gt-sm="row" ng-show="isPaid">
+                        @*<md-subheader class="md-sticky" ng-show="isDone">Resi No: </md-subheader>
+                        <div layout-gt-sm="row" ng-show="isDone">
                             <md-card>
-                                @*<md-input-container class="md-block">
-                            @*<input ng-model="po.receiptNumber">*@
-                                @*<label>Resi No:</label>*@
                                 {{po.resiNumber}}
-                                @*</md-input-container>*@
                             </md-card>
-                        </div>
+                        </div>*@
                         <md-subheader class="md-sticky">Invoice Details: </md-subheader>
                         <div layout-gt-sm="row">
                             <div class="table-responsive col-lg-12">
                                 <div>
                                     <table class="table table-striped ngCart cart table-bordered">
                                         <tbody>
+                                        <tr>
+                                            <td colspan="6"><strong>Printed Date:</strong></td>
+                                            <td>{{printedDate}}</td>
+                                        </tr>
                                         <tr>
                                             <td colspan="6"><strong>Invoice Number:</strong></td>
                                             <td>{{po.invoiceNumber}}</td>
@@ -44,9 +44,9 @@
                                             <td colspan="6"><strong>Order Number:</strong></td>
                                             <td>{{po.code}}</td>
                                         </tr>
-                                        <tr>
-                                            <td colspan="6"><strong>Printed Date:</strong></td>
-                                            <td>{{printedDate}}</td>
+                                        <tr ng-show="isDone">
+                                            <td colspan="6"><strong>Resi Number:</strong></td>
+                                            <td>{{po.resiNumber}}</td>
                                         </tr>
                                         </tbody>
                                     </table>
