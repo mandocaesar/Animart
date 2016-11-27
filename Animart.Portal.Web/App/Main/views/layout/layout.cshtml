@@ -78,13 +78,13 @@
 </head>
 <body>
 <div ng-app="app" ng-controller="app.views.layout as vm" layout="column" layout-fill>
-    <header flex="1" ng-include="'/App/Main/views/layout/header.cshtml'"></header>
+    <header flex ng-include="'/App/Main/views/layout/header.cshtml'"></header>
     <main class="container main-container"  layout="row" flex>
         <div style="padding-top:50px;" class="angular-animation-container row" flex>
             <div style="padding:0px;" ui-view class="shuffle-animation col-xs-12"></div>
         </div>
     </main>
-    <footer flex="1" layout="row" ng-include="'/App/Main/views/layout/footer.cshtml'"></footer>
+    <footer flex layout="row" ng-include="'/App/Main/views/layout/footer.cshtml'"></footer>
 </div>
 </body>
 </html>

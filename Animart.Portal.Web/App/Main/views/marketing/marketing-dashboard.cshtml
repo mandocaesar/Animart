@@ -60,10 +60,9 @@
                 <div class="md-toolbar-tools">
                     <h2>Order Details {{po.code}} ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}} - {{po.creatorUser.name}} {{po.creatorUser.surname}}</h2>
                     <span flex></span>
-                    <md-button class="md-icon-button" style="font-size:30px;" ng-click="print()">
-                        @*<md-icon md-svg-src="" aria-label="Close dialog"></md-icon>*@
+                    @*<md-button class="md-icon-button" style="font-size:30px;" ng-click="print()">
                         <span class="fa fa-print" aria-label="Print dialog"></span>
-                    </md-button>
+                    </md-button>*@
                     <md-button class="md-icon-button" style="font-size:30px;" ng-click="close()">
                         @*<md-icon md-svg-src="" aria-label="Close dialog"></md-icon>*@
                         <span class="fa fa-close" aria-label="Close dialog"></span>
@@ -136,7 +135,7 @@
                                                 {{supply.quantity}}
                                             </td>
                                             <td ng-hide="isBod && !isPayment">
-                                                {{ supply.quantityAdjustment | currency:"Rp." }}
+                                                {{ supply.quantityAdjustment}}
                                             </td>
                                             <td ng-show="isBod && !isPayment">
                                                 <input type="number" min="0" class="pull-right" ng-model="supply.quantityAdjustment" style="margin-left:40px;width:100%;" ng-disabled="isPaid">

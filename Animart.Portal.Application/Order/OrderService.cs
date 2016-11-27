@@ -13,8 +13,6 @@ using Animart.Portal.Extension;
 using Animart.Portal.Order.Dto;
 using Animart.Portal.Shipment;
 using Animart.Portal.Supply;
-using Animart.Portal.Supply.Dto;
-using AutoMapper;
 using Animart.Portal.Users.Dto;
 
 namespace Animart.Portal.Order
@@ -31,6 +29,8 @@ namespace Animart.Portal.Order
         private readonly IRepository<City, Guid> _cityRepository;
         private readonly OrderDomainService _orderDomainService;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private const string ANIMART_EMAILADDRESS = "marketing@animart.co.id";
+        private const string ANIMART_PASSWORD = "GOSALES2017gogo";
 
         private enum STATUS
         {
@@ -249,13 +249,7 @@ namespace Animart.Portal.Order
                     if (supplyItem.InStock < orderItem.Quantity)
                     {
                         orderItem.Quantity = supplyItem.InStock;
-                        //return false;
                     }
-
-                    //if (orderItem.Quantity == 0)
-                    //{
-                    //    return true;
-                    //})
 
                     var item = new OrderItem()
                     {
@@ -265,6 +259,7 @@ namespace Animart.Portal.Order
                         QuantityAdjustment = orderItem.Quantity,
                         Name = orderItem.Name,
                         PriceAdjustment = supplyItem.Price,
+                        Status = "MARKETING",
                         CreationTime = DateTime.Now,
                         CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
                         CreatorUserId = AbpSession.GetUserId(),
@@ -648,7 +643,7 @@ namespace Animart.Portal.Order
                 var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == POid);
 
                 po.Status = status;
-                GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
                 string message = "";
                 string breakLine = "<br/>";
                 switch (status.Trim().ToLower())
@@ -704,7 +699,7 @@ namespace Animart.Portal.Order
                     _orderItemRepository.Update(data);
                 }
 
-                GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
                 string message = "";
                 string breakLine = "<br/>";
                 switch (status.Trim().ToLower())
@@ -917,7 +912,7 @@ namespace Animart.Portal.Order
                 po.ReceiptNumber = receipt;
                 po.Status = "DONE";
                 _purchaseOrderRepository.Update(po);
-                GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
                 gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", 
                     "Dear retailer,"+breakLine+breakLine+
                     "Your purchase order with number:" + po.Id.ToString() + " has been updated to \"" + po.Status +"\"."+breakLine+breakLine
@@ -957,7 +952,7 @@ namespace Animart.Portal.Order
                         inv.ResiNumber = receipt;
                         _invoiceRepository.Update(inv);
                         string breakLine = "<br/>";
-                        GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                        GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
                         gmail.SendMessage("Invoice Number " + inv.InvoiceNumber + " Has been updated",
                         "Dear retailer," + breakLine + breakLine +
                         "Your invoice with number:" + inv.InvoiceNumber + " has been updated to \"" + "DONE" + "\"." + breakLine + breakLine
@@ -990,7 +985,7 @@ namespace Animart.Portal.Order
                     _purchaseOrderRepository.Update(po);
 
                     string breakLine = "<br/>";
-                    GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                    GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
                     gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated",
                         "Dear retailer," + breakLine + breakLine
                         + "The expedition for your purchase order with number:" + po.Id.ToString() +
@@ -1027,10 +1022,10 @@ namespace Animart.Portal.Order
                         inv.Expedition = name.Trim();
                         _invoiceRepository.Update(inv);
                         string breakLine = "<br/>";
-                        GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                        GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
                         gmail.SendMessage("Invoice Order " + inv.InvoiceNumber + " Has been updated",
                             "Dear retailer," + breakLine + breakLine
-                            + "The expedition for your purchase order with number:" + inv.InvoiceNumber +
+                            + "The expedition for your invoice order with number:" + inv.InvoiceNumber +
                             " has been updated to \"" + name + "\"." + breakLine + breakLine
                             + "Please kindly login to your account to check the status of the orders." + breakLine + breakLine
                             + "Thank you",

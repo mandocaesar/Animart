@@ -135,7 +135,6 @@
                     supplyService.isAvailable(items[i].getData().id, i).success(function(result) {
                         ngCart.getItems()[result.idx].getData().available = result.isAvailable;
                         $scope.isAvailable = $scope.isAvailable && result.isAvailable;
-                        //console.log(result);
                     }).error(function(rs) {
                         console.log(rs);
                     });

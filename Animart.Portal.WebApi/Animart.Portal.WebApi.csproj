@@ -144,6 +144,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\Controllers\InvoiceController.cs" />
     <Compile Include="Api\Controllers\AccountController.cs" />
     <Compile Include="Model\LoginModel.cs" />
     <Compile Include="PortalWebApiModule.cs" />
