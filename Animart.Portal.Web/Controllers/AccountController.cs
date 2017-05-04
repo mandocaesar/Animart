@@ -429,11 +429,11 @@ namespace Animart.Portal.Web.Controllers
                     var callbackUrl = Url.Action("ResetPassword", "Account",
                         new {userId = _user.Id, code = _user.PasswordResetCode}, protocol: Request.Url.Scheme);
 
-                    GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+                    GmailExtension gmail = new GmailExtension();
                     gmail.SendMessage("Animart Portal Reset Password",
                         "Please reset your password by clicking <a href=\"" + callbackUrl +
                         "\">here</a> <br/> If this is not you, please inform us by using email to marketing@animart.co.id.",
-                        _user.EmailAddress);
+                        _user.EmailAddress,false,null,null);
                     isActive = _user.IsActive;
                 }
 

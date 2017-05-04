@@ -34,16 +34,6 @@
                 }, 200);
             }
 
-            //function buildToggler(navID) {
-            //    return function () {
-            //        // Component lookup should always be available since we are not using `ng-if`
-            //        $mdSidenav(navID)
-            //          .toggle()
-            //          .then(function () {
-            //              //$log.debug("toggle " + navID + " is done");
-            //          });
-            //    }
-            //}
             ngCart.setTaxRate(0);
             ngCart.setShipping(0);
 
@@ -92,7 +82,6 @@
                                 $scope.supplies[i].image = "";
                             }
                             $scope.supplies[i].availableUntil = new Date($scope.supplies[i].availableUntil);
-
                         }
 
                         $scope.poSupplies = result.poSupply;

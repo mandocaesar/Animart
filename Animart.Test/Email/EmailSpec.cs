@@ -15,13 +15,13 @@ namespace Animart.Test.Email
         public void GivenValidEmailAddressAndPassword()
         {
             this.result = true;
-            mailService = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+            mailService = new GmailExtension(GmailExtension.ANIMART_EMAILADDRESS, GmailExtension.ANIMART_PASSWORD);
         }
 
         [Test]
         public void WhenSendTestSendEmail()
         {
-          result =  mailService.SendMessage("test", "test", "armand.caesar@gmail.com");     
+          result =  mailService.SendMessage("test", "test", "armand.caesar@gmail.com",false,null,null);     
         }
 
         [TestFixtureTearDown]

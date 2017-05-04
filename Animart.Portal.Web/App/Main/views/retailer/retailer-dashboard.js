@@ -67,6 +67,7 @@ function dashboardController($q, $rootScope, $scope, orderService, expedition, $
                 targetEvent: ev,
                 clickOutsideToClose: true,
                 locals: {
+                    statusType: $scope.statusGrid,
                     purchaseOrderId: id,
                     orderService: orderService,
                     expeditionService: expedition
@@ -82,10 +83,7 @@ function dashboardController($q, $rootScope, $scope, orderService, expedition, $
             { name: 'code', enableCellEdit: false },
             { name: 'creationTime', displayName: 'Date', cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"', enableCellEdit: false },
             { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
-            { name: 'province', displayName: 'Province', enableCellEdit: false },
-            { name: 'address', displayName: 'Address', enableCellEdit: false },
             { name: 'status', displayName: 'Status', enableCellEdit: false },
-            //{ name: 'totalWeight', displayName: 'Total Weight (kg)', enableCellEdit: false },
             { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
             //{ name: 'shipmentCost', displayName: 'Shipment Cost', cellFilter: 'currency:"Rp"', enableCellEdit: false },
             {
@@ -155,9 +153,10 @@ function leftController($q, $rootScope, $scope, supplyService, expeditonService,
     };
 };
 
-function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId, expeditionService) {
+function ViewOrderController($http, $scope, $mdDialog, orderService, purchaseOrderId,
+    expeditionService, statusType) {
 
-    orderService.getSinglePurchaseOrder(purchaseOrderId).success(function(result) {
+    orderService.getSinglePurchaseOrder(purchaseOrderId, statusType).success(function (result) {
         $scope.po = result;
         if ($scope.po.expedition != $scope.po.expeditionAdjustment)
             $scope.po.isAdjustment = true;

@@ -44,11 +44,11 @@ namespace Animart.Portal.Supply
         {
             var supplies = _supplyItemRepository.GetAll().FirstOrDefault(i=>i.Id==id);
             if (supplies == null)
-                return new ItemAvailableDto {Idx = idx, IsAvailable = false };
+                return new ItemAvailableDto {Idx = idx, IsAvailable = false,Date = DateTime.UtcNow };
             if(supplies.IsPo)
-                return new ItemAvailableDto { Idx = idx, IsAvailable = (supplies.AvailableUntil >= DateTime.UtcNow)};
-            else
-                return new ItemAvailableDto { Idx = idx, IsAvailable = true };
+                return new ItemAvailableDto { Idx = idx, IsAvailable = (supplies.AvailableUntil > DateTime.UtcNow), Date = DateTime.UtcNow };
+
+            return new ItemAvailableDto { Idx = idx, IsAvailable = true, Date = DateTime.UtcNow };
         }
 
         public string CategoryToName(SupplyItem item)
@@ -109,14 +109,23 @@ namespace Animart.Portal.Supply
             }).ToList();
         }
 
+        private bool CategoryWillBeShown(SupplyItem s)
+        {
+                if (s.CategoryId == null)
+                    return true;
+                else
+                {
+                    return _categoryRepository.GetAll().FirstOrDefault(e=>e.Id==s.CategoryId).IsAvailable;
+                }
+        }
 
         public SuppliesDTO GetSuppliesRetailer(bool latest)
         {
             var result = new SuppliesDTO();
             var supplies = _supplyItemRepository.GetAll().Where(e=>e.Available ).ToList();
-
             
-            result.Supply = supplies.Where(e=>!e.IsPo).OrderByDescending(i => i.CreationTime).Select(e=> new SupplyItemDto
+            result.Supply = supplies.Where(e=>!e.IsPo && CategoryWillBeShown(e))
+                .OrderByDescending(i => i.CreationTime).Select(e=> new SupplyItemDto
             {   Available = e.Available,
                 Code = e.Code,
                 Id = e.Id,
@@ -134,7 +143,8 @@ namespace Animart.Portal.Supply
             }).ToList();
 
            
-                result.PoSupply = supplies.Where(e => e.IsPo && e.AvailableUntil>= DateTime.UtcNow)
+            result.PoSupply = supplies.Where(e => e.IsPo && CategoryWillBeShown(e)
+                && e.AvailableUntil>= DateTime.UtcNow)
                 .OrderByDescending(i => i.CreationTime).Select(e => new SupplyItemDto
             {
                 Available = e.Available,
@@ -235,7 +245,9 @@ namespace Animart.Portal.Supply
         {
             try
             {
-                await _supplyItemRepository.InsertAsync(new SupplyItem()
+                if (supplyItem.AvailableUntil < new DateTime(1990, 1, 1))
+                    supplyItem.AvailableUntil = DateTime.Now;
+                var supp = new SupplyItem()
                 {
                     Available = supplyItem.Available,
                     Code = supplyItem.Code,
@@ -250,7 +262,9 @@ namespace Animart.Portal.Supply
                     IsPo = supplyItem.IsPO,
                     CategoryId = supplyItem.CategoryId,
                     AvailableUntil = supplyItem.AvailableUntil
-                });
+                };
+               var x =  await _supplyItemRepository.InsertAndGetIdAsync(supp);
+                var b = x;
             }
             catch (Exception ex)
             {
@@ -356,6 +370,12 @@ namespace Animart.Portal.Supply
             try
             {
                 var a = _supplyItemRepository.FirstOrDefault(e => e.Id == id);
+                if (a.CategoryId != null)
+                {
+                    var data = _categoryRepository.FirstOrDefault(e => e.Id == a.CategoryId).IsAvailable;
+                    a.Available = a.Available && data;
+                }
+
                 return new SupplyItemDto()
                 {
                     Available = a.Available,

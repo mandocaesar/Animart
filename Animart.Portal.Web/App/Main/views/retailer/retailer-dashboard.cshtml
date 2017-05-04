@@ -72,9 +72,6 @@
                 <div class="md-toolbar-tools">
                     <h2>Order Details ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}}</h2>
                     <span flex></span>
-                    @*<md-button class="md-icon-button" style="font-size:30px;" ng-click="print()">
-                        <span class="fa fa-print" aria-label="Print dialog"></span>Invoice
-                    </md-button>*@
                     <md-button class="md-icon-button" style="font-size:30px;" ng-click="close()">
                         <span class="fa fa-close" aria-label="Close dialog"></span>
                     </md-button>
@@ -155,11 +152,7 @@
                     <div class="md-toolbar-tools">
                         <h2>Order Details {{po.code}} ({{po.creationTime | date: "dd-MMMM-yyyy, HH:mma"}}) - {{status}}</h2>
                         <span flex></span>
-                        Invoice
-                        <md-button class="md-icon-button" style="font-size:30px;" ng-click="print()">
-                            <span class="fa fa-print" aria-label="Print dialog"></span>
-                        </md-button>
-                        <md-button class="md-icon-button" style="font-size:30px;" ng-click="close()">
+                      <md-button class="md-icon-button" style="font-size:30px;" ng-click="close()">
                             <span class="fa fa-close" aria-label="Close dialog"></span>
                         </md-button>
                     </div>

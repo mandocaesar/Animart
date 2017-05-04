@@ -41,7 +41,7 @@
                         });
                 };
 
-                categoryService.getCategoriesForFilter().success(function(result) {
+                categoryService.getCategories().success(function (result) {
                     $scope.category = result;
                 });
 
@@ -193,8 +193,8 @@
                 });
         };
 
-        categoryService.getCategoriesForFilter().success(function (result) {
-            result.shift();
+        categoryService.getCategories().success(function (result) {
+            //result.shift();
             $scope.category = result;
         });
 
@@ -228,15 +228,11 @@
                 });
         };
 
-        categoryService.getCategoriesForFilter().success(function (result) {
-            result.shift();
+        categoryService.getCategories().success(function (result) {
+           // result.shift();
             $scope.category = result;
             supplyService.supply(param.data).success(function (rs) {
-                //console.log(rs);
-                //console.log(rs.availableUntil);
-
                 rs.availableUntil = new Date(rs.availableUntil);
-                //console.log(rs.availableUntil);
                 $scope.supply = rs;
             }).error(function (er) {
                 abp.notify.error('Error Load Supply');

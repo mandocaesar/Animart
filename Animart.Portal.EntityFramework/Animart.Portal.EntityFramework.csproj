@@ -217,6 +217,10 @@
     <Compile Include="Migrations\201611180447413_AddTotalWeightAndGrandTotalToInvoice.Designer.cs">
       <DependentUpon>201611180447413_AddTotalWeightAndGrandTotalToInvoice.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612060929443_AddIsAvailableToCategory.cs" />
+    <Compile Include="Migrations\201612060929443_AddIsAvailableToCategory.Designer.cs">
+      <DependentUpon>201612060929443_AddIsAvailableToCategory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Data\InitialDataBuilder.cs" />
     <Compile Include="PortalDataModule.cs" />
@@ -310,6 +314,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611180447413_AddTotalWeightAndGrandTotalToInvoice.resx">
       <DependentUpon>201611180447413_AddTotalWeightAndGrandTotalToInvoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612060929443_AddIsAvailableToCategory.resx">
+      <DependentUpon>201612060929443_AddIsAvailableToCategory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

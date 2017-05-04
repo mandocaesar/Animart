@@ -22,7 +22,7 @@
                         </p>
                     </div>
                 </md-card-content>
-                <md-card-actions layout="row" layout-align="right center" ng-if="vm.getShownUserName().currentRole == '5'">
+                <md-card-actions layout="row" layout-align="right center" ng-if="vm.getShownUserName().currentRole == '5' && showCart">
                     <ngcart-addtocart id="{{ supply.id }}" name="{{ supply.name }}" price="{{ supply.price }}" quantity="1" quantity-max="500" data=supply>Add To Cart</ngcart-addtocart>
                 </md-card-actions>
                 <a class="btn btn-default" ng-click="backToProduct()" style="" class="col-sm-4">Back To Product List</a>

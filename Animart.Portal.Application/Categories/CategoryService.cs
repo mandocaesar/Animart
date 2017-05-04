@@ -31,6 +31,7 @@ namespace Animart.Portal.Categories
                 CreatorUserId = e.CreatorUserId,
                 Name = e.Name,
                 ParentId = e.ParentId,
+                IsAvailable = e.IsAvailable,
                 ParentName = (e.Parent!=null)?(e.Parent.Name):("")
             }).ToList();
         }
@@ -38,20 +39,20 @@ namespace Animart.Portal.Categories
         public List<CategoryDto> GetCategoriesForFilter()
         {
             var categories = _categoryRepository.GetAll()
+                .Where(i=>i.IsAvailable)
                 .OrderBy(i => i.Parent.Parent.Parent.Parent.Name)
                 .ThenBy(i => i.Parent.Parent.Parent.Name)
                 .ThenBy(i => i.Parent.Parent.Name).
                 ThenBy(i => i.Parent.Name).ThenBy(i => i.Name).ToList();
             categories.Add(new Category {Parent=null,ParentId=null,Name="- All Categories -"});
-            //categories = categories.OrderBy(i=>i.Parent.Parent.Name).
-            //    ThenBy(i => i.Parent.Name).ThenBy(i=>i.Name).ToList();
-
+          
             return categories.Select(e => new CategoryDto
             {
                 Id = e.Id,
                 CreationTime = e.CreationTime,
                 CreatorUserId = e.CreatorUserId,
                 Name = this.ToFilter(e),
+                IsAvailable = e.IsAvailable,
                 ParentId = e.ParentId,
                 ParentName = (e.Parent != null) ? (e.Parent.Name) : ("")
             }).OrderBy(i=>i.Name).ToList();
@@ -76,6 +77,7 @@ namespace Animart.Portal.Categories
                 await _categoryRepository.InsertAsync(new Category()
                 {
                     Name = categoryItem.Name,
+                    IsAvailable = categoryItem.IsAvailable,
                     ParentId = categoryItem.ParentId
                 });
             }
@@ -93,6 +95,7 @@ namespace Animart.Portal.Categories
             {
                 var item = _categoryRepository.Single(e => e.Id == categoryItem.Id);
 
+                item.IsAvailable = categoryItem.IsAvailable;
                 item.Name = categoryItem.Name ?? item.Name;
                 item.ParentId = categoryItem.ParentId;
                 _categoryRepository.Update(item);
@@ -131,6 +134,7 @@ namespace Animart.Portal.Categories
                     Id = a.Id,
                     Name = a.Name,
                     ParentId = a.ParentId,
+                    IsAvailable = a.IsAvailable,
                     ParentName = (a.Parent != null) ? (a.Parent.Name) : ("")
                 };
             }

@@ -10,5 +10,6 @@ namespace Animart.Portal.Supply.Dto
     {
         public int Idx { get; set; }
         public bool IsAvailable { get; set; }
+        public DateTime Date { get; set; }
     }
 }

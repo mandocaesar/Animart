@@ -23,6 +23,8 @@ namespace Animart.Portal.Supply
         [StringLength(100)]
         public virtual string Name { get; set; }
 
+        public virtual bool IsAvailable { get; set; }
+
         public Guid? ParentId { get; set; }
         public Category Parent { get; set; }
         public ICollection<SupplyItem> SupplyItems { get; set; }

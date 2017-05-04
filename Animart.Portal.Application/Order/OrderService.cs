@@ -29,8 +29,8 @@ namespace Animart.Portal.Order
         private readonly IRepository<City, Guid> _cityRepository;
         private readonly OrderDomainService _orderDomainService;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private const string ANIMART_EMAILADDRESS = "marketing@animart.co.id";
-        private const string ANIMART_PASSWORD = "GOSALES2017gogo";
+        //private const string ANIMART_EMAILADDRESS = "marketing@animart.co.id";
+        //private const string ANIMART_PASSWORD = "GOSALES2017gogo";
 
         private enum STATUS
         {
@@ -62,37 +62,66 @@ namespace Animart.Portal.Order
             _supplyItemRepository = supplyRepository;
             _shipmentCostRepository = shipmentCostRepository;
             _cityRepository = cityRepository;
-
         }
-
 
         public OrderDashboardDto GetDashboard()
         {
             var result = new OrderDashboardDto();
             var userId = AbpSession.GetUserId();
-            result.BDO = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "MARKETING" || e.Status == "ACCOUNTING");
-            result.Delivered = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "LOGISTIC" || e.Status == "DONE");
-            result.Waiting = _purchaseOrderRepository.Count(e => e.CreatorUserId == userId && e.Status == "PAYMENT");
+            var orderItem = _orderItemRepository.GetAll().Where(e => e.PurchaseOrder.CreatorUserId == userId);
+            result.BDO = orderItem.Where(e=> e.Status == "MARKETING" || e.Status == "ACCOUNTING").
+                Select(i=>i.PurchaseOrder).Distinct().Count();
+            result.Delivered = orderItem.Where(e => e.Status == "LOGISTIC" || e.Status == "DONE").
+                Select(i => i.PurchaseOrder).Distinct().Count();
+            result.Waiting = orderItem.Where(e => e.Status == "PAYMENT").
+                Select(i => i.PurchaseOrder).Distinct().Count();
             return result;
         }
 
         public OrderDashboardDto GetDashboardAdmin()
         {
             var result = new OrderDashboardDto();
-            var userId = AbpSession.GetUserId();
-            result.BDO = _purchaseOrderRepository.Count(e => e.Status == "MARKETING" || e.Status=="ACCOUNTING");
-            result.Delivered = _purchaseOrderRepository.Count(e => e.Status == "LOGISTIC" || e.Status == "DONE");
-            result.Waiting = _purchaseOrderRepository.Count(e => e.Status == "PAYMENT");
-            result.Marketing = _purchaseOrderRepository.Count(e => e.Status == "MARKETING" );
-            result.Accounting = _purchaseOrderRepository.Count(e =>e.Status == "ACCOUNTING");
-            result.Done = _purchaseOrderRepository.Count(e => e.Status == "DONE");
-            result.Delivery = _purchaseOrderRepository.Count(e => e.Status == "LOGISTIC");
+            var orderItem = _orderItemRepository.GetAll();
+            result.BDO = orderItem.Where(e => e.Status == "MARKETING" || e.Status == "ACCOUNTING").
+                Select(i => i.PurchaseOrder).Distinct().Count();
 
+            result.Delivered = orderItem.Where(e => e.Status == "LOGISTIC" || e.Status == "DONE").
+                Select(i => i.PurchaseOrder).Distinct().Count();
+            result.Waiting = orderItem.Where(e => e.Status == "PAYMENT").
+                Select(i => i.PurchaseOrder).Distinct().Count();
+            result.Marketing = orderItem.Where(e => e.Status == "MARKETING").
+                Select(i => i.PurchaseOrder).Distinct().Count();
+            result.Accounting = orderItem.Where(e => e.Status == "ACCOUNTING").
+                Select(i => i.PurchaseOrder).Distinct().Count();
+            result.Done = orderItem.Where(e => e.Status == "DONE").
+                Select(i => i.PurchaseOrder).Distinct().Count();
+            result.Delivery = orderItem.Where(e => e.Status == "LOGISTIC").
+                Select(i => i.PurchaseOrder).Distinct().Count();
             return result;
         }
 
-        public PurchaseOrderDto GetSinglePurchaseOrder(string id)
+        public PurchaseOrderDto GetSinglePurchaseOrder(string id, int num)
         {
+            string status = "";
+            switch (num)
+            {
+                case (int)STATUS.REJECT:
+                    status = "REJECT"; break;
+                case (int)STATUS.ACCOUNTING:
+                    status = "ACCOUNTING"; break;
+                case (int)STATUS.MARKETING:
+                    status = "MARKETING"; break;
+                case (int)STATUS.PAYMENT:
+                    status = "PAYMENT"; break;
+                case (int)STATUS.PAID:
+                    status = "PAID"; break;
+                case (int)STATUS.LOGISTIC:
+                    status = "LOGISTIC"; break;
+                case (int)STATUS.DONE:
+                    status = "DONE"; break;
+                default:
+                    status = ""; break;
+            }
             try
             {
                 Guid _id;
@@ -126,7 +155,7 @@ namespace Animart.Portal.Order
                     var firstKiloAdjustment = (shipmentAdjustment != null) ? (shipmentAdjustment.FirstKilo) : 0;
                     var nextKiloAdjustment =  (shipmentAdjustment != null) ? (shipmentAdjustment.NextKilo) : 0;
 
-                    var orderItems = _orderItemRepository.GetAll().Where(e => e.PurchaseOrder.Id == result.Id).ToList();
+                    var orderItems = _orderItemRepository.GetAll().Where(e => e.PurchaseOrder.Id == result.Id && e.Status.Contains(status)).ToList();
                     result.Items = orderItems.Select(e=>e.MapTo<OrderItemDto>()).ToList();
                     var totalGram = result.Items.Sum(e => e.Item.Weight*e.QuantityAdjustment);
                     var totalKilo = (int) ((totalGram + 999)/1000);
@@ -144,6 +173,8 @@ namespace Animart.Portal.Order
                     result.TotalAdjustmentShipmentCost = (nextKiloAdjustment * Math.Max(totalKilo - kiloQuantityAdjustment, 0)) + (firstKiloAdjustment);
                     result.CreatorUser = user;
                     result.CreationTime = result.CreationTime;
+
+                    result.Status = status;
                     return result;
                 }
                 return null;
@@ -403,7 +434,8 @@ namespace Animart.Portal.Order
             code = code + dateStr + "-" + max.Substring(max.Length-5);
 
             _unitOfWorkManager.Begin();
-            return await _purchaseOrderRepository.InsertAndGetIdAsync(new PurchaseOrder()
+            var user = _userRepository.Get(AbpSession.GetUserId());
+            Guid poID = await _purchaseOrderRepository.InsertAndGetIdAsync(new PurchaseOrder()
             {
                 Code = code,
                 Address = purchaseOrderItem.Address,
@@ -418,9 +450,19 @@ namespace Animart.Portal.Order
                 PostalCode = purchaseOrderItem.PostalCode,
                 TotalWeight = purchaseOrderItem.TotalWeight,
                 CreationTime = date,
-                CreatorUser = _userRepository.Get(AbpSession.GetUserId()),
+                CreatorUser = user,
                 CreatorUserId = AbpSession.GetUserId()
             });
+
+            string breakLine = "<br/>";
+            GmailExtension gmail = new GmailExtension(GmailExtension.ANIMART_EMAILADDRESS, GmailExtension.ANIMART_PASSWORD);
+            gmail.SendMessage("A New Order Has Come From " + user.Name,
+                "Dear marketing," + breakLine + breakLine
+                + "Please kindly login to your account to check the status of the orders." + breakLine + breakLine
+                + "Thank you",
+                GmailExtension.ANIMART_EMAILADDRESS, false, null, null);
+
+            return poID;
         }
         public async Task<Guid> CreateInvoice(Dto.CreatePurchaseOrderDto purchaseOrderItem)
         {
@@ -566,53 +608,7 @@ namespace Animart.Portal.Order
                 throw;
             }
         }
-
-        public List<PurchaseOrderDto> GetAllPurchaseOrderByUserId(int type,int num)
-        {
-            try
-            {
-                var uid = AbpSession.GetUserId();
-                var list = new List<PurchaseOrder>();
-                switch (type)
-                {
-                    case (int)TYPE.PREORDER:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
-                        break;
-                    case (int)TYPE.READYSTOCK:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
-                        break;
-                    default:
-                        list = _purchaseOrderRepository.GetAll().Where(e => e.CreatorUserId == uid && !e.IsPreOrder).OrderByDescending(i => i.CreationTime).ToList();
-                        break;
-                }
-                
-                switch (num)
-                {
-
-                    case (int)STATUS.REJECT:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "REJECT").ToList();
-                    case (int)STATUS.ACCOUNTING:
-                    case (int)STATUS.MARKETING:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING" || w.Status == "ACCOUNTING").ToList();
-                    case (int)STATUS.PAYMENT:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAYMENT").ToList();
-                    case (int)STATUS.PAID:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "PAID").ToList();
-                    case (int)STATUS.LOGISTIC:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "LOGISTIC").ToList();
-                    case (int)STATUS.DONE:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "DONE").ToList();                        
-                    default:
-                        return list.Select(item => item.MapTo<PurchaseOrderDto>()).Where(w => w.Status == "MARKETING" || w.Status == "ACCOUNTING").ToList();
-                }
-
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
+        
         public List<int> UpdateChart()
         {
             var uid = AbpSession.GetUserId();
@@ -643,35 +639,35 @@ namespace Animart.Portal.Order
                 var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == POid);
 
                 po.Status = status;
-                GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
+                GmailExtension gmail = new GmailExtension(GmailExtension.ANIMART_EMAILADDRESS, GmailExtension.ANIMART_PASSWORD);
                 string message = "";
                 string breakLine = "<br/>";
                 switch (status.Trim().ToLower())
                 {
                     case "payment":
                         message = "Dear retailer," + breakLine + breakLine
-                                  + "Your purchase order with number: " + POid + " has been update to \"PAYMENT\"." + breakLine + breakLine
+                                  + "Your purchase order with number: " + po.Code + " has been update to \"PAYMENT\"." + breakLine + breakLine
                                   + "Please kindly make a bank wire transfer to our account, and upload the bank wire transfer receipt via our system."
                                   + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/"+id
                                   + breakLine + breakLine + "Thank you";
                         break;
                     case "logistic":
                         message = "Dear retailer," + breakLine + breakLine
-                                  + "Your purchase order with number: " + POid + " has been update to \"LOGISTIC\" for delivery." + breakLine + breakLine
+                                  + "Your purchase order with number: " + po.Code + " has been update to \"LOGISTIC\" for delivery." + breakLine + breakLine
                                   + "Please kindly login to your account to check the status of the orders."
                                   + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/" + id
                                   + breakLine + breakLine + "Thank you";
                         break;
                     default:
                         message = " Dear retailer," + breakLine + breakLine 
-                                  + "Your purchase order with number: " + POid + " has been updated to \"" + status + "\"." + breakLine + breakLine
+                                  + "Your purchase order with number: " + po.Code + " has been updated to \"" + status + "\"." + breakLine + breakLine
                                   + "Please kindly login to your account to check the status of the orders."
                                   + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/" + id
                                   + breakLine + breakLine + "Thank you";
                         break;
                 }
-                gmail.SendMessage("Purchase Order " + POid + " Has been updated",
-                    message, po.CreatorUser.EmailAddress);
+                //gmail.SendMessage("Purchase Order " + POid + " Has been updated",
+                //    message, po.CreatorUser.EmailAddress);
                 _purchaseOrderRepository.Update(po);
                 return true;
             }
@@ -689,45 +685,77 @@ namespace Animart.Portal.Order
                 var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == POid);
                 po.Status = status;
                 _purchaseOrderRepository.Update(po);
-
-
-                for (int i = 0; i < orderItems.Count(e=>e.Checked); i++)
+                
+                Invoice.Invoice inv =null;
+                orderItems = orderItems.Where(e => e.Checked).ToList();
+                ShipmentCost ship = new ShipmentCost();
+                for (int i = 0; i <orderItems.Count; i++)
                 {
                     var order = orderItems[i];
-                    var data = _orderItemRepository.FirstOrDefault(e=>e.Id== order.Id);
+                    var data =_orderItemRepository.FirstOrDefault(e=>e.Id== order.Id);
                     data.Status = status;
                     _orderItemRepository.Update(data);
+                    if (data.Invoice != null)
+                    {
+                        inv = data.Invoice;
+                        var exp = inv.Expedition.Split('-')[0];
+                        var type = inv.Expedition.Split('-')[1];
+                        ship =
+                            _shipmentCostRepository.GetAllList()
+                                .FirstOrDefault(e => e.Expedition == exp && e.City.Name == po.City && e.Type == type);
+                    }
                 }
 
-                GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
+
+                GmailExtension gmail = new GmailExtension(GmailExtension.ANIMART_EMAILADDRESS, GmailExtension.ANIMART_PASSWORD);
                 string message = "";
                 string breakLine = "<br/>";
+                bool sendEmail = false;
+                bool sendInvoice = false;
                 switch (status.Trim().ToLower())
                 {
                     case "payment":
-                        message = "Dear retailer," + breakLine + breakLine
-                                  + "Your purchase order with number: " + POid + " has been update to \"PAYMENT\"." + breakLine + breakLine
-                                  + "Please kindly make a bank wire transfer to our account, and upload the bank wire transfer receipt via our system."
-                                  + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/" + id
-                                  + breakLine + breakLine + "Thank you";
+                        if (inv != null)
+                        {
+                            message = "Dear retailer," + breakLine + breakLine
+                                      + "Your purchase order with number: " + po.Code + " has been update to \"PAYMENT\"." +
+                                      breakLine + breakLine
+                                      +"Please kindly make a bank wire transfer to our account, and upload the bank wire transfer receipt via our system."
+                                      + breakLine + breakLine +
+                                      "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/invoice/" +
+                                      inv.Id+ breakLine + breakLine + "Thank you"+breakLine;
+                            sendInvoice = true;
+                        }
+                        else
+                        {
+                            message = "Dear retailer," + breakLine + breakLine
+                                     + "Your purchase order with number: " + po.Code + " has been update to \"PAYMENT\"." +
+                                     breakLine + breakLine
+                                     +"Please kindly make a bank wire transfer to our account, and upload the bank wire transfer receipt via our system."
+                                     + breakLine + breakLine + "Thank you" + breakLine;
+                        }
+                        sendEmail = true;
+
                         break;
                     case "logistic":
                         message = "Dear retailer," + breakLine + breakLine
-                                  + "Your purchase order with number: " + POid + " has been update to \"LOGISTIC\" for delivery." + breakLine + breakLine
+                                  + "Your purchase order with number: " + po.Code + " has been update to \"LOGISTIC\" for delivery." + breakLine + breakLine
                                   + "Please kindly login to your account to check the status of the orders."
                                   + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/" + id
-                                  + breakLine + breakLine + "Thank you";
+                                  + breakLine + breakLine + "Thank you" + breakLine;
+                        sendEmail = true;
                         break;
                     default:
                         message = " Dear retailer," + breakLine + breakLine
-                                  + "Your purchase order with number: " + POid + " has been updated to \"" + status + "\"." + breakLine + breakLine
+                                  + "Your purchase order with number: " + po.Code + " has been updated to \"" + status + "\"." + breakLine + breakLine
                                   + "Please kindly login to your account to check the status of the orders."
                                   + breakLine + breakLine + "To check your order details and invoice, you can check it via link: http://shop.animart.co.id/#/orderDetail/" + id
-                                  + breakLine + breakLine + "Thank you";
+                                  + breakLine + breakLine + "Thank you" + breakLine;
                         break;
                 }
-                gmail.SendMessage("Purchase Order " + POid + " Has been updated",
-                    message, po.CreatorUser.EmailAddress);
+                if(sendEmail)
+                    gmail.SendMessage("Purchase Order " + POid + " Has been updated",
+                    message, po.CreatorUser.EmailAddress,sendInvoice, inv,ship);
                 return true;
             }
             catch (Exception)
@@ -737,9 +765,38 @@ namespace Animart.Portal.Order
 
         }
 
-        private PurchaseOrderDto ConvertStatusToPurchaseOrder(PurchaseOrderDto purchase,string status)
+        private PurchaseOrderDto ConvertStatusToPurchaseOrder(PurchaseOrderDto purchase,string status,List<OrderItem> orders)
         {
             purchase.Status = status;
+
+            purchase.Items = orders.Where(i => i.PurchaseOrder.Id == purchase.Id && i.Status == status).MapTo<List<OrderItemDto>>();
+            var _expeditionAdjustment = purchase.ExpeditionAdjustment.Split('-')[0];
+
+            var _city = purchase.City;
+            var _typeAdjustment = purchase.ExpeditionAdjustment.Split('-')[1];
+            var cityId = _cityRepository.Single(e => e.Name.ToLower() == _city.ToLower());
+             var shipmentAdjustment =
+               _shipmentCostRepository.GetAllList()
+                   .FirstOrDefault(e => e.Expedition == _expeditionAdjustment && e.City == cityId && e.Type == _typeAdjustment);
+
+            var kiloQuantityAdjustment = (shipmentAdjustment != null) ? (shipmentAdjustment.KiloQuantity) : 0;
+            var firstKiloAdjustment = (shipmentAdjustment != null) ? (shipmentAdjustment.FirstKilo) : 0;
+            var nextKiloAdjustment = (shipmentAdjustment != null) ? (shipmentAdjustment.NextKilo) : 0;
+
+           
+            var totalGram = purchase.Items.Where(e=>e.Status==status).Sum(e => e.Item.Weight * e.QuantityAdjustment);
+            var totalKilo = (int)((totalGram + 999) / 1000);
+
+            purchase.TotalWeight = totalKilo;
+
+            purchase.ShipmentAdjustmentCost = nextKiloAdjustment;
+            purchase.ShipmentAdjustmentCostFirstKilo = firstKiloAdjustment;
+            purchase.KiloAdjustmentQuantity = kiloQuantityAdjustment;
+
+            purchase.TotalAdjustmentShipmentCost = (nextKiloAdjustment * Math.Max(totalKilo - kiloQuantityAdjustment, 0)) + (firstKiloAdjustment);
+
+            purchase.GrandTotal = purchase.Items
+                .Sum(i=>i.PriceAdjustment*i.QuantityAdjustment) + purchase.TotalAdjustmentShipmentCost;
             return purchase;
         }
 
@@ -769,29 +826,10 @@ namespace Animart.Portal.Order
                         status = "MARKETING"; break;
                 }
 
-                switch (type)
-                {
-                    case (int)TYPE.PREORDER:
-                        list = _orderItemRepository.GetAll()
-                            .Where(i => i.Status == status && i.PurchaseOrder.IsPreOrder)
-                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
-                            .ToList();
-                        break;
-                    case (int)TYPE.READYSTOCK:
-                        list = _orderItemRepository.GetAll()
-                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
-                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
-                            .ToList();
-                        break;
-                    default:
-                        list = _orderItemRepository.GetAll()
-                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
-                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
-                            .ToList();
-                        break;
-                }
-              
-                return list.Select(item => ConvertStatusToPurchaseOrder(item.MapTo<PurchaseOrderDto>(), status)).ToList();
+                var order = _orderItemRepository.GetAll()
+                    .Where(i => i.Status == status && i.PurchaseOrder.IsPreOrder == (TYPE.PREORDER == (TYPE) type)).ToList();
+                list = order.Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime).ToList();
+               return list.Select(item => ConvertStatusToPurchaseOrder(item.MapTo<PurchaseOrderDto>(), status,order)).ToList();
             }
             catch (Exception)
             {
@@ -825,29 +863,10 @@ namespace Animart.Portal.Order
                         status = "ACCOUNTING"; break;
                 }
 
-                switch (type)
-                {
-                    case (int)TYPE.PREORDER:
-                        list = _orderItemRepository.GetAll()
-                            .Where(i => i.Status == status && i.PurchaseOrder.IsPreOrder)
-                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
-                            .ToList();
-                        break;
-                    case (int)TYPE.READYSTOCK:
-                        list = _orderItemRepository.GetAll()
-                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
-                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
-                            .ToList();
-                        break;
-                    default:
-                        list = _orderItemRepository.GetAll()
-                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
-                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
-                            .ToList();
-                        break;
-                }
-
-                return list.Select(item => ConvertStatusToPurchaseOrder(item.MapTo<PurchaseOrderDto>(), status)).ToList();
+                var order = _orderItemRepository.GetAll()
+                       .Where(i => i.Status == status && i.PurchaseOrder.IsPreOrder == (TYPE.PREORDER == (TYPE)type)).ToList();
+                list = order.Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime).ToList();
+                return list.Select(item => ConvertStatusToPurchaseOrder(item.MapTo<PurchaseOrderDto>(), status, order)).ToList();
 
             }
             catch (Exception)
@@ -864,6 +883,10 @@ namespace Animart.Portal.Order
                 string status = "";
                 switch (num)
                 {
+                    case (int)STATUS.PAYMENT:
+                        status = "PAYMENT"; break;
+                    case (int)STATUS.PAID:
+                        status = "PAID"; break;
                     case (int)STATUS.LOGISTIC:
                         status = "LOGISTIC"; break;
                     case (int)STATUS.DONE:
@@ -872,35 +895,57 @@ namespace Animart.Portal.Order
                         status = "LOGISTIC"; break;
                 }
 
-                switch (type)
-                {
-                    case (int)TYPE.PREORDER:
-                        list = _orderItemRepository.GetAll()
-                            .Where(i => i.Status == status && i.PurchaseOrder.IsPreOrder)
-                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
-                            .ToList();
-                        break;
-                    case (int)TYPE.READYSTOCK:
-                        list = _orderItemRepository.GetAll()
-                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
-                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
-                            .ToList();
-                        break;
-                    default:
-                        list = _orderItemRepository.GetAll()
-                            .Where(i => i.Status == status && !i.PurchaseOrder.IsPreOrder)
-                            .Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime)
-                            .ToList();
-                        break;
-                }
-
-                return list.Select(item => ConvertStatusToPurchaseOrder(item.MapTo<PurchaseOrderDto>(), status)).ToList();
+                var order = _orderItemRepository.GetAll()
+                   .Where(i => i.Status == status && i.PurchaseOrder.IsPreOrder == (TYPE.PREORDER == (TYPE)type)).ToList();
+                list = order.Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime).ToList();
+                return list.Select(item => ConvertStatusToPurchaseOrder(item.MapTo<PurchaseOrderDto>(), status, order)).ToList();
             }
             catch (Exception)
             {
                 return null;
             }
         }
+
+        public List<PurchaseOrderDto> GetAllPurchaseOrderByUserId(int type, int num)
+        {
+
+            try
+            {
+                var uid = AbpSession.GetUserId();
+
+                var list = new List<PurchaseOrder>();
+                string status = "";
+                switch (num)
+                {
+                    case (int)STATUS.REJECT:
+                        status = "REJECT"; break;
+                    case (int)STATUS.ACCOUNTING:
+                        status = "ACCOUNTING"; break;
+                    case (int)STATUS.MARKETING:
+                        status = "MARKETING"; break;
+                    case (int)STATUS.PAYMENT:
+                        status = "PAYMENT"; break;
+                    case (int)STATUS.PAID:
+                        status = "PAID"; break;
+                    case (int)STATUS.LOGISTIC:
+                        status = "LOGISTIC"; break;
+                    case (int)STATUS.DONE:
+                        status = "DONE"; break;
+                    default:
+                        status = "MARKETING"; break;
+                }
+
+                var order = _orderItemRepository.GetAll()
+                    .Where(i => i.PurchaseOrder.CreatorUserId == uid && i.Status == status && i.PurchaseOrder.IsPreOrder == (TYPE.PREORDER == (TYPE)type)).ToList();
+                list = order.Select(i => i.PurchaseOrder).Distinct().OrderByDescending(i => i.CreationTime).ToList();
+                return list.Select(item => ConvertStatusToPurchaseOrder(item.MapTo<PurchaseOrderDto>(), status, order)).ToList();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
 
         public bool InsertReceiptNumber(string id, string receipt)
         {
@@ -912,14 +957,6 @@ namespace Animart.Portal.Order
                 po.ReceiptNumber = receipt;
                 po.Status = "DONE";
                 _purchaseOrderRepository.Update(po);
-                GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
-                gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated", 
-                    "Dear retailer,"+breakLine+breakLine+
-                    "Your purchase order with number:" + po.Id.ToString() + " has been updated to \"" + po.Status +"\"."+breakLine+breakLine
-                    + "Your shipment tracking number is: \"" + po.ReceiptNumber+"\"."+ breakLine
-                    + "To track your shipment, use the corresponding couriers service website or contact by phone."+ breakLine+breakLine
-                    + "Thank you",
-                    po.CreatorUser.EmailAddress);
                 return true;
             }
             catch (Exception ex)
@@ -952,14 +989,14 @@ namespace Animart.Portal.Order
                         inv.ResiNumber = receipt;
                         _invoiceRepository.Update(inv);
                         string breakLine = "<br/>";
-                        GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
+                        GmailExtension gmail = new GmailExtension(GmailExtension.ANIMART_EMAILADDRESS, GmailExtension.ANIMART_PASSWORD);
                         gmail.SendMessage("Invoice Number " + inv.InvoiceNumber + " Has been updated",
                         "Dear retailer," + breakLine + breakLine +
                         "Your invoice with number:" + inv.InvoiceNumber + " has been updated to \"" + "DONE" + "\"." + breakLine + breakLine
                         + "Your shipment tracking number is: \"" + inv.ResiNumber + "\"." + breakLine
                         + "To track your shipment, use the corresponding couriers service website or contact by phone." + breakLine + breakLine
                         + "Thank you",
-                        po.CreatorUser.EmailAddress);
+                        po.CreatorUser.EmailAddress,false,null,null);
                     }
                 }
                 return true;
@@ -977,22 +1014,11 @@ namespace Animart.Portal.Order
             {
                 var poId = Guid.Parse(id);
                 var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poId);
-                //var exAdjustment = _shipmentCostRepository.GetAll().FirstOrDefault(
-                //    e => e.Expedition.ToLower() == name.Trim().ToLower());
-                if ( po!=null)//exAdjustment != null &&
+                
+                if ( po!=null)
                 {
                     po.ExpeditionAdjustment = name.Trim();
                     _purchaseOrderRepository.Update(po);
-
-                    string breakLine = "<br/>";
-                    GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
-                    gmail.SendMessage("Purchase Order " + po.Id.ToString() + " Has been updated",
-                        "Dear retailer," + breakLine + breakLine
-                        + "The expedition for your purchase order with number:" + po.Id.ToString() +
-                        " has been updated to \"" + name + "\"." + breakLine + breakLine
-                        + "Please kindly login to your account to check the status of the orders." + breakLine + breakLine
-                        + "Thank you",
-                        po.CreatorUser.EmailAddress);
                     return true;
                 }
                 else
@@ -1011,6 +1037,11 @@ namespace Animart.Portal.Order
             {
                 var poId = Guid.Parse(id);
                 var po = _purchaseOrderRepository.GetAll().FirstOrDefault(e => e.Id == poId);
+                if (po != null)
+                { 
+                    po.ExpeditionAdjustment = name.Trim();
+                    _purchaseOrderRepository.Update(po);
+                }
 
                 var invoices = orderItems.Where(e => e.Checked).Select(e => e.Invoice).Distinct().ToList();
                 for (int i = 0; i < invoices.Count(); i++)
@@ -1022,14 +1053,14 @@ namespace Animart.Portal.Order
                         inv.Expedition = name.Trim();
                         _invoiceRepository.Update(inv);
                         string breakLine = "<br/>";
-                        GmailExtension gmail = new GmailExtension(ANIMART_EMAILADDRESS, ANIMART_PASSWORD);
+                        GmailExtension gmail = new GmailExtension(GmailExtension.ANIMART_EMAILADDRESS, GmailExtension.ANIMART_PASSWORD);
                         gmail.SendMessage("Invoice Order " + inv.InvoiceNumber + " Has been updated",
                             "Dear retailer," + breakLine + breakLine
                             + "The expedition for your invoice order with number:" + inv.InvoiceNumber +
                             " has been updated to \"" + name + "\"." + breakLine + breakLine
                             + "Please kindly login to your account to check the status of the orders." + breakLine + breakLine
                             + "Thank you",
-                            po.CreatorUser.EmailAddress);
+                            po.CreatorUser.EmailAddress,false,null,null);
                     }
                 }
                 return true;

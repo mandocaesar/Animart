@@ -1,8 +1,8 @@
 ﻿(function () {
     var controllerId = 'app.views.item';
     angular.module('app').controller(controllerId, [
-        '$scope', 'abp.services.app.supply', 'abp.services.app.user', 'ngCart', '$stateParams', '$sce', '$stateParams', '$state',
-        function ($scope, supplyService, appSession, ngCart, stateParams, $sce, stateParams, $state) {
+        '$scope', 'abp.services.app.supply', 'abp.services.app.user', 'ngCart', '$stateParams', '$sce', '$state',
+        function ($scope, supplyService, appSession, ngCart, stateParams, $sce, $state) {
             ngCart.setTaxRate(0);
             ngCart.setShipping(0);
 
@@ -15,7 +15,7 @@
             $scope.isLatestPO = stateParams.isLatestPO;
             $scope.search = stateParams.search;
             $scope.searchPO = stateParams.searchPO;
-
+            $scope.showCart = true;
 
             var vm = this;
 
@@ -25,7 +25,11 @@
             $scope.supplies = [];
             supplyService.supply(itemID).success(function (result) {
                 $scope.supply = result;
-                $scope.supply.availableUntil = new Date( $scope.supply.availableUntil);
+                $scope.supply.availableUntil = new Date($scope.supply.availableUntil);
+                console.log(result);
+                //if ($scope.ispo)
+                //    $scope.showCart = $scope.supply.availableUntil > new Date();
+                $scope.showCart = $scope.showCart && result.available;
                 $scope.supply.image = '../SupplyImage/' + result.id + ".jpg";
             });
 

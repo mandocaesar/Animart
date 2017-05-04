@@ -32,7 +32,8 @@
                 $scope.gridOptions.columnDefs = [
                     { name: 'id', enableCellEdit: false },
                     { name: 'parentName', displayName: 'Parent Category', enableCellEdit: false },
-                    { name: 'name', displayName: 'Name', enableCellEdit: false }, {
+                    { name: 'name', displayName: 'Name', enableCellEdit: false }, 
+                    { name: 'isAvailable', displayName: 'Available', enableCellEdit: false }, {
                         name: 'view',
                         displayName: 'Edit',
                         cellTemplate: '<button class="btn btn-success" ng-click="grid.appScope.showMe(row.entity.id)"><i class="fa fa-pencil"></i> Edit</button>'

@@ -23,7 +23,7 @@ namespace Animart.Portal.Order
 
         OrderDashboardDto GetDashboardAdmin();
 
-        PurchaseOrderDto GetSinglePurchaseOrder(string id);
+        PurchaseOrderDto GetSinglePurchaseOrder(string id,int num);
 
         InvoicePODto GetSingleInvoice(string id);
 

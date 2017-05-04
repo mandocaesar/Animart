@@ -58,9 +58,6 @@
             $scope.updateExpedition = function () {
                 if ($scope.po.city !== ''){
                     expeditonService.getShipmentCostFilterByCity($scope.po.city).success(function (rs) {
-                        //console.log(rs);
-                        //alert(rs[0].nextKilo);
-
                         if (rs == null || rs.length===0) {
                             alert("Sorry your city is not available for shipment at the moment. Please contact marketing@animart.co.id for inquries.");
                             $scope.po.showExpedition = false;
@@ -78,11 +75,8 @@
                 if ($scope.po.expedition !== '' && $scope.po.city !== '') {
                     var name = $scope.po.expedition.split('-')[0];
                     var type = $scope.po.expedition.split('-')[1];
-                    //alert(name);
-                    //alert(type);
+
                     expeditonService.getShipmentCostFilterByExpeditionAndCity(name, $scope.po.city,type).success(function(rs) {
-                        //console.log(rs);
-                        //alert(rs[0].nextKilo);
                         $scope.po.shipping = rs[0].nextKilo;
                         $scope.po.firstKilo = rs[0].firstKilo;
                         $scope.po.kiloQuantity = rs[0].kiloQuantity;
@@ -90,18 +84,6 @@
                     });
                 }
             };
-
-            //$rootScope.updateItem = function(id, qty) {
-            //    var items = ngCart.getItems();
-            //    for (var i = 0; i < items.length; i++) {
-            //        if (items[i].getId() === id) {
-            //            items[i].setQuantity(qty, true);
-            //        }
-            //    }
-            //    $scope.calculateShip();
-            //    $scope.updateShippingPrice();
-
-            //}
 
             $scope.$on('ngCart:change', function (event, args) {
                 $scope.checkItemQuantity();
@@ -132,7 +114,8 @@
             $scope.validateAvailability = function() {
                 var items = ngCart.getItems();
                 for (var i = 0; i < items.length; i++) {
-                    supplyService.isAvailable(items[i].getData().id, i).success(function(result) {
+                    supplyService.isAvailable(items[i].getData().id, i).success(function (result) {
+                        console.log(result);
                         ngCart.getItems()[result.idx].getData().available = result.isAvailable;
                         $scope.isAvailable = $scope.isAvailable && result.isAvailable;
                     }).error(function(rs) {
@@ -145,7 +128,6 @@
                 var totalWeight = 0;
                 var totalGram = 0;
                 var subTotal = 0;
-                //console.log(items);
                
                 $scope.isCombined = false;
                 for (var i = 0; i < items.length; i++) {
@@ -158,16 +140,12 @@
                         if ($scope.isPO !== items[i].getData().ispo)
                             $scope.isCombined = true;
                     }
-                    //alert(subTotal);
-                    //alert(items[i].getData());
                 }
                 $scope.validateAvailability();
                 $scope.po.subTotal = subTotal;
                 totalWeight = convertToKg(totalGram);
                 $scope.po.totalGram = totalGram;
                 $scope.po.totalWeight = totalWeight;
-                //console.log($scope.po);
-                //alert($scope.po.expedition.nextKilo);
 
                 ngCart.setShipping( Math.max(totalWeight-$scope.po.expedition.kiloQuantity,0) * $scope.po.expedition.nextKilo +$scope.po.expedition.firstKilo);
             };
@@ -210,11 +188,9 @@
                     return;
                 }
                 $scope.translateCart();
-                //console.log($scope.orderItems);
                 $scope.po.hideOrderBtn = true;
                 $scope.po.isPreOrder = $scope.isPO;
                 $scope.po.grandTotal = ngCart.totalCost();
-                //alert($scope.po.grandTotal);
 
                 orderService.create($scope.po).success(function (result) {
                     orderService.addOrderItem(result, $scope.orderItems).success(function (rs) {

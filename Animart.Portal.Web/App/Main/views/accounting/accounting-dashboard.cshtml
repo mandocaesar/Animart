@@ -283,6 +283,12 @@
                 <md-button ng-click="reject()"  ng-disabled="!showExpedition"> @*ng-show="isBod && !isPayment">*@
                     Reject
                 </md-button>  
+                <md-button ng-click="sendToReview()" ng-disabled="!showExpedition" ng-show="!isPaid">
+                   Send To Accounting Review
+                </md-button>
+                <md-button ng-click="sendToMarketingReview()" ng-disabled="!showExpedition" ng-show="!isPaid">
+                    Send To Marketing Review
+                </md-button>
                 <md-button ng-click="changeToPaid()" ng-disabled="!showExpedition" ng-show="isNeedPayment">
                     Change To Paid
                 </md-button>

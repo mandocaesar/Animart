@@ -3,7 +3,8 @@
     accountingController
 ]);
 
-function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,expeditionService, purchaseOrderId) {
+function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,
+    expeditionService, purchaseOrderId,statusType) {
 
     $scope.showExpedition = false;
     $scope.supplies = [];
@@ -28,8 +29,9 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
     $scope.allChecked = false;
 
 
-    orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
+    orderService.getSinglePurchaseOrder(purchaseOrderId, statusType).success(function (result) {
         $scope.po = result;
+        //console.log(result);
         if ($scope.po.expedition !== $scope.po.expeditionAdjustment)
             $scope.po.isAdjustment = true;
         $scope.isPayment = (result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC") || result.status === "PAYMENT";
@@ -38,6 +40,7 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
         $scope.isDone = result.status === "LOGISTIC" || result.status === "DONE";
         $scope.supplies = result.items;
         $scope.isBod = result.status === "ACCOUNTING";
+        $scope.isAdmin = abp.auth.isGranted('CanAccessAdministrator');
         $scope.status = (result.isPreOrder) ? "Pre-Order" : "Ready Stock";
         $scope.image = "";
         if ($scope.isPayment) {
@@ -116,6 +119,18 @@ function ViewAccountingOrderController($http, $scope, $mdDialog, orderService,ex
     $scope.sendToLogistic = function () {
         orderService.updateOrderItemStatus(purchaseOrderId, "LOGISTIC", $scope.supplies).success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Sent to Logistic");
+        });
+        $mdDialog.cancel();
+    };
+    $scope.sendToReview = function () {
+        orderService.updateOrderItemStatus(purchaseOrderId, "ACCOUNTING", $scope.supplies).success(function () {
+            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Sent to Accounting Review");
+        });
+        $mdDialog.cancel();
+    };
+    $scope.sendToMarketingReview = function () {
+        orderService.updateOrderItemStatus(purchaseOrderId, "MARKETING", $scope.supplies).success(function () {
+            abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Sent to Marketing Review");
         });
         $mdDialog.cancel();
     };
@@ -238,6 +253,7 @@ function accountingController($http,$q, $rootScope, $scope, orderService,expedit
             $scope.statusGrid = num;
             $scope.refresh();
         };
+
         $scope.tabOrders = [
             { no: 5, name: "Done" },
             { no: 4, name: "On Delivery" },
@@ -269,6 +285,7 @@ function accountingController($http,$q, $rootScope, $scope, orderService,expedit
                 targetEvent: ev,
                 clickOutsideToClose: true,
                 locals: {
+                    statusType:$scope.statusGrid,
                     purchaseOrderId: id,
                     orderService: orderService,
                     expeditionService:expeditionService
@@ -289,9 +306,7 @@ function accountingController($http,$q, $rootScope, $scope, orderService,expedit
             { name: 'creatorUser.name', displayName: 'Name', enableCellEdit: false },
             { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
             { name: 'province', displayName: 'Province', enableCellEdit: false },
-            { name: 'address', displayName: 'Address', enableCellEdit: false },
             { name: 'status', displayName: 'Status', enabledCellEdit: false },
-            { name: 'totalWeight', displayName: 'Total Weight', enableCellEdit: false },
             { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
             {
                 name: 'view',

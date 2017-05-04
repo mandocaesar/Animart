@@ -11,7 +11,7 @@ namespace Animart.Portal.Categories.Dto
 
         public string Name { get; set; }
         public string ParentName { get; set; }
-
+        public bool IsAvailable { get; set; }
         public Guid? ParentId { get; set; }
         
     }

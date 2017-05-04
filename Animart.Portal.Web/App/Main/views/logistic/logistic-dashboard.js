@@ -3,12 +3,14 @@
     dashboardController
 ]);
 
-function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, expeditionService, purchaseOrderId) {
+function ViewLogisticOrderController($http, $scope, $mdDialog, orderService, expeditionService,
+    purchaseOrderId, statusType) {
     $scope.po = {};
     $scope.supplies = [];
     $scope.showExpedition = false;
-    orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
+    orderService.getSinglePurchaseOrder(purchaseOrderId, statusType).success(function (result) {
         $scope.po = result;
+        console.log(result);
         $scope.isBod = result.status === "LOGISTIC";
         $scope.isPaid = result.status === "PAID" || result.status === "DONE" || result.status === "LOGISTIC";
         $scope.isDone = result.status === "DONE";
@@ -148,8 +150,10 @@ function dashboardController($q, $rootScope, $scope, orderService,expeditionServ
         $scope.refresh();
     };
     $scope.tabOrders = [
-      { no: 5, name: "Done" },
-      { no: 4, name: "On Delivery" }
+        { no: 5, name: "Done" },
+        { no: 4, name: "On Delivery" },
+        { no: 6, name: "Paid" },
+        { no: 3, name: "Waiting For Payment" }
     ];
 
     $scope.refresh = function () {
@@ -172,6 +176,7 @@ function dashboardController($q, $rootScope, $scope, orderService,expeditionServ
             targetEvent: ev,
             clickOutsideToClose: true,
             locals: {
+                statusType: $scope.statusGrid,
                 purchaseOrderId: id,
                 orderService: orderService,
                 expeditionService: expeditionService
@@ -192,9 +197,7 @@ function dashboardController($q, $rootScope, $scope, orderService,expeditionServ
          { name: 'creatorUser.name', displayName: 'Name', enableCellEdit: false },
         { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
         { name: 'province', displayName: 'Province', enableCellEdit: false },
-        { name: 'address', displayName: 'Address', enableCellEdit: false },
         { name: 'status', displayName: 'Status', enableCellEdit: false },
-        { name: 'totalWeight', displayName: 'Total Weight', enableCellEdit: false },
         { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
         {
             name: 'view', displayName: 'View',

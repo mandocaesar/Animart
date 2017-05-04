@@ -54,13 +54,13 @@ namespace Animart.Portal.Users
             _user.Roles = new List<UserRole> {new UserRole() {RoleId = role.Id}};
             _userManager.Create(_user);
 
-            GmailExtension gmail = new GmailExtension("marketing@animart.co.id", "GOSALES2015");
+            GmailExtension gmail = new GmailExtension(GmailExtension.ANIMART_EMAILADDRESS, GmailExtension.ANIMART_PASSWORD);
             gmail.SendMessage(
                 "Welcome Aboard !", 
                 string.Format("<p> Welcome,</p><br/><br/><br/> <p> Your Animart registration has now been approved and your account is ready to use.<br/><br/>You may now log on to the system on http://shop.animart.co.id </p>" +
                 "<br/><br/><p> Your user - id is: {0} and your password: ZXasqw12 </p><br/><br/><p> If you have any queries, please contact the Animart on + 62(22) 612 - 6824 </p>" +
                 "<br/><br/><br/><p> Sincerely, </p><br/><br/><br/><p> PT.Animart Hobi Kreatif <br/>Tel: (+62) 22 - 612 - 6824 </p>", _user.UserName),
-                _user.EmailAddress);
+                _user.EmailAddress,false,null,null);
 
         }
 

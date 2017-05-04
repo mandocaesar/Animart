@@ -4,7 +4,8 @@ angular.module('app').controller('app.views.marketingDashboard', [
     marketingController
 ]);
 
-function ViewMarketingOrderController($http, $scope, $mdDialog, orderService,expeditionService, purchaseOrderId) {
+function ViewMarketingOrderController($http, $scope, $mdDialog, orderService
+    , expeditionService, purchaseOrderId, statusType) {
 
     $scope.supplies = [];
     $scope.po = {
@@ -26,7 +27,7 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService,exp
     $scope.allChecked = false;
 
 
-    orderService.getSinglePurchaseOrder(purchaseOrderId).success(function (result) {
+    orderService.getSinglePurchaseOrder(purchaseOrderId, statusType).success(function (result) {
         $scope.po = result;
         if ($scope.po.expedition != $scope.po.expeditionAdjustment)
             $scope.po.isAdjustment = true;
@@ -108,6 +109,7 @@ function ViewMarketingOrderController($http, $scope, $mdDialog, orderService,exp
     };
 
     $scope.reject = function () {
+        //console.log($scope.supplies);
         orderService.updateOrderItemStatus(purchaseOrderId, "REJECT", $scope.supplies).success(function () {
             abp.message.success("Success", "Purchase Order " + purchaseOrderId + " Has Been Rejected");
         });
@@ -238,6 +240,7 @@ function marketingController($q, $rootScope, $scope, orderService, expeditionSer
                 targetEvent: ev,
                 clickOutsideToClose: true,
                 locals: {
+                    statusType: $scope.statusGrid,
                     purchaseOrderId: id,
                     orderService: orderService,
                     expeditionService:expeditionService
@@ -258,9 +261,7 @@ function marketingController($q, $rootScope, $scope, orderService, expeditionSer
             { name: 'creatorUser.name', displayName: 'Name', enableCellEdit: false },
             { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
             { name: 'province', displayName: 'Province', enableCellEdit: false },
-            { name: 'address', displayName: 'Address', enableCellEdit: false },
             { name: 'status', displayName: 'Status', enableCellEdit: false },
-            { name: 'totalWeight', displayName: 'Total Weight', enableCellEdit: false },
             { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
             {
                 name: 'view',
