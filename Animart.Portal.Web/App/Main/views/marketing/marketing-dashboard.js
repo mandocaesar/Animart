@@ -259,7 +259,7 @@ function marketingController($q, $rootScope, $scope, orderService, expeditionSer
             { name: 'code', enableCellEdit: false },
             { name: 'creationTime', displayName: 'Date', cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"', enableCellEdit: false },
             { name: 'creatorUser.name', displayName: 'Name', enableCellEdit: false },
-            { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
+            { name: 'expeditionAdjustment', displayName: 'Expedition', enableCellEdit: false },
             { name: 'province', displayName: 'Province', enableCellEdit: false },
             { name: 'status', displayName: 'Status', enableCellEdit: false },
             { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },

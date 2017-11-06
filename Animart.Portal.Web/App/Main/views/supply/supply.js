@@ -181,7 +181,6 @@
         $scope.ok = function () {
             supplyService.create($scope.supply)
               .success(function (rs) {
-                    //console.log($scope.supply);
                   $scope.result = result;
                   $uibModalInstance.close($scope.result);
                   $uibModalInstance.dismiss('cancel');
@@ -212,9 +211,8 @@
         $scope.IsEdit = true;
         $scope.title = "Edit";
 
-       
-
         $scope.update = function () {
+            console.log($scope.supply);
            supplyService.update($scope.supply)
               .success(function (result) {
                   $scope.result = result;

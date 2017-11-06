@@ -82,7 +82,7 @@ function dashboardController($q, $rootScope, $scope, orderService, expedition, $
         $scope.gridOptions.columnDefs = [
             { name: 'code', enableCellEdit: false },
             { name: 'creationTime', displayName: 'Date', cellFilter: 'date: "dd-MMMM-yyyy, HH:mma"', enableCellEdit: false },
-            { name: 'expedition', displayName: 'Expedition', enableCellEdit: false },
+            { name: 'expeditionAdjustment', displayName: 'Expedition', enableCellEdit: false },
             { name: 'status', displayName: 'Status', enableCellEdit: false },
             { name: 'grandTotal', displayName: 'Sub Total', cellFilter: 'currency:"Rp"', enableCellEdit: false },
             //{ name: 'shipmentCost', displayName: 'Shipment Cost', cellFilter: 'currency:"Rp"', enableCellEdit: false },

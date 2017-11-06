@@ -247,6 +247,10 @@ namespace Animart.Portal.Supply
             {
                 if (supplyItem.AvailableUntil < new DateTime(1990, 1, 1))
                     supplyItem.AvailableUntil = DateTime.Now;
+                var data3 = supplyItem.AvailableUntil;
+                var data = supplyItem.AvailableUntil.ToUniversalTime();
+                var data2 = supplyItem.AvailableUntil.ToLocalTime();
+              
                 var supp = new SupplyItem()
                 {
                     Available = supplyItem.Available,
@@ -280,6 +284,11 @@ namespace Animart.Portal.Supply
             {
                 var item = _supplyItemRepository.Single(e => e.Id == supplyItem.Id);
 
+                var x = supplyItem.AvailableUntil;
+                var data = supplyItem.AvailableUntil.ToUniversalTime();
+                var data2 = supplyItem.AvailableUntil.ToLocalTime();
+                var data3 = item.AvailableUntil.ToUniversalTime();
+                var data4 = item.AvailableUntil.ToLocalTime();
                 item.Name = supplyItem.Name ?? item.Name;
                 item.InStock = supplyItem.InStock;
                 item.Price = supplyItem.Price;
@@ -375,7 +384,8 @@ namespace Animart.Portal.Supply
                     var data = _categoryRepository.FirstOrDefault(e => e.Id == a.CategoryId).IsAvailable;
                     a.Available = a.Available && data;
                 }
-
+                var data3 = a.AvailableUntil.ToLocalTime();
+                var data2 = a.AvailableUntil.ToUniversalTime();
                 return new SupplyItemDto()
                 {
                     Available = a.Available,

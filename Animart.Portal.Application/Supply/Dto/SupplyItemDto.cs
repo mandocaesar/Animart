@@ -32,8 +32,8 @@ namespace Animart.Portal.Supply.Dto
         public string Category { get; set; }
 
         public Guid? CategoryId { get; set; }
-        [JsonConverter(typeof(CustomDateTimeConverter))]
-        public DateTime AvailableUntil { get; set; }
+        //[JsonConverter(typeof(CustomDateTimeConverter))]
+        public DateTimeOffset AvailableUntil { get; set; }
     }
     class CustomDateTimeConverter : IsoDateTimeConverter
     {

@@ -41,7 +41,7 @@ namespace Animart.Portal.Supply
 
         public virtual bool IsPo { get; set; }
 
-        public virtual DateTime AvailableUntil { get; set; }
+        public virtual DateTimeOffset AvailableUntil { get; set; }
 
         public Guid? CategoryId { get; set; }
         public Category Category { get; set; }
